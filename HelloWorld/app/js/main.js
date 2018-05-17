@@ -9,7 +9,7 @@ export default class App {
     // Enable antialias for smoother lines
     this.renderer = new THREE.WebGLRenderer({canvas: c, antialias: true});
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(75, 4/3, 0.5, 500);
+    this.camera = new THREE.PerspectiveCamera(55, 4/3, 0.00001, 1000);
     this.camera.position.z = 100;
 
     // const orbiter = new OrbitControls(this.camera);
@@ -21,9 +21,12 @@ export default class App {
     this.tracker.noPan = false;
 
     const dodecgeom = new THREE.DodecahedronGeometry(30);
-    const dodecmatr = new THREE.MeshBasicMaterial({color: 0x14ae6e});
-    const dodecmesh = new THREE.Mesh(dodecgeom, dodecmatr);
-    this.scene.add(dodecmesh);
+    const face_material = new THREE.MeshBasicMaterial({color: 0xff8c00, opacity: 0.75, transparent: true});
+    const wire_material = new THREE.MeshBasicMaterial({color: 0x14ae6e, wireframeLinewidth: 3, wireframe: true});
+    const face_mesh = new THREE.Mesh(dodecgeom, face_material)
+    const wire_mesh = new THREE.Mesh(dodecgeom, wire_material);
+    this.scene.add(face_mesh);
+    this.scene.add(wire_mesh);
 
     window.addEventListener('resize', () => this.resizeHandler());
     this.resizeHandler();
@@ -39,7 +42,7 @@ export default class App {
   resizeHandler() {
     const canvas = document.getElementById("mycanvas");
     let w = window.innerWidth - 16;
-    let h = 0.75 * w;  /* maintain 4:3 ratio */
+    let h = w / (4/3);  /* maintain 4:3 ratio */
     if (canvas.offsetTop + h > window.innerHeight) {
       h = window.innerHeight - canvas.offsetTop - 16;
       w = 4/3 * h;
