@@ -3,7 +3,7 @@ import math
 import types
 import numpy as np
 
-__all__ = ['CgBase', 'Frame', 'Point', 'Vector', *'ijkoabuvfg']
+__all__ = ['CgBase', 'Frame', 'Point', 'Vector', *'ijkof']
 
 
 class CgBase:
@@ -107,25 +107,42 @@ class Vector(CgBase):
         return Vector(*np.cross(self.matrix[:3], other.matrix[:3]))
 
 
+def _apply_global_matrix(function):
+    @functools.wraps(function)
+    def wrapped(frame, *args, **kwargs):
+        transformation_matrix = function(frame, *args, **kwargs)
+        transformation = CgBase._from_array(np.array(transformation_matrix))
+        return transformation @ frame
+
+    return wrapped
+
+
+def _apply_local_matrix(function):
+    @functools.wraps(function)
+    def wrapped(frame, *args, **kwargs):
+        transformation_matrix = function(frame, *args, **kwargs)
+        transformation = CgBase._from_array(np.array(transformation_matrix))
+        return frame @ transformation
+
+    return wrapped
+
+
 class TransformationMeta(type):
-    def __new__(cls, name, bases, namespace):
-        # functions stored as static methods
-        namespace.update({
-            name_: staticmethod(value)
-            for name_, value in namespace.items()
-            if isinstance(value, types.FunctionType)})
-        return type.__new__(cls, name, bases, namespace)
-
     def __init__(self, name, bases, namespace):
-        # easy access to non-hidden attributes
-        self._funcs = {
+        self._dict = {
             name_: getattr(self, name_)
-            for name_ in vars(self)
-            if not name_.startswith('_')}
+            for name_ in dir(self)
+            if not name_.startswith('_')
+        }
 
 
-class Transformations(metaclass=TransformationMeta):
-    def scale(x, y=..., z=1):
+class TransformationBase(CgBase, metaclass=TransformationMeta):
+    pass
+
+
+class GlobalTransformations(TransformationBase):
+    @_apply_global_matrix
+    def scale(self, x, y=..., z=1):
         if y is ...:
             z = y = x
 
@@ -134,38 +151,34 @@ class Transformations(metaclass=TransformationMeta):
                 [0, 0, z, 0],
                 [0, 0, 0, 1]]
 
-    def translate(other: Vector):
+    @_apply_global_matrix
+    def translate(self, other: Vector):
         return np.array([[1, 0, 0, 0],
                          [0, 1, 0, 0],
                          [0, 0, 1, 0],
                          (Point(0, 0, 0) + other).matrix]).T
 
-    def rotate_x(angle):
+    @_apply_global_matrix
+    def rotate_x(self, angle):
         return [[1, 0, 0, 0],
                 [0, math.cos(angle), -math.sin(angle), 0],
                 [0, math.sin(angle), math.cos(angle), 0],
                 [0, 0, 0, 1]]
 
-    def rotate_y(angle):
+    @_apply_global_matrix
+    def rotate_y(self, angle):
         return [[math.cos(angle), 0, math.sin(angle), 0],
                 [0, 1, 0, 0],
                 [-math.sin(angle), 0, math.cos(angle), 0],
                 [0, 0, 0, 1]]
 
-    def rotate_z(angle):
+    @_apply_global_matrix
+    def rotate_z(self, angle):
         return [[math.cos(angle), -math.sin(angle), 0, 0],
                 [math.sin(angle), math.cos(angle), 0, 0],
                 [0, 0, 1, 0],
                 [0, 0, 0, 1]]
 
-    @classmethod
-    def rotate(cls, x, y, z):
-        x, y, z = cls.rotate_x(x), cls.rotate_y(y), cls.rotate_z(z)
-        x, y, z = map(np.array, (x, y, z))
-        return x @ y @ z
-
-
-class GlobalTransformations(metaclass=TransformationMeta):
     def scale_center(self, x, y=..., z=1, center: Point=None):
         if center is None:
             center = self.o
@@ -189,7 +202,45 @@ class GlobalTransformations(metaclass=TransformationMeta):
             .translate(-translation)
 
 
-class LocalTransformations(metaclass=TransformationMeta):
+class LocalTransformations(TransformationBase):
+    @_apply_local_matrix
+    def scale(self, x, y=..., z=1):
+        if y is ...:
+            z = y = x
+
+        return [[x, 0, 0, 0],
+                [0, y, 0, 0],
+                [0, 0, z, 0],
+                [0, 0, 0, 1]]
+
+    @_apply_local_matrix
+    def translate(self, other: Vector):
+        return np.array([[1, 0, 0, 0],
+                         [0, 1, 0, 0],
+                         [0, 0, 1, 0],
+                         (Point(0, 0, 0) + other).matrix]).T
+
+    @_apply_local_matrix
+    def rotate_x(self, angle):
+        return [[1, 0, 0, 0],
+                [0, math.cos(angle), -math.sin(angle), 0],
+                [0, math.sin(angle), math.cos(angle), 0],
+                [0, 0, 0, 1]]
+
+    @_apply_local_matrix
+    def rotate_y(self, angle):
+        return [[math.cos(angle), 0, math.sin(angle), 0],
+                [0, 1, 0, 0],
+                [-math.sin(angle), 0, math.cos(angle), 0],
+                [0, 0, 0, 1]]
+
+    @_apply_local_matrix
+    def rotate_z(self, angle):
+        return [[math.cos(angle), -math.sin(angle), 0, 0],
+                [math.sin(angle), math.cos(angle), 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]]
+
     def scale_center(self, x, y=..., z=1, center: Point=None):
         if center is None:
             center = Point(0, 0, 0)
@@ -207,58 +258,21 @@ class LocalTransformations(metaclass=TransformationMeta):
 
 class LocalsMeta(type):
     def __new__(cls, frame):
-        decorator = cls.apply_local(frame)
-        namespace = {}
-        # Store frame in closure
-        namespace.update({
-            name: decorator(value)
-            for name, value in Transformations._funcs.items()})
-        # Store frame in partial application
-        namespace.update({
+        namespace = {
             name: functools.partial(value, frame)
-            for name, value in LocalTransformations._funcs.items()})
+            for name, value in LocalTransformations._dict.items()}
         return type.__new__(cls, 'Locals', (), namespace)
 
-    @staticmethod
-    def apply_local(frame):
-        def decorator(function):
-            @functools.wraps(function)
-            def wrapper(*args, **kwargs):
-                transformation_matrix = function(*args, **kwargs)
-                transformation = CgBase._from_array(
-                    np.array(transformation_matrix))
-                return frame @ transformation
 
-            return wrapper
-
-        return decorator
-
-
-class FrameMeta(type):
-    def __new__(cls, name, bases, namespace):
-        namespace.update({
-            name_: cls._apply_global(value)
-            for name_, value in Transformations._funcs.items()})
-        namespace.update(GlobalTransformations._funcs)
-        return type.__new__(cls, name, bases, namespace)
-
-    @staticmethod
-    def _apply_global(function):
-        @functools.wraps(function)
-        def wrapper(frame, *args, **kwargs):
-            transformation_matrix = function(*args, **kwargs)
-            transformation = CgBase._from_array(
-                np.array(transformation_matrix))
-            return transformation @ frame
-
-        return wrapper
-
-
-class Frame(CgBase, metaclass=FrameMeta):
+class Frame(GlobalTransformations):
     def __init__(self, x: Vector, y: Vector, z: Vector, o: Point):
         self.o = o
         self.matrix = np.array([x.matrix, y.matrix, z.matrix, o.matrix]).T
         self.local = LocalsMeta(self)
+
+    @property
+    def origin(self):
+        return self.o
 
 
 i = Vector(1, 0, 0)
@@ -272,4 +286,6 @@ b = Point(-2, 5, 3)
 u = Vector(4, 5, 6)
 v = Vector(6, 1, -2)
 
-g = f.translate(u).scale_center(2)
+g = f.translate(u).scale(2).rotate(2, 2, 2)
+h = f.local.rotate(2, 2, 2).local.scale(2).local.translate(u)
+assert g == h
