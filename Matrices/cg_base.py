@@ -2,7 +2,7 @@ import functools
 import math
 import numpy as np
 
-__all__ = ['CgBase', 'Frame', 'Point', 'Vector', *'ijkof']
+__all__ = ['CgBase', 'Frame', 'Point', 'Vector']
 
 
 class CgBase:
@@ -29,10 +29,24 @@ class CgBase:
     def __neq__(self, other):
         return (self.matrix != other.matrix).all()
 
+    def __hash__(self):
+        if self.matrix.ndim == 1:
+            matrix = [self.matrix]
+        else:
+            matrix = self.matrix
+
+        return hash(tuple(tuple(row) for row in matrix))
+
     def __repr__(self):
         return str(self.matrix)
 
 
+def set_point_constant(cls):
+    cls.origin = cls(0, 0, 0)
+    return cls
+
+
+@set_point_constant
 class Point(CgBase):
     def __init__(self, x, y, z):
         self.x = x
@@ -41,6 +55,7 @@ class Point(CgBase):
         self.matrix = np.array([x, y, z, 1])
 
     def __add__(self, other):
+        """Point + Vector = Point"""
         if isinstance(other, Point):
             raise TypeError(
                 f'Cannot add {type(other).__name__} to {type(self).__name__}')
@@ -48,6 +63,7 @@ class Point(CgBase):
         return CgBase._from_array(self.matrix + other.matrix)
 
     def __sub__(self, other):
+        """Tail - Head = Vector from Head to Tail"""
         if isinstance(other, Vector):
             raise TypeError(
                 f'Cannot subtract {type(other).__name__} from '
@@ -56,6 +72,14 @@ class Point(CgBase):
         return CgBase._from_array(self.matrix - other.matrix)
 
 
+def set_vector_constants(cls):
+    cls.i = cls(1, 0, 0)
+    cls.j = cls(0, 1, 0)
+    cls.k = cls(0, 0, 1)
+    return cls
+
+
+@set_vector_constants
 class Vector(CgBase):
     def __init__(self, i, j, k):
         self.i = i
@@ -64,13 +88,16 @@ class Vector(CgBase):
         self.matrix = np.array([i, j, k, 0])
 
     def __bool__(self):
-        # False if zero vector else True
+        """False if zero vector else True"""
         return bool(self.matrix.any())
 
     def __add__(self, other):
+        """Vector + Vector = Vector
+        Vector + Point = Point"""
         return CgBase._from_array(self.matrix + other.matrix)
 
     def __mul__(self, scalar):
+        """Vector * Scalar = Vector"""
         if isinstance(scalar, CgBase):
             raise TypeError(
                 f'Cannot multiply {type(self).__name__} by '
@@ -79,12 +106,15 @@ class Vector(CgBase):
         return CgBase._from_array(scalar * self.matrix)
 
     def __truediv__(self, scalar):
+        """Vector / Scalar = Vector"""
         return self * (1 / scalar)
 
     def __neg__(self):
+        """-Vector"""
         return self * -1
 
     def dot(self, other):
+        """Vector dot Vector = Scalar"""
         if not isinstance(other, Vector):
             raise TypeError(
                 f'Can only dot Vector with Vector, not {type(other).__name__}')
@@ -92,9 +122,11 @@ class Vector(CgBase):
         return np.dot(self.matrix, other.matrix)
 
     def __abs__(self):
+        """||Vector||"""
         return math.sqrt(self.dot(self))
 
     def angle(self, other):
+        """Angle between two vectors"""
         if not isinstance(other, Vector):
             raise TypeError(
                 f'Can only find angle between Vector and '
@@ -104,9 +136,11 @@ class Vector(CgBase):
 
     @property
     def unit(self):
+        """The unit vector in the direction of this vector"""
         return self / abs(self)
 
     def cross(self, other):
+        """Vector cross Vector = Vector"""
         if not isinstance(other, Vector):
             raise TypeError(
                 f'Can only cross Vector with Vector, not '
@@ -155,6 +189,7 @@ class UniversalMeta(type):
 
 class UniversalTransformations(CgBase, metaclass=UniversalMeta):
     def scale(self, x, y=..., z=1):
+        """Scale the frame with respect to the origin"""
         if y is ...:
             z = y = x
 
@@ -164,24 +199,28 @@ class UniversalTransformations(CgBase, metaclass=UniversalMeta):
                 [0, 0, 0, 1]]
 
     def translate(self, other: Vector):
+        """Translate the frame with respect to a vector"""
         return np.array([[1, 0, 0, 0],
                          [0, 1, 0, 0],
                          [0, 0, 1, 0],
                          (Point(0, 0, 0) + other).matrix]).T
 
     def rotate_x(self, angle):
+        """Rotate around the x axis"""
         return [[1, 0, 0, 0],
                 [0, math.cos(angle), -math.sin(angle), 0],
                 [0, math.sin(angle), math.cos(angle), 0],
                 [0, 0, 0, 1]]
 
     def rotate_y(self, angle):
+        """Rotate around the y axis"""
         return [[math.cos(angle), 0, math.sin(angle), 0],
                 [0, 1, 0, 0],
                 [-math.sin(angle), 0, math.cos(angle), 0],
                 [0, 0, 0, 1]]
 
     def rotate_z(self, angle):
+        """Rotate around the z axis"""
         return [[math.cos(angle), -math.sin(angle), 0, 0],
                 [math.sin(angle), math.cos(angle), 0, 0],
                 [0, 0, 1, 0],
@@ -190,6 +229,7 @@ class UniversalTransformations(CgBase, metaclass=UniversalMeta):
 
 class GlobalTransformations(UniversalTransformations.Globals):
     def scale_center(self, x, y=..., z=1, center: Point=None):
+        """Scale the frame with respect to a center of magnification"""
         if center is None:
             center = self.origin
 
@@ -217,17 +257,19 @@ class GlobalTransformations(UniversalTransformations.Globals):
             .translate(-to_center)
 
     def rotate_axis(self, angle, axis: Vector=None, through: Point=None):
+        """Rotate the frame around an axis that is parallel to an axis that
+        passes through a point"""
         if axis is None:
             axis = Vector(0, 0, 1)
 
         if through is None:
             through = Point(0, 0, 0)
 
-        theta = k.angle(axis)
+        theta = Vector.k.angle(axis)
         xy_projection = Vector(axis.i, axis.j, 0)
 
         if xy_projection:
-            phi = i.angle(xy_projection)
+            phi = Vector.i.angle(xy_projection)
         else:
             phi = 0
 
@@ -286,24 +328,26 @@ class LocalFrame(LocalTransformations, Frame):
         return object.__new__(cls)
 
 
-i = Vector(1, 0, 0)
-j = Vector(0, 1, 0)
-k = Vector(0, 0, 1)
-o = Point(0, 0, 0)
-f = Frame(i, j, k, o)
+def set_frame_constant(cls):
+    cls.unit = cls(Vector.i, Vector.j, Vector.k, Point.origin)
+    return cls
+
+
+Frame = set_frame_constant(Frame)
+
 
 a = Point(2, 3, 4)
 b = Point(-2, 5, 3)
 u = Vector(4, 5, 6)
 v = Vector(6, 1, -2)
 
-g = f.translate(u).scale(2).rotate_z(2)
-h = f.local.rotate_z(2).local.scale(2).local.translate(u)
+g = Frame.unit.translate(u).scale(2).rotate_z(2)
+h = Frame.unit.local.rotate_z(2).local.scale(2).local.translate(u)
 assert g == h
 
 m = Frame(
     Vector(0, 1, 0),
     Vector(-1, 0, 0),
-    Vector(0, 0, 1),
+    Vector.k,
     Point(1, 1, 0)
 ).rotate_axis(math.pi / 2, through=Point(1, 1, math.sqrt(2)))
