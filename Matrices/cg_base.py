@@ -17,6 +17,7 @@ class CgBase:
             elif array[3] == 1:
                 return Point(*array[:3])
 
+        # Possible improper multiplication?
         raise TypeError(f'Unknown array structure: {repr(array)}')
 
     def __matmul__(self, other):
@@ -29,11 +30,14 @@ class CgBase:
         return (self.matrix != other.matrix).all()
 
     def __repr__(self):
-        return repr(self.matrix)
+        return str(self.matrix)
 
 
 class Point(CgBase):
     def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
         self.matrix = np.array([x, y, z, 1])
 
     def __add__(self, other):
@@ -54,7 +58,14 @@ class Point(CgBase):
 
 class Vector(CgBase):
     def __init__(self, i, j, k):
+        self.i = i
+        self.j = j
+        self.k = k
         self.matrix = np.array([i, j, k, 0])
+
+    def __bool__(self):
+        # False if zero vector else True
+        return bool(self.matrix.any())
 
     def __add__(self, other):
         return CgBase._from_array(self.matrix + other.matrix)
@@ -105,20 +116,20 @@ class Vector(CgBase):
 
 
 class ApplyMatrixType(type):
-    def __new__(cls, name, function, namespace):
+    def __new__(cls, name, bases, namespace, function):
         new_namespace = {
             name_: function(value)
             for name_, value in namespace.items()
             if not name_.startswith('_')}
-        return type(name, (CgBase, ), new_namespace)
+        return type(name, bases, new_namespace)
 
 
 class UniversalMeta(type):
     def __init__(self, name, bases, namespace):
         self.Globals = ApplyMatrixType(
-            'Globals', self.apply_global_matrix, namespace)
+            'Globals', bases, namespace, self.apply_global_matrix)
         self.Locals = ApplyMatrixType(
-            'Locals', self.apply_local_matrix, namespace)
+            'Locals', bases, namespace, self.apply_local_matrix)
 
     @staticmethod
     def apply_global_matrix(function):
@@ -190,6 +201,51 @@ class GlobalTransformations(UniversalTransformations.Globals):
             .scale(x, y, z) \
             .translate(-translation)
 
+    def _rotate_y_center(self, angle):
+        to_center = Point(0, 0, 0) - self.origin
+
+        return self \
+            .translate(to_center) \
+            .rotate_y(angle) \
+            .translate(-to_center)
+
+    def _rotate_z_center(self, angle):
+        to_center = Point(0, 0, 0) - self.origin
+
+        return self \
+            .translate(to_center) \
+            .rotate_z(angle) \
+            .translate(-to_center)
+
+    def rotate_axis(self, angle, axis: Vector=None, through: Point=None):
+        if axis is None:
+            axis = Vector(0, 0, 1)
+
+        if through is None:
+            through = Point(0, 0, 0)
+
+        theta = k.angle(axis)
+        xy_projection = Vector(axis.i, axis.j, 0)
+
+        if xy_projection:
+            phi = i.angle(xy_projection)
+        else:
+            phi = 0
+
+        offset = self.origin - through
+        parallel_projection = axis.unit * axis.unit.dot(offset)
+        center = through + parallel_projection
+        to_center = Point(0, 0, 0) - center
+
+        return self \
+            .translate(to_center) \
+            ._rotate_z_center(-phi) \
+            ._rotate_y_center(-theta) \
+            .rotate_z(angle) \
+            ._rotate_y_center(theta) \
+            ._rotate_z_center(phi) \
+            .translate(-to_center)
+
 
 class LocalTransformations(UniversalTransformations.Locals):
     def scale_center(self, x, y=..., z=1, center: Point=None):
@@ -198,6 +254,17 @@ class LocalTransformations(UniversalTransformations.Locals):
 
         center = self @ center
         return self.scale_center(x, y, z, center)
+
+    def rotate_axis(self, angle, axis: Vector=None, through: Point=None):
+        if axis is None:
+            axis = Vector(0, 0, 1)
+
+        if through is None:
+            through = Point(0, 0, 0)
+
+        axis = self @ axis
+        through = self @ through
+        return self.rotate_axis(angle, axis, through)
 
 
 class LocalsType(type):
@@ -219,6 +286,9 @@ class LocalsType(type):
 
 class Frame(GlobalTransformations):
     def __init__(self, x: Vector, y: Vector, z: Vector, origin: Point):
+        self.x = x
+        self.y = y
+        self.z = z
         self.origin = origin
         self.matrix = np.array([x.matrix, y.matrix, z.matrix, origin.matrix]).T
         self.local = LocalsType(self)
@@ -238,3 +308,10 @@ v = Vector(6, 1, -2)
 g = f.translate(u).scale(2).rotate_z(2)
 h = f.local.rotate_z(2).local.scale(2).local.translate(u)
 assert g == h
+
+m = Frame(
+    Vector(0, 1, 0),
+    Vector(-1, 0, 0),
+    Vector(0, 0, 1),
+    Point(1, 1, 0)
+).rotate_axis(math.pi / 2, through=Point(1, 1, math.sqrt(2)))
