@@ -115,21 +115,20 @@ class Vector(CgBase):
         return Vector(*np.cross(self.matrix[:3], other.matrix[:3]))
 
 
-class ApplyMatrixType(type):
-    def __new__(cls, name, bases, namespace, function):
+class UniversalMeta(type):
+    def __init__(self, name, bases, namespace):
+        self.Globals = self.decorate_type_attrs(
+            name + '.Globals', bases, namespace, self.apply_global_matrix)
+        self.Locals = self.decorate_type_attrs(
+            name + '.Locals', bases, namespace, self.apply_local_matrix)
+
+    @staticmethod
+    def decorate_type_attrs(name, bases, namespace, decorator):
         new_namespace = {
-            name_: function(value)
+            name_: decorator(value)
             for name_, value in namespace.items()
             if not name_.startswith('_')}
         return type(name, bases, new_namespace)
-
-
-class UniversalMeta(type):
-    def __init__(self, name, bases, namespace):
-        self.Globals = ApplyMatrixType(
-            'Globals', bases, namespace, self.apply_global_matrix)
-        self.Locals = ApplyMatrixType(
-            'Locals', bases, namespace, self.apply_local_matrix)
 
     @staticmethod
     def apply_global_matrix(function):
@@ -247,13 +246,14 @@ class GlobalTransformations(UniversalTransformations.Globals):
             .translate(-to_center)
 
 
-class LocalTransformations(UniversalTransformations.Locals):
+class LocalTransformations(UniversalTransformations.Locals,
+                           GlobalTransformations):
     def scale_center(self, x, y=..., z=1, center: Point=None):
         if center is None:
             center = Point(0, 0, 0)
 
         center = self @ center
-        return self.scale_center(x, y, z, center)
+        return super().scale_center(x, y, z, center)
 
     def rotate_axis(self, angle, axis: Vector=None, through: Point=None):
         if axis is None:
@@ -264,34 +264,26 @@ class LocalTransformations(UniversalTransformations.Locals):
 
         axis = self @ axis
         through = self @ through
-        return self.rotate_axis(angle, axis, through)
-
-
-class LocalsType(type):
-    def __new__(cls, frame):
-        namespace = {
-            name: cls.partial(getattr(LocalTransformations, name), frame)
-            for name in dir(LocalTransformations)
-            if not name.startswith('_')}
-        return type.__new__(cls, 'Locals', (), namespace)
-
-    @staticmethod
-    def partial(function, frame):
-        @functools.wraps(function)
-        def wrapped(*args, **kwargs):
-            return function(frame, *args, **kwargs)
-
-        return wrapped
+        return super().rotate_axis(angle, axis, through)
 
 
 class Frame(GlobalTransformations):
+    def __new__(cls, x: Vector, y: Vector, z: Vector, origin: Point):
+        self = super().__new__(cls)
+        self.local = LocalFrame(x, y, z, origin)
+        return self
+
     def __init__(self, x: Vector, y: Vector, z: Vector, origin: Point):
         self.x = x
         self.y = y
         self.z = z
         self.origin = origin
         self.matrix = np.array([x.matrix, y.matrix, z.matrix, origin.matrix]).T
-        self.local = LocalsType(self)
+
+
+class LocalFrame(LocalTransformations, Frame):
+    def __new__(cls, x: Vector, y: Vector, z: Vector, origin: Point):
+        return object.__new__(cls)
 
 
 i = Vector(1, 0, 0)
