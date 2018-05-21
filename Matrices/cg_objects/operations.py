@@ -1,4 +1,4 @@
-"""Mixin classes for Frame types"""
+"""Mixin classes providing operations for Frame types"""
 import functools
 import math
 import numpy as np
@@ -59,12 +59,12 @@ class StandardOperations(cg_base.CgBase, metaclass=StandardMeta):
                 [0, 0, z, 0],
                 [0, 0, 0, 1]]
 
-    def translate(self, other: cg_base.Vector):
+    def translate(self, operand: cg_base.Vector):
         """Translate the frame with respect to a vector"""
         return np.array([[1, 0, 0, 0],
                          [0, 1, 0, 0],
                          [0, 0, 1, 0],
-                         (cg_base.Point(0, 0, 0) + other).matrix]).T
+                         np.array(cg_base.Point.origin + operand)]).T
 
     def rotate_x(self, angle):
         """Rotate around the x axis"""

@@ -36,37 +36,32 @@ class CgBase(metaclass=CgMeta):
             # Possible improper multiplication?
             raise TypeError(f'Unknown array structure: {str(array)}')
 
-    @property
-    def matrix(self):
-        """The object's mathematical matrix representation"""
-        return self.__matrix
-
-    @matrix.setter
-    def matrix(self, value):
-        self.__matrix = value
+    def __init__(self, matrix):
+        self.__matrix = matrix
 
     def __array__(self):
-        return self.matrix
+        """Convert the object into a numpy array using np.array(self)"""
+        return self.__matrix
 
     def __matmul__(self, other):
-        return CgBase.from_array(self.matrix @ other.matrix)
+        return CgBase.from_array(self.__matrix @ other.__matrix)
 
     def __eq__(self, other):
-        return (self.matrix == other.matrix).all()
+        return (self.__matrix == other.__matrix).all()
 
     def __neq__(self, other):
-        return (self.matrix != other.matrix).all()
+        return (self.__matrix != other.__matrix).all()
 
     def __hash__(self):
-        if self.matrix.ndim == 1:
-            matrix = [self.matrix]
+        if self.__matrix.ndim == 1:
+            matrix = [self.__matrix]
         else:
-            matrix = self.matrix
+            matrix = self.__matrix
 
         return hash(tuple(tuple(row) for row in matrix))
 
     def __repr__(self):
-        return str(self.matrix)
+        return str(self.__matrix)
 
 
 def _init_point(cls):
@@ -84,10 +79,10 @@ class Point(CgBase):
             return cls(*array[:3])
 
     def __init__(self, x, y, z):
+        super().__init__(np.array([x, y, z, 1]))
         self.__x = x
         self.__y = y
         self.__z = z
-        self.matrix = np.array([x, y, z, 1])
 
     @property
     def x(self):
@@ -110,7 +105,7 @@ class Point(CgBase):
             raise TypeError(
                 f'Cannot add {type(other).__name__} to {type(self).__name__}')
 
-        return CgBase.from_array(self.matrix + other.matrix)
+        return CgBase.from_array(np.array(self) + np.array(other))
 
     def __sub__(self, other):
         """Tail - Head = Vector from Head to Tail"""
@@ -119,7 +114,7 @@ class Point(CgBase):
                 f'Cannot subtract {type(other).__name__} from '
                 f'{type(self).__name__}')
 
-        return CgBase.from_array(self.matrix - other.matrix)
+        return CgBase.from_array(np.array(self) - np.array(other))
 
 
 class Vertices(CgBase):
@@ -134,7 +129,7 @@ class Vertices(CgBase):
             ))
 
     def __init__(self, *points):
-        self.matrix = np.array(list(map(np.array, points))).T
+        super().__init__(np.array(list(map(np.array, points))).T)
 
 
 def _init_vector(cls):
@@ -154,11 +149,11 @@ class Vector(CgBase):
         if array.shape == (4, ) and array[3] == 0:
             return cls(*array[:3])
 
-    def __init__(self, x, y, z):
-        self.__i = x
-        self.__j = y
-        self.__k = z
-        self.matrix = np.array([x, y, z, 0])
+    def __init__(self, i, j, k):
+        super().__init__(np.array([i, j, k, 0]))
+        self.__i = i
+        self.__j = j
+        self.__k = k
 
     @property
     def i(self):
@@ -177,12 +172,12 @@ class Vector(CgBase):
 
     def __bool__(self):
         """False if zero vector else True"""
-        return bool(self.matrix.any())
+        return bool(np.array(self).any())
 
     def __add__(self, other):
         """Vector + Vector = Vector
         Vector + Point = Point"""
-        return CgBase.from_array(self.matrix + other.matrix)
+        return CgBase.from_array(np.array(self) + np.array(other))
 
     def __mul__(self, scalar):
         """Vector * Scalar = Vector"""
@@ -191,7 +186,7 @@ class Vector(CgBase):
                 f'Cannot multiply {type(self).__name__} by '
                 f'{type(scalar).__name__}')
 
-        return CgBase.from_array(scalar * self.matrix)
+        return CgBase.from_array(scalar * np.array(self))
 
     def __truediv__(self, scalar):
         """Vector / Scalar = Vector"""
@@ -207,7 +202,7 @@ class Vector(CgBase):
             raise TypeError(
                 f'Can only dot Vector with Vector, not {type(other).__name__}')
 
-        return np.dot(self.matrix, other.matrix)
+        return np.dot(np.array(self), np.array(other))
 
     def __abs__(self):
         """||Vector||"""
@@ -234,4 +229,4 @@ class Vector(CgBase):
                 f'Can only cross Vector with Vector, not '
                 f'{type(other).__name__}')
 
-        return Vector(*np.cross(self.matrix[:3], other.matrix[:3]))
+        return Vector(*np.cross(np.array(self)[:3], np.array(other)[:3]))

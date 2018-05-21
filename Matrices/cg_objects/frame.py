@@ -28,11 +28,11 @@ class Frame(operations.GlobalOperations):
         self, x: cg_base.Vector, y: cg_base.Vector, z: cg_base.Vector,
         origin: cg_base.Point
     ):
+        super().__init__(np.array(list(map(np.array, (x, y, z, origin)))).T)
         self.__x = x
         self.__y = y
         self.__z = z
         self.__origin = origin
-        self.matrix = np.array([x.matrix, y.matrix, z.matrix, origin.matrix]).T
 
     @property
     def local(self):
@@ -62,7 +62,7 @@ class Frame(operations.GlobalOperations):
 
     def inv(self):
         """Calculate the inverse of a matrix"""
-        return cg_base.CgBase.from_array(np.linalg.inv(self.matrix))
+        return cg_base.CgBase.from_array(np.linalg.inv(np.array(self)))
 
 
 class LocalFrame(operations.LocalOperations, Frame):

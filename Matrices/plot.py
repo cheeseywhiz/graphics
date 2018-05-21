@@ -1,8 +1,9 @@
 import math
+import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.widgets import Button
-from cg_objects import *
+from cg_objects import Frame, Point, Vector, Vertices
 
 
 class VerticesPlotter(Axes3D):
@@ -20,7 +21,7 @@ class VerticesPlotter(Axes3D):
         frame = self.frame.local.rotate_axis(
             k * math.tau,
             Vector(1, 1, 0), Point(1, 1, 2))
-        xs, ys, zs, _ = (frame @ self.vertices).matrix
+        xs, ys, zs, _ = np.array(frame @ self.vertices)
 
         # global and local rgb xyz axes
         super().scatter(
