@@ -2,7 +2,7 @@ import math
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.widgets import Button
-from cg_base import *
+from cg_objects import *
 
 
 class VerticesPlotter(Axes3D):
