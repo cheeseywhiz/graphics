@@ -1,11 +1,11 @@
 """Provides a coordinate frame type"""
 import numpy as np
-from . import cg_base, transformations
+from . import cg_base, operations
 
 __all__ = ['Frame']
 
 
-class Frame(transformations.GlobalTransformations):
+class Frame(operations.GlobalOperations):
     __slots__ = '__local', '__x', '__y', '__z', '__origin'
 
     @classmethod
@@ -36,7 +36,7 @@ class Frame(transformations.GlobalTransformations):
 
     @property
     def local(self):
-        """The Frame object whose transformation methods are performed with
+        """The Frame object whose operations methods are performed with
         respect to the frame"""
         return self.__local
 
@@ -65,7 +65,7 @@ class Frame(transformations.GlobalTransformations):
         return cg_base.CgBase.from_array(np.linalg.inv(self.matrix))
 
 
-class LocalFrame(transformations.LocalTransformations, Frame):
+class LocalFrame(operations.LocalOperations, Frame):
     __slots__ = ()
 
     def __new__(

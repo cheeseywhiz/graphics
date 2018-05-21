@@ -4,9 +4,7 @@ import math
 import numpy as np
 from . import cg_base, frame
 
-__all__ = [
-    'StandardTransformations', 'LocalTransformations', 'GlobalTransformations'
-]
+__all__ = ['StandardOperations', 'LocalOperations', 'GlobalOperations']
 
 
 class StandardMeta(cg_base.CgMeta):
@@ -29,10 +27,10 @@ class StandardMeta(cg_base.CgMeta):
     def apply_global_matrix(function):
         @functools.wraps(function)
         def wrapped(frame, *args, **kwargs):
-            transformation_matrix = function(frame, *args, **kwargs)
-            transformation = cg_base.CgBase.from_array(
-                np.array(transformation_matrix))
-            return transformation @ frame
+            operation_matrix = function(frame, *args, **kwargs)
+            operation = cg_base.CgBase.from_array(
+                np.array(operation_matrix))
+            return operation @ frame
 
         return wrapped
 
@@ -40,15 +38,15 @@ class StandardMeta(cg_base.CgMeta):
     def apply_local_matrix(function):
         @functools.wraps(function)
         def wrapped(frame, *args, **kwargs):
-            transformation_matrix = function(frame, *args, **kwargs)
-            transformation = cg_base.CgBase.from_array(
-                np.array(transformation_matrix))
-            return frame @ transformation
+            operation_matrix = function(frame, *args, **kwargs)
+            operation = cg_base.CgBase.from_array(
+                np.array(operation_matrix))
+            return frame @ operation
 
         return wrapped
 
 
-class StandardTransformations(cg_base.CgBase, metaclass=StandardMeta):
+class StandardOperations(cg_base.CgBase, metaclass=StandardMeta):
     __slots__ = ()
 
     def scale(self, x, y=..., z=1):
@@ -90,7 +88,7 @@ class StandardTransformations(cg_base.CgBase, metaclass=StandardMeta):
                 [0, 0, 0, 1]]
 
 
-class GlobalTransformations(StandardTransformations.Globals):
+class GlobalOperations(StandardOperations.Globals):
     __slots__ = ()
 
     def scale_center(self, x, y=..., z=1, center: cg_base.Point=None):
@@ -137,8 +135,7 @@ class GlobalTransformations(StandardTransformations.Globals):
         return axis_frame.local.rotate_z(angle) @ new_frame
 
 
-class LocalTransformations(StandardTransformations.Locals,
-                           GlobalTransformations):
+class LocalOperations(StandardOperations.Locals, GlobalOperations):
     __slots__ = ()
 
     def scale_center(self, x, y=..., z=1, center: cg_base.Point=None):
