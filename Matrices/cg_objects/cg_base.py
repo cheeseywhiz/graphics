@@ -22,7 +22,7 @@ class CgMeta(type):
 
 
 class CgBase(metaclass=CgMeta):
-    __slots__ = 'matrix'
+    __slots__ = '__matrix'
 
     @classmethod
     def from_array(cls, array):
@@ -35,6 +35,15 @@ class CgBase(metaclass=CgMeta):
         else:
             # Possible improper multiplication?
             raise TypeError(f'Unknown array structure: {str(array)}')
+
+    @property
+    def matrix(self):
+        """The object's mathematical matrix representation"""
+        return self.__matrix
+
+    @matrix.setter
+    def matrix(self, value):
+        self.__matrix = value
 
     def __array__(self):
         return self.matrix
@@ -67,7 +76,7 @@ def _init_point(cls):
 
 @_init_point
 class Point(CgBase):
-    __slots__ = 'x', 'y', 'z'
+    __slots__ = '__x', '__y', '__z'
 
     @classmethod
     def from_array(cls, array):
@@ -75,10 +84,25 @@ class Point(CgBase):
             return cls(*array[:3])
 
     def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
+        self.__x = x
+        self.__y = y
+        self.__z = z
         self.matrix = np.array([x, y, z, 1])
+
+    @property
+    def x(self):
+        """The point's x component"""
+        return self.__x
+
+    @property
+    def y(self):
+        """The point's y component"""
+        return self.__y
+
+    @property
+    def z(self):
+        """The point's z component"""
+        return self.__z
 
     def __add__(self, other):
         """Point + Vector = Point"""
@@ -114,16 +138,16 @@ class Vertices(CgBase):
 
 
 def _init_vector(cls):
-    cls.i = cls(1, 0, 0)
-    cls.j = cls(0, 1, 0)
-    cls.k = cls(0, 0, 1)
+    cls.i_hat = cls(1, 0, 0)
+    cls.j_hat = cls(0, 1, 0)
+    cls.k_hat = cls(0, 0, 1)
     cls.zero = cls(0, 0, 0)
     return cls
 
 
 @_init_vector
 class Vector(CgBase):
-    __slots__ = 'x', 'y', 'z'
+    __slots__ = '__i', '__j', '__k'
 
     @classmethod
     def from_array(cls, array):
@@ -131,10 +155,25 @@ class Vector(CgBase):
             return cls(*array[:3])
 
     def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
+        self.__i = x
+        self.__j = y
+        self.__k = z
         self.matrix = np.array([x, y, z, 0])
+
+    @property
+    def i(self):
+        """The vector's i component"""
+        return self.__i
+
+    @property
+    def j(self):
+        """The vector's j component"""
+        return self.__j
+
+    @property
+    def k(self):
+        """The vector's k component"""
+        return self.__k
 
     def __bool__(self):
         """False if zero vector else True"""

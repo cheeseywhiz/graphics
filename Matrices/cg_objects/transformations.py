@@ -12,17 +12,17 @@ __all__ = [
 class StandardMeta(cg_base.CgMeta):
     def __init__(self, name, bases, namespace):
         self.Globals = self.decorate_type_attrs(
-            name + '.Globals', bases, namespace, self.apply_global_matrix)
+            'Globals', bases, namespace, self.apply_global_matrix)
         self.Locals = self.decorate_type_attrs(
-            name + '.Locals', bases, namespace, self.apply_local_matrix)
+            'Locals', bases, namespace, self.apply_local_matrix)
 
-    @staticmethod
-    def decorate_type_attrs(name, bases, namespace, decorator):
+    def decorate_type_attrs(self, name, bases, namespace, decorator):
         new_namespace = namespace.copy()
         new_namespace.update({
             name_: decorator(value)
             for name_, value in namespace.items()
             if not name_.startswith('_')})
+        new_namespace['__qualname__'] = '.'.join((self.__name__, name))
         return type(name, bases, new_namespace)
 
     @staticmethod
@@ -111,16 +111,16 @@ class GlobalTransformations(StandardTransformations.Globals):
         """Rotate the frame around an axis that is parallel to a vector and
         passes through a point"""
         if axis is None:
-            axis = cg_base.Vector.k
+            axis = cg_base.Vector.k_hat
 
         if through is None:
             through = cg_base.Point.origin
 
-        theta = cg_base.Vector.k.angle(axis)
-        xy_projection = cg_base.Vector(axis.x, axis.y, 0)
+        theta = cg_base.Vector.k_hat.angle(axis)
+        xy_projection = cg_base.Vector(axis.i, axis.j, 0)
 
         if xy_projection:
-            phi = cg_base.Vector.i.angle(xy_projection)
+            phi = cg_base.Vector.i_hat.angle(xy_projection)
         else:
             phi = 0
 
@@ -152,7 +152,7 @@ class LocalTransformations(StandardTransformations.Locals,
         self, angle, axis: cg_base.Vector=None, through: cg_base.Point=None
     ):
         if axis is None:
-            axis = cg_base.Vector.k
+            axis = cg_base.Vector.k_hat
 
         if through is None:
             through = cg_base.Point.origin
