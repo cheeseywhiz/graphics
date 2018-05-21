@@ -2,26 +2,45 @@ import functools
 import math
 import numpy as np
 
-__all__ = ['CgBase', 'Frame', 'Point', 'Vector']
+__all__ = ['CgBase', 'Frame', 'Point', 'Vector', 'Vertices']
 
 
-class CgBase:
+class CgMeta(type):
+    """Record which subclasses override cls.from_array()"""
+    base = None
+    subclasses = []
+
+    def __new__(cls, name, bases, namespace):
+        self = super().__new__(cls, name, bases, namespace)
+
+        if cls.base is None:
+            cls.base = self
+        elif 'from_array' in namespace:
+            cls.subclasses.append(self)
+
+        return self
+
+
+class CgBase(metaclass=CgMeta):
+    __slots__ = 'matrix'
+
     @classmethod
-    def _from_array(cls, array):
-        # Create the appropriate subclass based on an array's structure
-        if array.shape == (4, 4) and all(array[3] == [0, 0, 0, 1]):
-            return Frame(*map(cls._from_array, array.T))
-        elif array.shape == (4, ):
-            if array[3] == 0:
-                return Vector(*array[:3])
-            elif array[3] == 1:
-                return Point(*array[:3])
+    def from_array(cls, array):
+        """Construct a new object from a numpy array"""
+        for subclass in type(cls).subclasses:
+            new_object = subclass.from_array(array)
 
-        # Possible improper multiplication?
-        raise TypeError(f'Unknown array structure: {repr(array)}')
+            if new_object is not None:
+                return new_object
+        else:
+            # Possible improper multiplication?
+            raise TypeError(f'Unknown array structure: {str(array)}')
+
+    def __array__(self):
+        return self.matrix
 
     def __matmul__(self, other):
-        return CgBase._from_array(self.matrix @ other.matrix)
+        return CgBase.from_array(self.matrix @ other.matrix)
 
     def __eq__(self, other):
         return (self.matrix == other.matrix).all()
@@ -48,6 +67,13 @@ def set_point_constant(cls):
 
 @set_point_constant
 class Point(CgBase):
+    __slots__ = 'x', 'y', 'z'
+
+    @classmethod
+    def from_array(cls, array):
+        if array.shape == (4, ) and array[3] == 1:
+            return cls(*array[:3])
+
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
@@ -60,7 +86,7 @@ class Point(CgBase):
             raise TypeError(
                 f'Cannot add {type(other).__name__} to {type(self).__name__}')
 
-        return CgBase._from_array(self.matrix + other.matrix)
+        return CgBase.from_array(self.matrix + other.matrix)
 
     def __sub__(self, other):
         """Tail - Head = Vector from Head to Tail"""
@@ -69,23 +95,31 @@ class Point(CgBase):
                 f'Cannot subtract {type(other).__name__} from '
                 f'{type(self).__name__}')
 
-        return CgBase._from_array(self.matrix - other.matrix)
+        return CgBase.from_array(self.matrix - other.matrix)
 
 
-def set_vector_constants(cls):
+def _init_vector(cls):
     cls.i = cls(1, 0, 0)
     cls.j = cls(0, 1, 0)
     cls.k = cls(0, 0, 1)
+    cls.zero = cls(0, 0, 0)
     return cls
 
 
-@set_vector_constants
+@_init_vector
 class Vector(CgBase):
-    def __init__(self, i, j, k):
-        self.i = i
-        self.j = j
-        self.k = k
-        self.matrix = np.array([i, j, k, 0])
+    __slots__ = 'x', 'y', 'z'
+
+    @classmethod
+    def from_array(cls, array):
+        if array.shape == (4, ) and array[3] == 0:
+            return cls(*array[:3])
+
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.matrix = np.array([x, y, z, 0])
 
     def __bool__(self):
         """False if zero vector else True"""
@@ -94,7 +128,7 @@ class Vector(CgBase):
     def __add__(self, other):
         """Vector + Vector = Vector
         Vector + Point = Point"""
-        return CgBase._from_array(self.matrix + other.matrix)
+        return CgBase.from_array(self.matrix + other.matrix)
 
     def __mul__(self, scalar):
         """Vector * Scalar = Vector"""
@@ -103,7 +137,7 @@ class Vector(CgBase):
                 f'Cannot multiply {type(self).__name__} by '
                 f'{type(scalar).__name__}')
 
-        return CgBase._from_array(scalar * self.matrix)
+        return CgBase.from_array(scalar * self.matrix)
 
     def __truediv__(self, scalar):
         """Vector / Scalar = Vector"""
@@ -149,7 +183,7 @@ class Vector(CgBase):
         return Vector(*np.cross(self.matrix[:3], other.matrix[:3]))
 
 
-class UniversalMeta(type):
+class StandardMeta(CgMeta):
     def __init__(self, name, bases, namespace):
         self.Globals = self.decorate_type_attrs(
             name + '.Globals', bases, namespace, self.apply_global_matrix)
@@ -158,10 +192,11 @@ class UniversalMeta(type):
 
     @staticmethod
     def decorate_type_attrs(name, bases, namespace, decorator):
-        new_namespace = {
+        new_namespace = namespace.copy()
+        new_namespace.update({
             name_: decorator(value)
             for name_, value in namespace.items()
-            if not name_.startswith('_')}
+            if not name_.startswith('_')})
         return type(name, bases, new_namespace)
 
     @staticmethod
@@ -169,7 +204,7 @@ class UniversalMeta(type):
         @functools.wraps(function)
         def wrapped(frame, *args, **kwargs):
             transformation_matrix = function(frame, *args, **kwargs)
-            transformation = CgBase._from_array(
+            transformation = CgBase.from_array(
                 np.array(transformation_matrix))
             return transformation @ frame
 
@@ -180,14 +215,16 @@ class UniversalMeta(type):
         @functools.wraps(function)
         def wrapped(frame, *args, **kwargs):
             transformation_matrix = function(frame, *args, **kwargs)
-            transformation = CgBase._from_array(
+            transformation = CgBase.from_array(
                 np.array(transformation_matrix))
             return frame @ transformation
 
         return wrapped
 
 
-class UniversalTransformations(CgBase, metaclass=UniversalMeta):
+class StandardTransformations(CgBase, metaclass=StandardMeta):
+    __slots__ = ()
+
     def scale(self, x, y=..., z=1):
         """Scale the frame with respect to the origin"""
         if y is ...:
@@ -227,82 +264,68 @@ class UniversalTransformations(CgBase, metaclass=UniversalMeta):
                 [0, 0, 0, 1]]
 
 
-class GlobalTransformations(UniversalTransformations.Globals):
+class GlobalTransformations(StandardTransformations.Globals):
+    __slots__ = ()
+
     def scale_center(self, x, y=..., z=1, center: Point=None):
         """Scale the frame with respect to a center of magnification"""
         if center is None:
             center = self.origin
 
-        translation = Point(0, 0, 0) - center
+        translation = Point.origin - center
 
-        return self \
+        return super() \
             .translate(translation) \
             .scale(x, y, z) \
             .translate(-translation)
 
-    def _rotate_y_center(self, angle):
-        to_center = Point(0, 0, 0) - self.origin
-
-        return self \
-            .translate(to_center) \
-            .rotate_y(angle) \
-            .translate(-to_center)
-
-    def _rotate_z_center(self, angle):
-        to_center = Point(0, 0, 0) - self.origin
-
-        return self \
-            .translate(to_center) \
-            .rotate_z(angle) \
-            .translate(-to_center)
-
     def rotate_axis(self, angle, axis: Vector=None, through: Point=None):
-        """Rotate the frame around an axis that is parallel to an axis that
+        """Rotate the frame around an axis that is parallel to a vector and
         passes through a point"""
         if axis is None:
-            axis = Vector(0, 0, 1)
+            axis = Vector.k
 
         if through is None:
-            through = Point(0, 0, 0)
+            through = Point.origin
 
         theta = Vector.k.angle(axis)
-        xy_projection = Vector(axis.i, axis.j, 0)
+        xy_projection = Vector(axis.x, axis.y, 0)
 
         if xy_projection:
             phi = Vector.i.angle(xy_projection)
         else:
             phi = 0
 
-        offset = self.origin - through
-        parallel_projection = axis.unit * axis.unit.dot(offset)
-        center = through + parallel_projection
-        to_center = Point(0, 0, 0) - center
+        # axis_frame's z axis is parallel to the specified axis and its origin
+        # is the specified point
+        axis_frame = Frame.unit \
+            .rotate_y(theta) \
+            .rotate_z(phi) \
+            .translate(through - Point.origin)
 
-        return self \
-            .translate(to_center) \
-            ._rotate_z_center(-phi) \
-            ._rotate_y_center(-theta) \
-            .rotate_z(angle) \
-            ._rotate_y_center(theta) \
-            ._rotate_z_center(phi) \
-            .translate(-to_center)
+        # represent self in terms of axis_frame
+        new_frame = axis_frame.inv() @ self
+        # then rotate axis_frame and reevaluate new_frame
+        return axis_frame.local.rotate_z(angle) @ new_frame
 
 
-class LocalTransformations(UniversalTransformations.Locals,
+class LocalTransformations(StandardTransformations.Locals,
                            GlobalTransformations):
+    __slots__ = ()
+
     def scale_center(self, x, y=..., z=1, center: Point=None):
         if center is None:
-            center = Point(0, 0, 0)
+            center = Point.origin
 
         center = self @ center
         return super().scale_center(x, y, z, center)
 
     def rotate_axis(self, angle, axis: Vector=None, through: Point=None):
         if axis is None:
-            axis = Vector(0, 0, 1)
+            axis = Vector.k
 
         if through is None:
-            through = Point(0, 0, 0)
+            through = Point.origin
 
         axis = self @ axis
         through = self @ through
@@ -310,6 +333,16 @@ class LocalTransformations(UniversalTransformations.Locals,
 
 
 class Frame(GlobalTransformations):
+    __slots__ = 'local', 'x', 'y', 'z', 'origin'
+
+    @classmethod
+    def from_array(cls, array):
+        if array.shape == (4, 4) and (array[3] == [0, 0, 0, 1]).all():
+            return cls(*map(
+                super().from_array,
+                array.T
+            ))
+
     def __new__(cls, x: Vector, y: Vector, z: Vector, origin: Point):
         self = super().__new__(cls)
         self.local = LocalFrame(x, y, z, origin)
@@ -322,32 +355,36 @@ class Frame(GlobalTransformations):
         self.origin = origin
         self.matrix = np.array([x.matrix, y.matrix, z.matrix, origin.matrix]).T
 
+    def inv(self):
+        """Calculate the inverse of a matrix"""
+        return CgBase.from_array(np.linalg.inv(self.matrix))
+
 
 class LocalFrame(LocalTransformations, Frame):
+    __slots__ = ()
+
     def __new__(cls, x: Vector, y: Vector, z: Vector, origin: Point):
         return object.__new__(cls)
 
 
-def set_frame_constant(cls):
+def _init_frame(cls):
     cls.unit = cls(Vector.i, Vector.j, Vector.k, Point.origin)
     return cls
 
 
-Frame = set_frame_constant(Frame)
+Frame = _init_frame(Frame)
 
 
-a = Point(2, 3, 4)
-b = Point(-2, 5, 3)
-u = Vector(4, 5, 6)
-v = Vector(6, 1, -2)
+class Vertices(CgBase):
+    __slots__ = ()
 
-g = Frame.unit.translate(u).scale(2).rotate_z(2)
-h = Frame.unit.local.rotate_z(2).local.scale(2).local.translate(u)
-assert g == h
+    @classmethod
+    def from_array(cls, array):
+        if array.ndim == 2 and array.shape[0] == 4 and (array[3] == 1).all():
+            return cls(*(  # why does super needs arguments here?
+                super(Vertices, cls).from_array(tup)
+                for tup in array.T
+            ))
 
-m = Frame(
-    Vector(0, 1, 0),
-    Vector(-1, 0, 0),
-    Vector.k,
-    Point(1, 1, 0)
-).rotate_axis(math.pi / 2, through=Point(1, 1, math.sqrt(2)))
+    def __init__(self, *points):
+        self.matrix = np.array(list(map(np.array, points))).T
