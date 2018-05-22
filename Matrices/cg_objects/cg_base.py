@@ -22,12 +22,12 @@ class CgMeta(type):
 
 
 class CgBase(metaclass=CgMeta):
-    __slots__ = '__matrix'
+    __slots__ = '__matrix', '_args', '_kwargs'
 
     @classmethod
     def from_array(cls, array):
         """Construct a new object from a numpy array"""
-        for subclass in type(cls).subclasses:
+        for subclass in cls.subclasses:
             new_object = subclass.from_array(array)
 
             if new_object is not None:
@@ -38,30 +38,41 @@ class CgBase(metaclass=CgMeta):
 
     def __init__(self, matrix):
         self.__matrix = matrix
+        self._args = matrix,
+        self._kwargs = {}
 
     def __array__(self):
         """Convert the object into a numpy array using np.array(self)"""
         return self.__matrix
 
     def __matmul__(self, other):
-        return CgBase.from_array(self.__matrix @ other.__matrix)
+        return CgBase.from_array(np.array(self) @ np.array(other))
 
     def __eq__(self, other):
-        return (self.__matrix == other.__matrix).all()
+        return (np.array(self) == np.array(other)).all()
 
     def __neq__(self, other):
-        return (self.__matrix != other.__matrix).all()
+        return (np.array(self) != np.array(other)).all()
 
     def __hash__(self):
-        if self.__matrix.ndim == 1:
-            matrix = [self.__matrix]
-        else:
-            matrix = self.__matrix
+        matrix = np.array(self)
+
+        if matrix.ndim == 1:
+            matrix = [matrix]
 
         return hash(tuple(tuple(row) for row in matrix))
 
+    def __str__(self):
+        return str(np.array(self))
+
     def __repr__(self):
-        return str(self.__matrix)
+        name = type(self).__name__
+        params = ', '.join((
+            *map(repr, self._args),
+            *(f'{key}={repr(value)}'
+              for key, value in self._kwargs.items())
+        ))
+        return f'{name}({params})'
 
 
 def _init_point(cls):
@@ -80,6 +91,7 @@ class Point(CgBase):
 
     def __init__(self, x, y, z):
         super().__init__(np.array([x, y, z, 1]))
+        self._args = x, y, z
         self.__x = x
         self.__y = y
         self.__z = z
@@ -130,6 +142,7 @@ class Vertices(CgBase):
 
     def __init__(self, *points):
         super().__init__(np.array(list(map(np.array, points))).T)
+        self._args = points
 
 
 def _init_vector(cls):
@@ -151,6 +164,7 @@ class Vector(CgBase):
 
     def __init__(self, i, j, k):
         super().__init__(np.array([i, j, k, 0]))
+        self._args = i, j, k
         self.__i = i
         self.__j = j
         self.__k = k

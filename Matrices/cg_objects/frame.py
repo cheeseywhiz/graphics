@@ -29,6 +29,7 @@ class Frame(operations.GlobalOperations):
         origin: cg_base.Point
     ):
         super().__init__(np.array(list(map(np.array, (x, y, z, origin)))).T)
+        self._args = x, y, z, origin
         self.__x = x
         self.__y = y
         self.__z = z
