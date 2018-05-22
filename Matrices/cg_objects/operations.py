@@ -104,7 +104,7 @@ class GlobalOperations(StandardOperations.Globals):
             .translate(-translation)
 
     def rotate_axis(
-            self, angle, axis: cg_base.Vector=None, through: cg_base.Point=None
+        self, angle, axis: cg_base.Vector=None, through: cg_base.Point=None
     ):
         """Rotate the frame around an axis that is parallel to a vector and
         passes through a point"""
@@ -129,10 +129,17 @@ class GlobalOperations(StandardOperations.Globals):
             .rotate_z(phi) \
             .translate(through - cg_base.Point.origin)
 
-        # represent self in terms of axis_frame
-        new_frame = axis_frame.inv() @ self
-        # then rotate axis_frame and reevaluate new_frame
-        return axis_frame.local.rotate_z(angle) @ new_frame
+        return self._global.rotate_frame(angle, axis_frame)
+
+    def rotate_frame(self, angle, other=None):
+        """Rotate the frame around the z axis of another frame."""
+        if other is None:
+            other = frame.Frame.unit
+
+        # represent self in terms of the other frame
+        new_frame = other.inv() @ self
+        # then rotate the other frame and reevaluate new_frame
+        return other.local.rotate_z(angle) @ new_frame
 
 
 class LocalOperations(StandardOperations.Locals, GlobalOperations):
@@ -157,3 +164,10 @@ class LocalOperations(StandardOperations.Locals, GlobalOperations):
         axis = self @ axis
         through = self @ through
         return super().rotate_axis(angle, axis, through)
+
+    def rotate_frame(self, angle, other=None):
+        if other is None:
+            other = frame.Frame.unit
+
+        other = self @ other
+        return super().rotate_frame(angle, other)

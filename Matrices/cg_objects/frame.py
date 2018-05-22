@@ -61,6 +61,11 @@ class Frame(operations.GlobalOperations):
         """The frame's origin"""
         return self.__origin
 
+    @property
+    def _global(self):
+        """Helper to explicitly select a global operation"""
+        return self
+
     def inv(self):
         """Calculate the inverse of a matrix"""
         return cg_base.CgBase.from_array(np.linalg.inv(np.array(self)))
@@ -74,6 +79,10 @@ class LocalFrame(operations.LocalOperations, Frame):
         origin: cg_base.Point
     ):
         return object.__new__(cls)
+
+    @property
+    def _global(self):
+        return cg_base.CgBase.from_array(np.array(self))
 
 
 def _init_frame(cls):
