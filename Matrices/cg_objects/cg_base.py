@@ -144,6 +144,10 @@ class Vertices(CgBase):
         super().__init__(np.array(list(map(np.array, points))).T)
         self._args = points
 
+    def __iter__(self):
+        for array in np.array(self).T:
+            yield CgBase.from_array(array)
+
 
 def _init_vector(cls):
     cls.i_hat = cls(1, 0, 0)
