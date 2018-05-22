@@ -43,7 +43,7 @@ class VerticesPlotter(Axes3D):
         zs = [0, self.frame.origin.z]
         super().scatter(xs, ys, zs, c='0', marker='x')
 
-        # enfore graph minimums
+        # enforce graph minimums
         r = 20
         xs = [r, r, r, r, -r, -r, -r, -r]
         ys = [r, r, -r, -r, r, r, -r, -r]

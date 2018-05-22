@@ -111,24 +111,7 @@ class GlobalOperations(StandardOperations.Globals):
         if axis is None:
             axis = cg_base.Vector.k_hat
 
-        if through is None:
-            through = cg_base.Point.origin
-
-        theta = cg_base.Vector.k_hat.angle(axis)
-        xy_projection = cg_base.Vector(axis.i, axis.j, 0)
-
-        if xy_projection:
-            phi = cg_base.Vector.i_hat.angle(xy_projection)
-        else:
-            phi = 0
-
-        # axis_frame's z axis is parallel to the specified axis and its origin
-        # is the specified point
-        axis_frame = frame.Frame.unit \
-            .rotate_y(theta) \
-            .rotate_z(phi) \
-            .translate(through - cg_base.Point.origin)
-
+        axis_frame = frame.Frame.from_z_axis(axis, through)
         return self._global.rotate_frame(angle, axis_frame)
 
     def rotate_frame(self, angle, other=None):

@@ -128,6 +128,12 @@ class Point(CgBase):
 
         return CgBase.from_array(np.array(self) - np.array(other))
 
+    @property
+    def spherical(self):
+        """The spherical coordinates representation of the vector.
+        Returns radius, theta, phi"""
+        return (self - self.origin).spherical
+
 
 class Vertices(CgBase):
     __slots__ = ()
@@ -248,3 +254,13 @@ class Vector(CgBase):
                 f'{type(other).__name__}')
 
         return Vector(*np.cross(np.array(self)[:3], np.array(other)[:3]))
+
+    @property
+    def spherical(self):
+        """The spherical coordinates representation of the vector.
+        Returns radius, theta, phi"""
+        radius = abs(self)
+        theta = Vector.k_hat.angle(self)
+        xy_projection = Vector(self.i, self.j, 0) or Vector.i_hat
+        phi = Vector.i_hat.angle(xy_projection)
+        return radius, theta, phi

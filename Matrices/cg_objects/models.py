@@ -37,3 +37,20 @@ def torus(
             vertices.append(point)
 
     return cg_base.Vertices(*vertices)
+
+
+def cube(side: cg_base.Vector=None):
+    if side is None:
+        side = cg_base.Vector.k_hat
+
+    unit_cube = cg_base.Vertices(
+        cg_base.Point(0, 0, 0),
+        cg_base.Point(0, 0, 1),
+        cg_base.Point(0, 1, 0),
+        cg_base.Point(0, 1, 1),
+        cg_base.Point(1, 0, 0),
+        cg_base.Point(1, 0, 1),
+        cg_base.Point(1, 1, 0),
+        cg_base.Point(1, 1, 1))
+
+    return frame.Frame.from_z_axis(side) @ unit_cube
