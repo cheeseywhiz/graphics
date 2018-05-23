@@ -2,7 +2,7 @@
 import math
 from . import cg_base, frame
 
-__all__ = ['circle', 'torus']
+__all__ = ['circle', 'torus', 'cube']
 
 
 def circle(radius: cg_base.Vector, quality: int=16):
