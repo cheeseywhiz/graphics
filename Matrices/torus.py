@@ -9,8 +9,8 @@ from cg_objects import torus, Vector, Frame, Point
 
 def loop(func, fps):
     while True:
-        time.sleep(1 / fps)
         func()
+        time.sleep(1 / fps)
 
 
 def start_loop(func, fps):
@@ -18,10 +18,10 @@ def start_loop(func, fps):
 
 
 class VerticesPlotter(Axes3D):
-    def __init__(self, fig, constant):
+    def __init__(self, fig, slowness):
         super().__init__(fig)
         self.index = 0
-        self.constant = constant
+        self.slowness = slowness
 
         self.axis = Vector.i_hat
         self._inner = torus(quality=10)
@@ -55,7 +55,7 @@ class VerticesPlotter(Axes3D):
         self.plot_vertices(self.outer)
 
     def update(self):
-        self.k = self.index / self.constant
+        self.k = self.index / self.slowness
         self.cla()
         self.redraw()
         plt.draw()

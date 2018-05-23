@@ -103,6 +103,16 @@ class GlobalOperations(StandardOperations.Globals):
             .scale(x, y, z) \
             .translate(-translation)
 
+    def rotate_frame(self, angle, other=None):
+        """Rotate the frame around the z axis of another frame."""
+        if other is None:
+            other = frame.Frame.unit
+
+        # represent self in terms of the other frame
+        new_frame = other.inv() @ self
+        # then rotate the other frame and reevaluate new_frame
+        return other.local.rotate_z(angle) @ new_frame
+
     def rotate_axis(
         self, angle, axis: cg_base.Vector=None, through: cg_base.Point=None
     ):
@@ -114,16 +124,6 @@ class GlobalOperations(StandardOperations.Globals):
         axis_frame = frame.Frame.from_z_axis(axis, through)
         return self._global.rotate_frame(angle, axis_frame)
 
-    def rotate_frame(self, angle, other=None):
-        """Rotate the frame around the z axis of another frame."""
-        if other is None:
-            other = frame.Frame.unit
-
-        # represent self in terms of the other frame
-        new_frame = other.inv() @ self
-        # then rotate the other frame and reevaluate new_frame
-        return other.local.rotate_z(angle) @ new_frame
-
 
 class LocalOperations(StandardOperations.Locals, GlobalOperations):
     __slots__ = ()
@@ -134,6 +134,13 @@ class LocalOperations(StandardOperations.Locals, GlobalOperations):
 
         center = self @ center
         return super().scale_center(x, y, z, center)
+
+    def rotate_frame(self, angle, other=None):
+        if other is None:
+            other = frame.Frame.unit
+
+        other = self @ other
+        return super().rotate_frame(angle, other)
 
     def rotate_axis(
         self, angle, axis: cg_base.Vector=None, through: cg_base.Point=None
@@ -147,10 +154,3 @@ class LocalOperations(StandardOperations.Locals, GlobalOperations):
         axis = self @ axis
         through = self @ through
         return super().rotate_axis(angle, axis, through)
-
-    def rotate_frame(self, angle, other=None):
-        if other is None:
-            other = frame.Frame.unit
-
-        other = self @ other
-        return super().rotate_frame(angle, other)
