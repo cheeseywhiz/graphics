@@ -42,23 +42,18 @@ class TPosePlotter(Axes3D):
         self.plot_minimums(4)
         self.plot_vertices(self.t_pose)
 
-    def update(self):
+    def next(self):
+        self.index += 1
         self.k = self.index / self.slowness
         self.cla()
         self.redraw()
         plt.draw()
 
-    def next(self):
-        self.index += 1
-        self.update()
-
 
 def main():
     fig = plt.figure()
     ax = TPosePlotter(fig, 24)
-    threading.Thread(
-        target=loop, args=(ax.next, 6), daemon=True
-    ).start()
+    threading.Thread(target=loop, args=(ax.next, 6), daemon=True).start()
     plt.show()
 
 

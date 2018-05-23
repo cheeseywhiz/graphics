@@ -1,26 +1,41 @@
 import math
+import threading
+import time
 import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.widgets import Button
-from cg_objects import Frame, Point, Vector, Vertices
+import cg_objects
 
 
-class VerticesPlotter(Axes3D):
-    def __init__(self, frame, vertices, i_max, fig, *args, **kwargs):
-        super().__init__(fig, *args, **kwargs)
-        self.index = -1
+def loop(func, fps):
+    while True:
+        func()
+        time.sleep(1 / fps)
+
+
+class CubePlotter(Axes3D):
+    def __init__(self, fig, slowness, frame, vertices):
+        super().__init__(fig)
+        self.index = 0
         self.frame = frame
         self.vertices = vertices
-        self.i_max = i_max
+        self.slowness = slowness
         self.fig = fig
-        self.next(None)
+
+    def plot_vertices(self, vertices, **kwargs):
+        xs, ys, zs, _ = np.array(vertices)
+        super().scatter(xs, ys, zs, **kwargs)
+
+    def plot_minimums(self, r):
+        cube = cg_objects.Frame.unit \
+            .translate(cg_objects.Vector(-r, -r, -r)) \
+            @ cg_objects.cube(cg_objects.Vector(0, 0, 2 * r))
+        self.plot_vertices(cube, c='w', marker='.')
 
     def redraw(self):
-        k = self.index / self.i_max
         frame = self.frame.local.rotate_axis(
-            k * math.tau,
-            Vector(1, 1, 0), Point(1, 1, 2))
+            self.k * math.tau,
+            cg_objects.Vector(1, 1, 0), cg_objects.Point(1, 1, 2))
         xs, ys, zs, _ = np.array(frame @ self.vertices)
 
         # global and local rgb xyz axes
@@ -43,56 +58,36 @@ class VerticesPlotter(Axes3D):
         zs = [0, self.frame.origin.z]
         super().scatter(xs, ys, zs, c='0', marker='x')
 
-        # enforce graph minimums
-        r = 20
-        xs = [r, r, r, r, -r, -r, -r, -r]
-        ys = [r, r, -r, -r, r, r, -r, -r]
-        zs = [r, -r, r, -r, r, -r, r, -r]
-        super().scatter(xs, ys, zs, c='w', marker='.')
+        self.plot_minimums(20)
 
-    def update(self):
+    def next(self):
+        self.index += 1
+        self.k = self.index / self.slowness
         self.cla()
         self.redraw()
         plt.draw()
 
-    def next(self, event):
-        if self.index < self.i_max:
-            self.index += 1
-            self.update()
-
-    def prev(self, event):
-        if self.index > 0:
-            self.index -= 1
-            self.update()
-
 
 def main():
-    f = Frame.unit \
-        .translate(Vector(-5, 2, -2)) \
+    f = cg_objects.Frame.unit \
+        .translate(cg_objects.Vector(-5, 2, -2)) \
         .local.scale(3) \
         .local.rotate_x(-math.pi / 8)
 
-    cube = Vertices(
-        Point(1, 0, 0),
-        Point(0, 1, 0),
-        Point(0, 0, 1),
-        Point(1, 1, 1),
-        Point(1, 1, 0),
-        Point(1, 0, 1),
-        Point(0, 1, 1),
-        Point(0, 0, 0),
+    cube = cg_objects.Vertices(
+        cg_objects.Point(1, 0, 0),
+        cg_objects.Point(0, 1, 0),
+        cg_objects.Point(0, 0, 1),
+        cg_objects.Point(1, 1, 1),
+        cg_objects.Point(1, 1, 0),
+        cg_objects.Point(1, 0, 1),
+        cg_objects.Point(0, 1, 1),
+        cg_objects.Point(0, 0, 0),
     )
 
     fig = plt.figure()
-    ax = VerticesPlotter(f, cube, 50, fig)
-
-    axprev = plt.axes([0.7, 0.05, 0.1, 0.075])
-    axnext = plt.axes([0.81, 0.05, 0.1, 0.075])
-    bnext = Button(axnext, 'Next')
-    bnext.on_clicked(ax.next)
-    bprev = Button(axprev, 'Previous')
-    bprev.on_clicked(ax.prev)
-
+    ax = CubePlotter(fig, 50, f, cube)
+    threading.Thread(target=loop, args=(ax.next, 6), daemon=True).start()
     plt.show()
 
 
