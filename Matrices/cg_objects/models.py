@@ -2,7 +2,7 @@
 import math
 from . import cg_base, frame
 
-__all__ = ['circle', 'torus', 'cube']
+__all__ = ['circle', 'torus', 'cube', 't_pose']
 
 
 def circle(radius: cg_base.Vector, quality: int=16):
@@ -48,3 +48,24 @@ def cube(side: cg_base.Vector=cg_base.Vector.k_hat):
         cg_base.Point(1, 1, 0),
         cg_base.Point(1, 1, 1))
     return frame.Frame.from_z_axis(side) @ unit_cube
+
+
+def t_pose():
+    # The unit t pose only
+    return cg_base.Vertices(
+        cg_base.Point(0, 0, 1),
+        cg_base.Point(0, 0, 2),
+        cg_base.Point(0, 1, 1),
+        cg_base.Point(0, 1, 2),
+        cg_base.Point(3, 0, 1),
+        cg_base.Point(3, 0, 2),
+        cg_base.Point(3, 1, 1),
+        cg_base.Point(3, 1, 2),
+        cg_base.Point(1, 0, 0),
+        cg_base.Point(1, 0, 1),
+        cg_base.Point(1, 1, 0),
+        cg_base.Point(1, 1, 1),
+        cg_base.Point(2, 0, 0),
+        cg_base.Point(2, 0, 1),
+        cg_base.Point(2, 1, 0),
+        cg_base.Point(2, 1, 1))
