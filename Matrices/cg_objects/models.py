@@ -6,8 +6,8 @@ __all__ = ['circle', 'torus', 'cube']
 
 
 def circle(radius: cg_base.Vector, quality: int=16):
+    """A circle in the xz-plane with the specified radius vector"""
     p1 = cg_base.Point.origin + radius
-
     return cg_base.Vertices(*(
         frame.Frame.unit.rotate_x(math.tau * i / quality) @ p1
         for i in range(quality)
@@ -15,14 +15,11 @@ def circle(radius: cg_base.Vector, quality: int=16):
 
 
 def torus(
-    inner: cg_base.Vector=None, outer: cg_base.Vector=None, quality: int=16
+    inner: cg_base.Vector=cg_base.Vector(0, 2, 0),
+    outer: cg_base.Vector=cg_base.Vector(0, 1, 0), quality: int=16
 ):
-    if inner is None:
-        inner = cg_base.Vector(0, 2, 0)
-
-    if outer is None:
-        outer = cg_base.Vector(0, 1, 0)
-
+    """A torus made of circles of the outer radius whose centers form a circle
+    of the inner radius"""
     circles = (
         frame.Frame.unit
         .translate(inner)
@@ -39,10 +36,8 @@ def torus(
     return cg_base.Vertices(*vertices)
 
 
-def cube(side: cg_base.Vector=None):
-    if side is None:
-        side = cg_base.Vector.k_hat
-
+def cube(side: cg_base.Vector=cg_base.Vector.k_hat):
+    """A cube whose vertical edge is formed from the side vector"""
     unit_cube = cg_base.Vertices(
         cg_base.Point(0, 0, 0),
         cg_base.Point(0, 0, 1),
@@ -52,5 +47,4 @@ def cube(side: cg_base.Vector=None):
         cg_base.Point(1, 0, 1),
         cg_base.Point(1, 1, 0),
         cg_base.Point(1, 1, 1))
-
     return frame.Frame.from_z_axis(side) @ unit_cube

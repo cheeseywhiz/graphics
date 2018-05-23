@@ -17,13 +17,11 @@ class Frame(operations.GlobalOperations):
             ))
 
     @classmethod
-    def from_z_axis(cls, z: cg_base.Vector, origin: cg_base.Point=None):
+    def from_z_axis(
+        cls, z: cg_base.Vector, origin: cg_base.Point=cg_base.Point.origin
+    ):
         """Return a new frame whose z axis is equivalent to the z vector"""
-        if origin is None:
-            to_origin = cg_base.Vector.zero
-        else:
-            to_origin = origin - cg_base.Point.origin
-
+        to_origin = origin - cg_base.Point.origin
         radius, theta, phi = z.spherical
         return cls.unit \
             .rotate_y(theta) \

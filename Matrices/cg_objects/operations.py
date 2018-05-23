@@ -114,13 +114,11 @@ class GlobalOperations(StandardOperations.Globals):
         return other.local.rotate_z(angle) @ new_frame
 
     def rotate_axis(
-        self, angle, axis: cg_base.Vector=None, through: cg_base.Point=None
+        self, angle, axis: cg_base.Vector=cg_base.Vector.k_hat,
+        through: cg_base.Point=cg_base.Point.origin
     ):
         """Rotate the frame around an axis that is parallel to a vector and
         passes through a point"""
-        if axis is None:
-            axis = cg_base.Vector.k_hat
-
         axis_frame = frame.Frame.from_z_axis(axis, through)
         return self._global.rotate_frame(angle, axis_frame)
 
@@ -128,10 +126,10 @@ class GlobalOperations(StandardOperations.Globals):
 class LocalOperations(StandardOperations.Locals, GlobalOperations):
     __slots__ = ()
 
-    def scale_center(self, x, y=..., z=1, center: cg_base.Point=None):
-        if center is None:
-            center = cg_base.Point.origin
-
+    def scale_center(
+        self, x, y=..., z=1,
+        center: cg_base.Point=cg_base.Point.origin
+    ):
         center = self @ center
         return super().scale_center(x, y, z, center)
 
@@ -143,14 +141,9 @@ class LocalOperations(StandardOperations.Locals, GlobalOperations):
         return super().rotate_frame(angle, other)
 
     def rotate_axis(
-        self, angle, axis: cg_base.Vector=None, through: cg_base.Point=None
+        self, angle, axis: cg_base.Vector=cg_base.Vector.k_hat,
+        through: cg_base.Point=cg_base.Point.origin
     ):
-        if axis is None:
-            axis = cg_base.Vector.k_hat
-
-        if through is None:
-            through = cg_base.Point.origin
-
         axis = self @ axis
         through = self @ through
         return super().rotate_axis(angle, axis, through)
