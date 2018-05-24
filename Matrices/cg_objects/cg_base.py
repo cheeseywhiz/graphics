@@ -1,8 +1,9 @@
-"""Fundamental matrix math types"""
+"""Basic functionality with fundamental operations"""
+import functools
 import math
 import numpy as np
 
-__all__ = ['CgBase', 'Point', 'Vector', 'Vertices']
+__all__ = ['CgBase', 'StandardOperations']
 
 
 class CgMeta(type):
@@ -75,192 +76,85 @@ class CgBase(metaclass=CgMeta):
         return f'{name}({params})'
 
 
-def _init_point(cls):
-    cls.origin = cls(0, 0, 0)
-    return cls
+class StandardMeta(CgMeta):
+    def __init__(self, name, bases, namespace):
+        self.Globals = self.decorate_type_attrs(
+            'Globals', bases, namespace, self.apply_global_matrix)
+        self.Locals = self.decorate_type_attrs(
+            'Locals', bases, namespace, self.apply_local_matrix)
+
+    def decorate_type_attrs(self, name, bases, namespace, decorator):
+        name = '.'.join((self.__name__, name))
+        new_namespace = namespace.copy()
+        new_namespace.update({
+            name_: decorator(value)
+            for name_, value in namespace.items()
+            if not name_.startswith('_')})
+        new_namespace['__qualname__'] = name
+        return type(name, bases, new_namespace)
+
+    @staticmethod
+    def apply_global_matrix(function):
+        @functools.wraps(function)
+        def wrapped(cg_object, *args, **kwargs):
+            operation_matrix = function(cg_object, *args, **kwargs)
+            operation = CgBase.from_array(
+                np.array(operation_matrix))
+            return operation @ cg_object
+
+        return wrapped
+
+    @staticmethod
+    def apply_local_matrix(function):
+        @functools.wraps(function)
+        def wrapped(cg_object, *args, **kwargs):
+            operation_matrix = function(cg_object, *args, **kwargs)
+            operation = CgBase.from_array(
+                np.array(operation_matrix))
+            return cg_object @ operation
+
+        return wrapped
 
 
-@_init_point
-class Point(CgBase):
-    __slots__ = '__x', '__y', '__z'
-
-    @classmethod
-    def from_array(cls, array):
-        if array.shape == (4, ) and array[3] == 1:
-            return cls(*array[:3])
-
-    def __init__(self, x, y, z):
-        super().__init__(np.array([x, y, z, 1]))
-        self._args = x, y, z
-        self.__x = x
-        self.__y = y
-        self.__z = z
-
-    @property
-    def x(self):
-        """The point's x component"""
-        return self.__x
-
-    @property
-    def y(self):
-        """The point's y component"""
-        return self.__y
-
-    @property
-    def z(self):
-        """The point's z component"""
-        return self.__z
-
-    def __add__(self, other):
-        """Point + Vector = Point"""
-        if isinstance(other, Point):
-            raise TypeError(
-                f'Cannot add {type(other).__name__} to {type(self).__name__}')
-
-        return CgBase.from_array(np.array(self) + np.array(other))
-
-    def __sub__(self, other):
-        """Tail - Head = Vector from Head to Tail"""
-        if isinstance(other, Vector):
-            raise TypeError(
-                f'Cannot subtract {type(other).__name__} from '
-                f'{type(self).__name__}')
-
-        return CgBase.from_array(np.array(self) - np.array(other))
-
-    @property
-    def spherical(self):
-        """The spherical coordinates representation of the vector.
-        Returns radius, theta, phi"""
-        return (self - self.origin).spherical
-
-
-class Vertices(CgBase):
+class StandardOperations(CgBase, metaclass=StandardMeta):
     __slots__ = ()
 
-    @classmethod
-    def from_array(cls, array):
-        if array.ndim == 2 and array.shape[0] == 4 and (array[3] == 1).all():
-            return cls(*(  # why does super needs arguments here?
-                super(Vertices, cls).from_array(tup)
-                for tup in array.T
-            ))
+    def scale(self, x, y=..., z=1):
+        """Scale the frame with respect to the origin"""
+        if y is ...:
+            z = y = x
 
-    def __init__(self, *points):
-        super().__init__(np.array(list(map(np.array, points))).T)
-        self._args = points
+        return [[x, 0, 0, 0],
+                [0, y, 0, 0],
+                [0, 0, z, 0],
+                [0, 0, 0, 1]]
 
-    def __iter__(self):
-        for array in np.array(self).T:
-            yield CgBase.from_array(array)
+    def translate(self, operand):
+        """Translate the frame with respect to a vector"""
+        return [
+            [1, 0, 0, operand.i],
+            [0, 1, 0, operand.j],
+            [0, 0, 1, operand.k],
+            [0, 0, 0, 1],
+        ]
 
+    def rotate_x(self, angle):
+        """Rotate around the x axis"""
+        return [[1, 0, 0, 0],
+                [0, math.cos(angle), -math.sin(angle), 0],
+                [0, math.sin(angle), math.cos(angle), 0],
+                [0, 0, 0, 1]]
 
-def _init_vector(cls):
-    cls.i_hat = cls(1, 0, 0)
-    cls.j_hat = cls(0, 1, 0)
-    cls.k_hat = cls(0, 0, 1)
-    cls.zero = cls(0, 0, 0)
-    return cls
+    def rotate_y(self, angle):
+        """Rotate around the y axis"""
+        return [[math.cos(angle), 0, math.sin(angle), 0],
+                [0, 1, 0, 0],
+                [-math.sin(angle), 0, math.cos(angle), 0],
+                [0, 0, 0, 1]]
 
-
-@_init_vector
-class Vector(CgBase):
-    __slots__ = '__i', '__j', '__k'
-
-    @classmethod
-    def from_array(cls, array):
-        if array.shape == (4, ) and array[3] == 0:
-            return cls(*array[:3])
-
-    def __init__(self, i, j, k):
-        super().__init__(np.array([i, j, k, 0]))
-        self._args = i, j, k
-        self.__i = i
-        self.__j = j
-        self.__k = k
-
-    @property
-    def i(self):
-        """The vector's i component"""
-        return self.__i
-
-    @property
-    def j(self):
-        """The vector's j component"""
-        return self.__j
-
-    @property
-    def k(self):
-        """The vector's k component"""
-        return self.__k
-
-    def __bool__(self):
-        """False if zero vector else True"""
-        return bool(np.array(self).any())
-
-    def __add__(self, other):
-        """Vector + Vector = Vector
-        Vector + Point = Point"""
-        return CgBase.from_array(np.array(self) + np.array(other))
-
-    def __mul__(self, scalar):
-        """Vector * Scalar = Vector"""
-        if isinstance(scalar, CgBase):
-            raise TypeError(
-                f'Cannot multiply {type(self).__name__} by '
-                f'{type(scalar).__name__}')
-
-        return CgBase.from_array(scalar * np.array(self))
-
-    def __truediv__(self, scalar):
-        """Vector / Scalar = Vector"""
-        return self * (1 / scalar)
-
-    def __neg__(self):
-        """-Vector"""
-        return self * -1
-
-    def dot(self, other):
-        """Vector dot Vector = Scalar"""
-        if not isinstance(other, Vector):
-            raise TypeError(
-                f'Can only dot Vector with Vector, not {type(other).__name__}')
-
-        return np.dot(np.array(self), np.array(other))
-
-    def __abs__(self):
-        """||Vector||"""
-        return math.sqrt(self.dot(self))
-
-    def angle(self, other):
-        """Angle between two vectors"""
-        if not isinstance(other, Vector):
-            raise TypeError(
-                f'Can only find angle between Vector and '
-                f'{type(self).__name__}')
-
-        return math.acos(self.dot(other) / (abs(self) * abs(other)))
-
-    @property
-    def unit(self):
-        """The unit vector in the direction of this vector"""
-        return self / abs(self)
-
-    def cross(self, other):
-        """Vector cross Vector = Vector"""
-        if not isinstance(other, Vector):
-            raise TypeError(
-                f'Can only cross Vector with Vector, not '
-                f'{type(other).__name__}')
-
-        return Vector(*np.cross(np.array(self)[:3], np.array(other)[:3]))
-
-    @property
-    def spherical(self):
-        """The spherical coordinates representation of the vector.
-        Returns radius, theta, phi"""
-        radius = abs(self)
-        theta = Vector.k_hat.angle(self)
-        xy_projection = Vector(self.i, self.j, 0) or Vector.i_hat
-        phi = Vector.i_hat.angle(xy_projection)
-        return radius, theta, phi
+    def rotate_z(self, angle):
+        """Rotate around the z axis"""
+        return [[math.cos(angle), -math.sin(angle), 0, 0],
+                [math.sin(angle), math.cos(angle), 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, 1]]
