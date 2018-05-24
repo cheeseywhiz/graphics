@@ -7,9 +7,10 @@ __all__ = ['circle', 'torus', 'cube', 't_pose']
 
 def circle(radius: cg_base.Vector, quality: int=16):
     """A circle in the xz-plane with the specified radius vector"""
-    p1 = cg_base.Point.origin + radius
     return cg_base.Vertices(*(
-        frame.Frame.unit.rotate_x(math.tau * i / quality) @ p1
+        frame.Frame.unit
+        .translate(radius)
+        .rotate_x(math.tau * i / quality) @ cg_base.Point.origin
         for i in range(quality)
     ))
 

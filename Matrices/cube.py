@@ -58,7 +58,7 @@ class CubePlotter(Axes3D):
         zs = [0, self.frame.origin.z]
         super().scatter(xs, ys, zs, c='0', marker='x')
 
-        self.plot_minimums(20)
+        self.plot_minimums(13)
 
     def next(self):
         self.index += 1
