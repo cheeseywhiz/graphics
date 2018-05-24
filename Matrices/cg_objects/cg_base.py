@@ -47,12 +47,15 @@ class CgBase(metaclass=CgMeta):
         return self.__matrix
 
     def __matmul__(self, other):
+        """Return self @ other"""
         return CgBase.from_array(np.array(self) @ np.array(other))
 
     def __eq__(self, other):
+        """Return self == other"""
         return (np.array(self) == np.array(other)).all()
 
     def __neq__(self, other):
+        """Return self != other"""
         return (np.array(self) != np.array(other)).all()
 
     def __hash__(self):

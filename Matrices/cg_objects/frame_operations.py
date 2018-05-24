@@ -30,14 +30,14 @@ class FrameGlobalOps(cg_base.StandardOperations.Globals):
         return other.local.rotate_z(angle) @ new_frame
 
     def rotate_axis(self, angle, axis=None, through=None):
+        """Rotate the frame around an axis that is parallel to a vector and
+        passes through a point"""
         if axis is None:
             axis = fundamental.Vector.k_hat
 
         if through is None:
             through = fundamental.Point.origin
 
-        """Rotate the frame around an axis that is parallel to a vector and
-        passes through a point"""
         axis_frame = fundamental.Frame.from_z_axis(axis, through)
         return self._global.rotate_frame(angle, axis_frame)
 

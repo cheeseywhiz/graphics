@@ -264,7 +264,7 @@ class Frame(frame_operations.FrameGlobalOps):
         return self
 
     def inv(self):
-        """Calculate the inverse of a matrix"""
+        """Calculate the inverse frame of this frame"""
         return cg_base.CgBase.from_array(np.linalg.inv(np.array(self)))
 
 

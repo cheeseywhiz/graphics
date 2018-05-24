@@ -1,4 +1,4 @@
-"""Provide a torus shape generator"""
+"""Provide a number of shapes represented as Vertices objects"""
 import math
 from . import fundamental
 
@@ -52,6 +52,7 @@ def cube(side: fundamental.Vector=fundamental.Vector.k_hat):
 
 
 def t_pose():
+    """A T shape"""
     # The unit t pose only
     return fundamental.Vertices(
         fundamental.Point(0, 0, 1),
