@@ -31,32 +31,27 @@ class CubePlotter(Axes3D):
             .translate(cg_objects.Vector(-r, -r, -r))
         self.plot_vertices(cube, c='w', marker='.')
 
+    def plot_frame(self, frame, **kwargs):
+        vectors = frame.x, frame.y, frame.z
+        colors = kwargs.pop('colors', ((1, 0, 0), (0, 1, 0), (0, 0, 1)))
+        kwargs_length = kwargs.pop('length', 1)
+
+        for vector, color in zip(vectors, colors):
+            length = abs(vector) * kwargs_length
+            super().quiver(
+                frame.origin.x, frame.origin.y, frame.origin.z,
+                vector.i, vector.j, vector.k,
+                colors=color, length=length, **kwargs)
+
     def redraw(self):
         frame = self.frame.local.rotate_axis(
             self.k * math.tau,
             cg_objects.Vector(1, 1, 0), cg_objects.Point(1, 1, 2))
-        xs, ys, zs, _ = np.array(frame @ self.vertices)
 
-        # global and local rgb xyz axes
-        super().scatter(
-            [1, xs[0]], [0, ys[0]], [0, zs[0]],
-            c='r', depthshade=False)
-        super().scatter(
-            [0, xs[1]], [1, ys[1]], [0, zs[1]],
-            c='g', depthshade=False)
-        super().scatter(
-            [0, xs[2]], [0, ys[2]], [1, zs[2]],
-            c='b', depthshade=False)
-
-        # black box
-        super().scatter(xs[3:], ys[3:], zs[3:], c='0', depthshade=False)
-
-        # global and local origin
-        xs = [0, self.frame.origin.x]
-        ys = [0, self.frame.origin.y]
-        zs = [0, self.frame.origin.z]
-        super().scatter(xs, ys, zs, c='0', marker='x')
-
+        self.plot_frame(cg_objects.Frame.unit)
+        self.plot_frame(self.frame)
+        self.plot_frame(frame)
+        self.plot_vertices(frame @ self.vertices, c='0', depthshade=False)
         self.plot_minimums(13)
 
     def next(self):
