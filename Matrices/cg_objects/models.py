@@ -8,9 +8,9 @@ __all__ = ['circle', 'torus', 'cube', 't_pose']
 def circle(radius: fundamental.Vector, quality: int=16):
     """A circle in the xz-plane with the specified radius vector"""
     return fundamental.Vertices(*(
-        fundamental.Frame.unit
+        fundamental.Point.origin
         .translate(radius)
-        .rotate_x(math.tau * i / quality) @ fundamental.Point.origin
+        .rotate_x(math.tau * i / quality)
         for i in range(quality)
     ))
 
@@ -22,9 +22,9 @@ def torus(
     """A torus made of circles of the outer radius whose centers form a circle
     of the inner radius"""
     circles = (
-        fundamental.Frame.unit
+        circle(outer, quality=quality)
         .translate(inner)
-        .rotate_z(math.tau * i / quality) @ circle(outer, quality=quality)
+        .rotate_z(math.tau * i / quality)
         for i in range(quality)
     )
 

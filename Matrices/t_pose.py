@@ -26,9 +26,8 @@ class TPosePlotter(Axes3D):
         super().scatter(xs, ys, zs, **kwargs)
 
     def plot_minimums(self, r):
-        cube = cg_objects.Frame.unit \
-            .translate(cg_objects.Vector(-r, -r, -r)) \
-            @ cg_objects.cube(cg_objects.Vector(0, 0, 2 * r))
+        cube = cg_objects.cube(cg_objects.Vector(0, 0, 2 * r)) \
+            .translate(cg_objects.Vector(-r, -r, -r))
         self.plot_vertices(cube, c='w', marker='.')
 
     @property

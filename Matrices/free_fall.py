@@ -17,9 +17,7 @@ class FreeFallPlotter(Axes3D):
         self.time_0 = None
         self.time_1 = 0
 
-        acceleration = cg_objects.Frame.unit \
-            .scale(-9.80665) \
-            @ cg_objects.Vector.k_hat
+        acceleration = cg_objects.Vector.k_hat * -9.80665
         velocity = cg_objects.Vector.zero
         position = self.start.origin - cg_objects.Point.origin
         self.position = functools.partial(
@@ -42,9 +40,8 @@ class FreeFallPlotter(Axes3D):
         super().scatter(xs, ys, zs, **kwargs)
 
     def plot_minimums(self, r):
-        cube = cg_objects.Frame.unit \
-            .translate(cg_objects.Vector(-r, -r, 0)) \
-            @ cg_objects.cube(cg_objects.Vector(0, 0, 2 * r))
+        cube = cg_objects.cube(cg_objects.Vector(0, 0, 2 * r)) \
+            .translate(cg_objects.Vector(-r, -r, 0))
         self.plot_vertices(cube, c='w', marker='.')
 
     def redraw(self):

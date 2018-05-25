@@ -81,9 +81,13 @@ class Vertices(cg_base.StandardOperations.Globals):
         super().__init__(np.array(list(map(np.array, points))).T)
         self._args = points
 
-    def __iter__(self):
-        for array in np.array(self).T:
-            yield cg_base.CgBase.from_array(array)
+    def __getitem__(self, index):
+        array = np.array(self).T[index]
+
+        if isinstance(index, slice):
+            array = array.T
+
+        return cg_base.CgBase.from_array(array)
 
 
 def _init_vector(cls):
@@ -198,7 +202,7 @@ class Vector(cg_base.StandardOperations.Globals):
 
 
 class Frame(frame_operations.FrameGlobalOps):
-    __slots__ = '__local', '__x', '__y', '__z', '__origin'
+    __slots__ = '__local', '_global', '__x', '__y', '__z', '__origin'
 
     @classmethod
     def from_array(cls, array):
@@ -214,14 +218,16 @@ class Frame(frame_operations.FrameGlobalOps):
         to_origin = origin - Point.origin
         radius, theta, phi = z.spherical
         return cls.unit \
+            .scale(radius) \
             .rotate_y(theta) \
             .rotate_z(phi) \
-            .scale(abs(z)) \
             .translate(to_origin)
 
     def __new__(cls, x: Vector, y: Vector, z: Vector, origin: Point):
         self = super().__new__(cls)
         self.__local = LocalFrame(x, y, z, origin)
+        self._global = self
+        self.__local._global = self
         return self
 
     def __init__(self, x: Vector, y: Vector, z: Vector, origin: Point):
@@ -258,11 +264,6 @@ class Frame(frame_operations.FrameGlobalOps):
         """The frame's origin"""
         return self.__origin
 
-    @property
-    def _global(self):
-        """Helper to explicitly select a global operation"""
-        return self
-
     def inv(self):
         """Calculate the inverse frame of this frame"""
         return cg_base.CgBase.from_array(np.linalg.inv(np.array(self)))
@@ -272,11 +273,9 @@ class LocalFrame(frame_operations.FrameLocalOps, Frame):
     __slots__ = ()
 
     def __new__(cls, x: Vector, y: Vector, z: Vector, origin: Point):
-        return object.__new__(cls)
-
-    @property
-    def _global(self):
-        return cg_base.CgBase.from_array(np.array(self))
+        # inherit __new__ from Frame's parent (which is probably object)
+        # instead of LocalFrame's parent (which is probably Frame)
+        return super(Frame, cls).__new__(cls)
 
 
 def _init_frame(cls):

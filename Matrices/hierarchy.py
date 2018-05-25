@@ -9,8 +9,7 @@ class HierarchyPlotter(Axes3D):
     def __init__(self, fig):
         super().__init__(fig)
 
-        self.outer = cg_objects.Frame.unit \
-            .scale(3)
+        self.outer = cg_objects.Frame.unit.scale(3)
         # Each cube is a third smaller, in the middle of its parent cube, and
         # rotated 30 degrees from its parent about its own center
         self.inner = cg_objects.Frame.unit \

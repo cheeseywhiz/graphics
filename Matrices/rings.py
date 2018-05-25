@@ -19,8 +19,8 @@ class OlympicRingsPlotter(Axes3D):
         self.index = 0
         self.slowness = slowness
 
-        self.ring = cg_objects.Frame.unit.rotate_y(math.pi / 2) \
-            @ cg_objects.torus(cg_objects.Vector(0, 10, 0))
+        self.ring = cg_objects.torus(cg_objects.Vector(0, 10, 0)) \
+            .rotate_y(math.pi / 2)
         self.base_frame = cg_objects.Frame.unit \
             .translate(cg_objects.Vector(0, -24, 0))
         self.lower = cg_objects.Frame.unit \
@@ -33,9 +33,8 @@ class OlympicRingsPlotter(Axes3D):
         super().scatter(xs, ys, zs, **kwargs)
 
     def plot_minimums(self, r):
-        cube = cg_objects.Frame.unit \
-            .translate(cg_objects.Vector(-r, -r, -r)) \
-            @ cg_objects.cube(cg_objects.Vector(0, 0, 2 * r))
+        cube = cg_objects.cube(cg_objects.Vector(0, 0, 2 * r)) \
+            .translate(cg_objects.Vector(-r, -r, -r))
         self.plot_vertices(cube, c='w', marker='.')
 
     def redraw(self):
