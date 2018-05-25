@@ -48,7 +48,7 @@ class Point(operations.GlobalOps):
             raise TypeError(
                 f'Cannot add {type(other).__name__} to {type(self).__name__}')
 
-        return cg_base.CgBase.from_array(np.array(self) + np.array(other))
+        return super().from_array(np.array(self) + np.array(other))
 
     def __sub__(self, other):
         """Tail - Head = Vector from Head to Tail"""
@@ -57,7 +57,7 @@ class Point(operations.GlobalOps):
                 f'Cannot subtract {type(other).__name__} from '
                 f'{type(self).__name__}')
 
-        return cg_base.CgBase.from_array(np.array(self) - np.array(other))
+        return super().from_array(np.array(self) - np.array(other))
 
     @property
     def spherical(self):
@@ -87,7 +87,7 @@ class Vertices(operations.GlobalOps):
         if isinstance(index, slice):
             array = array.T
 
-        return cg_base.CgBase.from_array(array)
+        return super().from_array(array)
 
     @classmethod
     def join(cls, *others):
@@ -151,7 +151,7 @@ class Vector(operations.GlobalOps):
     def __add__(self, other):
         """Vector + Vector = Vector
         Vector + Point = Point"""
-        return cg_base.CgBase.from_array(np.array(self) + np.array(other))
+        return super().from_array(np.array(self) + np.array(other))
 
     def __mul__(self, scalar):
         """Vector * Scalar = Vector"""
@@ -160,7 +160,7 @@ class Vector(operations.GlobalOps):
                 f'Cannot multiply {type(self).__name__} by '
                 f'{type(scalar).__name__}')
 
-        return cg_base.CgBase.from_array(scalar * np.array(self))
+        return super().from_array(scalar * np.array(self))
 
     def __truediv__(self, scalar):
         """Vector / Scalar = Vector"""
@@ -203,7 +203,9 @@ class Vector(operations.GlobalOps):
                 f'Can only cross Vector with Vector, not '
                 f'{type(other).__name__}')
 
-        return Vector(*np.cross(np.array(self)[:3], np.array(other)[:3]))
+        return super().from_array(
+            np.cross(np.array(self)[:3], np.array(other)[:3])
+        )
 
     @property
     def spherical(self):
@@ -284,7 +286,7 @@ class Frame(operations.GlobalOps):
 
     def inv(self):
         """Calculate the inverse frame of this frame"""
-        return cg_base.CgBase.from_array(np.linalg.inv(np.array(self)))
+        return super().from_array(np.linalg.inv(np.array(self)))
 
 
 class LocalFrame(operations.FrameLocalOps, Frame):

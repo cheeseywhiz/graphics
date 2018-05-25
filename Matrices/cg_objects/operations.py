@@ -29,7 +29,8 @@ class OperationsMeta(cg_base.CgMeta):
         @functools.wraps(function)
         def wrapped(cg_object, *args, **kwargs):
             operation_matrix = function(cg_object, *args, **kwargs)
-            operation = cg_base.CgBase.from_array(
+            # use the method that cg_object inherited
+            operation = super(type(cg_object), cg_object).from_array(
                 np.array(operation_matrix))
             return operation @ cg_object
 
@@ -40,7 +41,8 @@ class OperationsMeta(cg_base.CgMeta):
         @functools.wraps(function)
         def wrapped(cg_object, *args, **kwargs):
             operation_matrix = function(cg_object, *args, **kwargs)
-            operation = cg_base.CgBase.from_array(
+            # use the method that cg_object inherited
+            operation = super(type(cg_object), cg_object).from_array(
                 np.array(operation_matrix))
             return cg_object @ operation
 
@@ -62,12 +64,10 @@ class BaseOperations(cg_base.CgBase, metaclass=OperationsMeta):
 
     def translate(self, operand):
         """Translate the object with respect to a vector"""
-        return [
-            [1, 0, 0, operand.i],
-            [0, 1, 0, operand.j],
-            [0, 0, 1, operand.k],
-            [0, 0, 0, 1],
-        ]
+        return [[1, 0, 0, operand.i],
+                [0, 1, 0, operand.j],
+                [0, 0, 1, operand.k],
+                [0, 0, 0, 1]]
 
     def rotate_x(self, angle):
         """Rotate the object around the x axis"""
