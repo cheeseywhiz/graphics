@@ -89,6 +89,21 @@ class Vertices(operations.GlobalOps):
 
         return cg_base.CgBase.from_array(array)
 
+    @classmethod
+    def join(cls, *others):
+        """Return a new Vertices object with all vertices appended"""
+        points = []
+
+        for vertices in others:
+            points.extend(vertices)
+
+        return cls(*points)
+
+    def __add__(self, other):
+        """Vertices + Vertices = new Vertices with both Vertices appended"""
+        cls = type(self)
+        return cls.join(self, other)
+
 
 def _init_vector(cls):
     cls.i_hat = cls(1, 0, 0)
@@ -199,6 +214,11 @@ class Vector(operations.GlobalOps):
         xy_projection = Vector(self.i, self.j, 0) or Vector.i_hat
         phi = Vector.i_hat.angle(xy_projection)
         return radius, theta, phi
+
+    def project_onto(self, other):
+        """Project a vector onto another vector"""
+        unit = other.unit
+        return unit * self.dot(unit)
 
 
 class Frame(operations.GlobalOps):
