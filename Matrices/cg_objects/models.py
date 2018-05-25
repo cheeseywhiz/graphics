@@ -5,24 +5,29 @@ from . import fundamental
 __all__ = ['circle', 'torus', 'cube', 't_pose']
 
 
-def circle(radius: fundamental.Vector, quality: int=16):
-    """A circle in the xz-plane with the specified radius vector"""
+def circle(
+    radius: fundamental.Vector=fundamental.Vector.i_hat,
+    quality: int=16
+):
+    """A circle in the xy-plane with the specified radius vector"""
     return fundamental.Vertices(*(
         fundamental.Point.origin
         .translate(radius)
-        .rotate_x(math.tau * i / quality)
+        .rotate_z(math.tau * i / quality)
         for i in range(quality)
     ))
 
 
 def torus(
-    inner: fundamental.Vector=fundamental.Vector(0, 2, 0),
-    outer: fundamental.Vector=fundamental.Vector(0, 1, 0), quality: int=16
+    inner: fundamental.Vector=fundamental.Vector(2, 0, 0),
+    outer: fundamental.Vector=fundamental.Vector.i_hat,
+    quality: int=16
 ):
     """A torus made of circles of the outer radius whose centers form a circle
     of the inner radius"""
     circles = (
         circle(outer, quality=quality)
+        .rotate_x(math.pi / 2)
         .translate(inner)
         .rotate_z(math.tau * i / quality)
         for i in range(quality)

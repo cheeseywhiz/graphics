@@ -32,10 +32,9 @@ class TPosePlotter(Axes3D):
 
     @property
     def t_pose(self):
-        return cg_objects.Frame.unit \
-            .rotate_axis(
-                self.k * math.tau, through=cg_objects.Point(1.5, .5, 0)
-            ) @ self._t_pose
+        return self._t_pose.rotate_axis(
+            self.k * math.tau, through=cg_objects.Point(1.5, .5, 0)
+        )
 
     def redraw(self):
         self.plot_minimums(4)

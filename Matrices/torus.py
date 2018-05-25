@@ -21,9 +21,7 @@ class VerticesPlotter(Axes3D):
 
         self.axis = cg_objects.Vector.i_hat
         self._inner = cg_objects.torus(quality=10)
-        self._outer = cg_objects.torus(
-            cg_objects.Vector(0, 5, 0), cg_objects.Vector(0, 1, 0),
-            quality=20)
+        self._outer = cg_objects.torus(cg_objects.Vector.i_hat * 5, quality=20)
 
     def plot_vertices(self, vertices, **kwargs):
         xs, ys, zs, _ = np.array(vertices)

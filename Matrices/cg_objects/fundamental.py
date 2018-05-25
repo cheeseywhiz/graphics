@@ -1,7 +1,7 @@
 """Fundamental matrix math types"""
 import math
 import numpy as np
-from . import cg_base, frame_operations
+from . import cg_base, operations
 
 __all__ = ['Point', 'Vertices', 'Vector', 'Frame']
 
@@ -12,7 +12,7 @@ def _init_point(cls):
 
 
 @_init_point
-class Point(cg_base.StandardOperations.Globals):
+class Point(operations.GlobalOps):
     __slots__ = '__x', '__y', '__z'
 
     @classmethod
@@ -61,12 +61,12 @@ class Point(cg_base.StandardOperations.Globals):
 
     @property
     def spherical(self):
-        """The spherical coordinates representation of the vector.
+        """The spherical coordinates representation of the point.
         Returns radius, theta, phi"""
         return (self - self.origin).spherical
 
 
-class Vertices(cg_base.StandardOperations.Globals):
+class Vertices(operations.GlobalOps):
     __slots__ = ()
 
     @classmethod
@@ -99,7 +99,7 @@ def _init_vector(cls):
 
 
 @_init_vector
-class Vector(cg_base.StandardOperations.Globals):
+class Vector(operations.GlobalOps):
     __slots__ = '__i', '__j', '__k'
 
     @classmethod
@@ -201,8 +201,8 @@ class Vector(cg_base.StandardOperations.Globals):
         return radius, theta, phi
 
 
-class Frame(frame_operations.FrameGlobalOps):
-    __slots__ = '__local', '_global', '__x', '__y', '__z', '__origin'
+class Frame(operations.GlobalOps):
+    __slots__ = '__local', '__x', '__y', '__z', '__origin'
 
     @classmethod
     def from_array(cls, array):
@@ -226,8 +226,6 @@ class Frame(frame_operations.FrameGlobalOps):
     def __new__(cls, x: Vector, y: Vector, z: Vector, origin: Point):
         self = super().__new__(cls)
         self.__local = LocalFrame(x, y, z, origin)
-        self._global = self
-        self.__local._global = self
         return self
 
     def __init__(self, x: Vector, y: Vector, z: Vector, origin: Point):
@@ -240,7 +238,7 @@ class Frame(frame_operations.FrameGlobalOps):
 
     @property
     def local(self):
-        """The Frame object whose operations methods are performed with
+        """The Frame object whose operation methods are performed with
         respect to the frame"""
         return self.__local
 
@@ -269,12 +267,11 @@ class Frame(frame_operations.FrameGlobalOps):
         return cg_base.CgBase.from_array(np.linalg.inv(np.array(self)))
 
 
-class LocalFrame(frame_operations.FrameLocalOps, Frame):
+class LocalFrame(operations.FrameLocalOps, Frame):
     __slots__ = ()
 
     def __new__(cls, x: Vector, y: Vector, z: Vector, origin: Point):
-        # inherit __new__ from Frame's parent (which is probably object)
-        # instead of LocalFrame's parent (which is probably Frame)
+        # use the method that Frame inherited
         return super(Frame, cls).__new__(cls)
 
 

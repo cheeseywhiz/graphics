@@ -19,7 +19,7 @@ class OlympicRingsPlotter(Axes3D):
         self.index = 0
         self.slowness = slowness
 
-        self.ring = cg_objects.torus(cg_objects.Vector(0, 10, 0)) \
+        self.ring = cg_objects.torus(cg_objects.Vector.i_hat * 10) \
             .rotate_y(math.pi / 2)
         self.base_frame = cg_objects.Frame.unit \
             .translate(cg_objects.Vector(0, -24, 0))

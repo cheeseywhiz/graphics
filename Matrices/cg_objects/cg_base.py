@@ -1,9 +1,7 @@
-"""Basic functionality with fundamental operations"""
-import functools
-import math
+"""Basic functionality of computer graphics objects"""
 import numpy as np
 
-__all__ = ['CgBase', 'StandardOperations']
+__all__ = ['CgBase']
 
 
 class CgMeta(type):
@@ -77,87 +75,3 @@ class CgBase(metaclass=CgMeta):
               for key, value in self._kwargs.items())
         ))
         return f'{name}({params})'
-
-
-class StandardMeta(CgMeta):
-    def __init__(self, name, bases, namespace):
-        self.Globals = self.decorate_type_attrs(
-            'Globals', bases, namespace, self.apply_global_matrix)
-        self.Locals = self.decorate_type_attrs(
-            'Locals', bases, namespace, self.apply_local_matrix)
-
-    def decorate_type_attrs(self, name, bases, namespace, decorator):
-        name = '.'.join((self.__name__, name))
-        new_namespace = namespace.copy()
-        new_namespace.update({
-            name_: decorator(value)
-            for name_, value in namespace.items()
-            if not name_.startswith('_')})
-        new_namespace['__qualname__'] = name
-        return type(name, bases, new_namespace)
-
-    @staticmethod
-    def apply_global_matrix(function):
-        @functools.wraps(function)
-        def wrapped(cg_object, *args, **kwargs):
-            operation_matrix = function(cg_object, *args, **kwargs)
-            operation = CgBase.from_array(
-                np.array(operation_matrix))
-            return operation @ cg_object
-
-        return wrapped
-
-    @staticmethod
-    def apply_local_matrix(function):
-        @functools.wraps(function)
-        def wrapped(cg_object, *args, **kwargs):
-            operation_matrix = function(cg_object, *args, **kwargs)
-            operation = CgBase.from_array(
-                np.array(operation_matrix))
-            return cg_object @ operation
-
-        return wrapped
-
-
-class StandardOperations(CgBase, metaclass=StandardMeta):
-    __slots__ = ()
-
-    def scale(self, x, y=..., z=1):
-        """Scale the frame with respect to the origin"""
-        if y is ...:
-            z = y = x
-
-        return [[x, 0, 0, 0],
-                [0, y, 0, 0],
-                [0, 0, z, 0],
-                [0, 0, 0, 1]]
-
-    def translate(self, operand):
-        """Translate the frame with respect to a vector"""
-        return [
-            [1, 0, 0, operand.i],
-            [0, 1, 0, operand.j],
-            [0, 0, 1, operand.k],
-            [0, 0, 0, 1],
-        ]
-
-    def rotate_x(self, angle):
-        """Rotate around the x axis"""
-        return [[1, 0, 0, 0],
-                [0, math.cos(angle), -math.sin(angle), 0],
-                [0, math.sin(angle), math.cos(angle), 0],
-                [0, 0, 0, 1]]
-
-    def rotate_y(self, angle):
-        """Rotate around the y axis"""
-        return [[math.cos(angle), 0, math.sin(angle), 0],
-                [0, 1, 0, 0],
-                [-math.sin(angle), 0, math.cos(angle), 0],
-                [0, 0, 0, 1]]
-
-    def rotate_z(self, angle):
-        """Rotate around the z axis"""
-        return [[math.cos(angle), -math.sin(angle), 0, 0],
-                [math.sin(angle), math.cos(angle), 0, 0],
-                [0, 0, 1, 0],
-                [0, 0, 0, 1]]
