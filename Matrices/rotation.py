@@ -37,7 +37,7 @@ class RotationPlotter(Axes3D):
         angle = abs(position) / self.radius
         self.tangent_frame = self.incline_frame.translate(position)
         self.model_frame = self.tangent_frame \
-            .translate(cg_objects.Vector(0, 0, self.radius)) \
+            .local.translate(cg_objects.Vector(0, 0, self.radius)) \
             .local.rotate_y(angle)
         return self.model_frame @ self._model
 
@@ -48,14 +48,12 @@ class RotationPlotter(Axes3D):
     def plot_frame(self, frame, **kwargs):
         vectors = frame.x, frame.y, frame.z
         colors = kwargs.pop('colors', ((1, 0, 0), (0, 1, 0), (0, 0, 1)))
-        kwargs_length = kwargs.pop('length', 1)
 
         for vector, color in zip(vectors, colors):
-            length = abs(vector) * kwargs_length
             super().quiver(
                 frame.origin.x, frame.origin.y, frame.origin.z,
                 vector.i, vector.j, vector.k,
-                colors=color, length=length, **kwargs)
+                colors=color, **kwargs)
 
     def plot_minimums(self):
         box = cg_objects.rectangular_prism(
