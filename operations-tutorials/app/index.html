@@ -3,8 +3,18 @@
     <title>
         <%= htmlWebpackPlugin.options.title %>
     </title>
+    <style>
+        #container {
+            display: flex;
+            justify-content: center;
+            background: coral;
+        }
+    </style>
 </head>
 <body>
     Hello World
+    <div id="container">
+        <canvas id="mycanvas"></canvas>
+    </div>
 </body>
 </html>
