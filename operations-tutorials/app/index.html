@@ -1,18 +1,105 @@
 <html>
 <head>
-    <title>
-        <%= htmlWebpackPlugin.options.title %>
-    </title>
-    <style>
-        #container {
-            display: flex;
-            justify-content: center;
-            background: coral;
-        }
-    </style>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="stylesheet" type="text/css" href="app/operations.css">
 </head>
 <body>
-    Hello World
+    Transformation matrices dictate where the unit vectors end up after the transformation. <br/>
+
+    <table class="columns"><tr>
+        <td>
+            Change this matrix to manipulate the red square.<br/>
+
+            <table class="matrix">
+                <tr>
+                    <td><input class="matrix" id="manual-frame-xi" type="text" value="1"></td>
+                    <td><input class="matrix" id="manual-frame-yi" type="text" value="0"></td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td><input class="matrix" id="manual-frame-xj" type="text" value="0"></td>
+                    <td><input class="matrix" id="manual-frame-yj" type="text" value="1"></td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            The transformation matrix for rotation finds where the unit vectors end up after a rotation.<br/>
+
+            <table class="matrix">
+                <tr>
+                    <td>cos(&theta;)</td>
+                    <td>-sin(&theta;)</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>sin(&theta;)</td>
+                    <td>cos(&theta;)</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+            </table>
+        </td>
+        <td>
+            Enter an angle (degrees) to transform the blue square.<br/>
+            <input id="angle" type="text" value="0"><br/>
+
+            <table class="matrix">
+                <tr>
+                    <td><input class="matrix" id="rotation-user-xi" type="text" value="1" disabled></td>
+                    <td><input class="matrix" id="rotation-user-yi" type="text" value="0" disabled></td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td><input class="matrix" id="rotation-user-xj" type="text" value="0" disabled></td>
+                    <td><input class="matrix" id="rotation-user-yj" type="text" value="1" disabled></td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+            </table>
+        </td>
+    </tr></table>
+
     <div id="container">
         <canvas id="mycanvas"></canvas>
     </div>

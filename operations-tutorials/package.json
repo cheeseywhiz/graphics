@@ -4,6 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "build": "webpack --colors --progress",
         "server": "webpack-dev-server --colors --inline --progress --host 0.0.0.0"
     },
     "author": "Spencer Todd",
@@ -16,7 +17,8 @@
         "webpack-dev-server": "~2.11.2"
     },
     "dependencies": {
-        "three": "~0.91.0",
-        "three-trackballcontrols": "0.0.7"
+        "three": "",
+        "three-trackballcontrols": "",
+        "gl-matrix": ""
     }
 }
