@@ -12,14 +12,14 @@
 
             <table class="matrix">
                 <tr>
-                    <td><input class="matrix" id="manual-frame-xi" type="text" value="1"></td>
-                    <td><input class="matrix" id="manual-frame-yi" type="text" value="0"></td>
+                    <td><input class="matrix" id="manual-xi" type="number" value="1"></td>
+                    <td><input class="matrix" id="manual-yi" type="number" value="0"></td>
                     <td>0</td>
                     <td>0</td>
                 </tr>
                 <tr>
-                    <td><input class="matrix" id="manual-frame-xj" type="text" value="0"></td>
-                    <td><input class="matrix" id="manual-frame-yj" type="text" value="1"></td>
+                    <td><input class="matrix" id="manual-xj" type="number" value="0"></td>
+                    <td><input class="matrix" id="manual-yj" type="number" value="1"></td>
                     <td>0</td>
                     <td>0</td>
                 </tr>
@@ -38,7 +38,7 @@
             </table>
         </td>
         <td>
-            The transformation matrix for rotation finds where the unit vectors end up after a rotation.<br/>
+            The transformation matrix for rotation automates this process.<br/>
 
             <table class="matrix">
                 <tr>
@@ -69,18 +69,18 @@
         </td>
         <td>
             Enter an angle (degrees) to transform the blue square.<br/>
-            <input id="angle" type="text" value="0"><br/>
+            <input id="angle" type="number" value="0"><br/>
 
             <table class="matrix">
                 <tr>
-                    <td><input class="matrix" id="rotation-user-xi" type="text" value="1" disabled></td>
-                    <td><input class="matrix" id="rotation-user-yi" type="text" value="0" disabled></td>
+                    <td><input class="matrix" id="rotation-xi" type="number" value="1" disabled></td>
+                    <td><input class="matrix" id="rotation-yi" type="number" value="0" disabled></td>
                     <td>0</td>
                     <td>0</td>
                 </tr>
                 <tr>
-                    <td><input class="matrix" id="rotation-user-xj" type="text" value="0" disabled></td>
-                    <td><input class="matrix" id="rotation-user-yj" type="text" value="1" disabled></td>
+                    <td><input class="matrix" id="rotation-xj" type="number" value="0" disabled></td>
+                    <td><input class="matrix" id="rotation-yj" type="number" value="1" disabled></td>
                     <td>0</td>
                     <td>0</td>
                 </tr>
@@ -101,7 +101,7 @@
     </tr></table>
 
     <div id="container">
-        <canvas id="mycanvas"></canvas>
+        <canvas id="three-canvas"></canvas>
     </div>
 </body>
 </html>

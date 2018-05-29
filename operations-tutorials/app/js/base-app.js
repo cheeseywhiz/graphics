@@ -10,14 +10,12 @@ export default class BaseApp {
         this.camera = new THREE.PerspectiveCamera(55, this.ratio, 0.00001, 1000);
         this.camera.position.z = 10;
 
-        this.tracker = new TrackballControls(this.camera);
-        this.tracker.rotateSpeed = 2.0;
-        this.tracker.noZoom = false;
-        this.tracker.noPan = false;
+        this.tracker = new TrackballControls(this.camera, this.canvas);
+        this.tracker.noRotate = true;
+        this.tracker.noZoom = true;
+        this.tracker.noPan = true;
 
-        window.addEventListener('resize', () => this.resizeHandler());
-        this.resizeHandler();
-        this.render();
+        window.addEventListener('resize', ev => this.resizeHandler());
     }
 
     render() {

@@ -18,7 +18,6 @@
     },
     "dependencies": {
         "three": "",
-        "three-trackballcontrols": "",
-        "gl-matrix": ""
+        "three-trackballcontrols": ""
     }
 }
