@@ -13,19 +13,42 @@ function roundFloatStr(number) {
     return round(number, 2).toString();
 }
 
-class RotationFrame {
+function squareBufferGeom() {
+    var square = new THREE.BufferGeometry();
+    var vertices = new Float32Array([
+        0, 0, 0,
+        1, 0, 0,
+        1, 1, 0,
+
+        0, 0, 0,
+        1, 1, 0,
+        0, 1, 0,
+
+        1, 1, 0,
+        1, 0, 0,
+        0, 0, 0,
+
+        0, 1, 0,
+        1, 1, 0,
+        0, 0, 0,
+    ]);
+    square.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    return square;
+}
+
+class RotationMatrix {
     constructor() {
         this.xi = document.getElementById('rotation-xi');
         this.yi = document.getElementById('rotation-yi');
         this.xj = document.getElementById('rotation-xj');
         this.yj = document.getElementById('rotation-yj');
         this.angle = document.getElementById('angle');
-        this.angle.addEventListener('change', ev => this.updateMatrix());
+        this.angle.addEventListener('change', ev => this.update());
         this.angle.addEventListener('change', ev => this.angle.blur());
         this.matrix = new THREE.Matrix4();
     }
 
-    updateMatrix() {
+    update() {
         var angle = parseFloat(this.angle.value) * Math.PI / 180;
         var sin = Math.sin(angle);
         var cos = Math.cos(angle);
@@ -46,14 +69,19 @@ class RotationFrame {
     }
 }
 
-export default class RotationFrameChild extends RotationFrame {
-    constructor(parent) {
-        super();
-        this.parent = parent;
+export default class RotationFrame extends RotationMatrix {
+    constructor() {
+        super()
+        this.undo = new THREE.Matrix4().identity();
+        this.square = squareBufferGeom();
+        this.update();
     }
 
-    updateMatrix() {
-        super.updateMatrix();
-        this.parent.updateRotationFrame();
+    update() {
+        super.update();
+        this.square.applyMatrix(this.undo);
+        this.undo.getInverse(this.matrix);
+
+        if (this.matrix.determinant()) this.square.applyMatrix(this.matrix);
     }
 }

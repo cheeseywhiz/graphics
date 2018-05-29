@@ -1,6 +1,29 @@
 import * as THREE from 'three';
 
-class ManualFrame {
+function squareBufferGeom() {
+    var square = new THREE.BufferGeometry();
+    var vertices = new Float32Array([
+        0, 0, 0,
+        1, 0, 0,
+        1, 1, 0,
+
+        0, 0, 0,
+        1, 1, 0,
+        0, 1, 0,
+
+        1, 1, 0,
+        1, 0, 0,
+        0, 0, 0,
+
+        0, 1, 0,
+        1, 1, 0,
+        0, 0, 0,
+    ]);
+    square.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    return square;
+}
+
+class ManualMatrix {
     constructor() {
         this.xi = this.addElement('manual-xi');
         this.yi = this.addElement('manual-yi');
@@ -11,12 +34,12 @@ class ManualFrame {
 
     addElement(id) {
         var element = document.getElementById(id);
-        element.addEventListener('change', ev => this.updateMatrix());
+        element.addEventListener('change', ev => this.update());
         element.addEventListener('change', ev => element.blur());
         return element;
     }
 
-    updateMatrix() {
+    update() {
         this.matrix.set(
             parseFloat(this.xi.value), parseFloat(this.yi.value), 0, 0,
             parseFloat(this.xj.value), parseFloat(this.yj.value), 0, 0,
@@ -26,14 +49,19 @@ class ManualFrame {
     }
 }
 
-export default class ManualFrameChild extends ManualFrame {
-    constructor(parent) {
-        super();
-        this.parent = parent;
+export default class ManualFrame extends ManualMatrix {
+    constructor() {
+        super()
+        this.undo = new THREE.Matrix4().identity();
+        this.square = squareBufferGeom();
+        this.update();
     }
 
-    updateMatrix() {
-        super.updateMatrix();
-        this.parent.updateManualFrame();
+    update() {
+        super.update();
+        this.square.applyMatrix(this.undo);
+        this.undo.getInverse(this.matrix);
+
+        if (this.matrix.determinant()) this.square.applyMatrix(this.matrix);
     }
 }
