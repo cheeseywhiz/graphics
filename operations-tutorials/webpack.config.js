@@ -1,5 +1,6 @@
 var path = require('path');
 var HtmlWebPackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 var ROOT_PATH = path.resolve(__dirname);
 var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
@@ -15,6 +16,7 @@ module.exports = {
         filename: '[name].bundle.js',
     },
     plugins: [
+        new UglifyJsPlugin(),
         new HtmlWebPackPlugin({
             title: 'Matrix Operations Tutorial',
             template: path.resolve(APP_PATH, 'index.html'),
