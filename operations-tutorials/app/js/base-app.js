@@ -3,7 +3,7 @@ import TrackballControls from 'three-trackballcontrols';
 
 export default class BaseApp {
     constructor(id) {
-        this.ratio = 4 / 3;
+        this.ratio = window.innerWidth / window.innerHeight;
         this.canvas = document.getElementById(id);
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas, antialias: true});
         this.scene = new THREE.Scene();
@@ -25,18 +25,20 @@ export default class BaseApp {
     }
 
     resizeHandler() {
-        let w = window.innerWidth - 16;
-        let h = w / this.ratio;
+        this.ratio = window.innerWidth / window.innerHeight;
+        var width = window.innerWidth;
+        var height = width / this.ratio;
 
-        if (this.canvas.offsetTop + h > window.innerHeight) {
-            h = window.innerHeight - this.canvas.offsetTop - 16;
-            w = this.ratio * h;
+        if (this.canvas.offsetTop + height > window.innerHeight) {
+            height = window.innerHeight - this.canvas.offsetTop;
+            width = this.ratio * height;
         }
 
-        this.canvas.width = w;
-        this.canvas.height = h;
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.camera.aspect = this.ratio
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize(w, h);
+        this.renderer.setSize(width, height);
         this.tracker.handleResize();
     }
 }

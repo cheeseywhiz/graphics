@@ -6,7 +6,7 @@ input {
     width: 55px;
 }
 
-#container {
+#canvas-container {
     display: flex;
     justify-content: center;
     background: coral;
