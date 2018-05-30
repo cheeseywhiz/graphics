@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import FrameBase from './frame';
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round#A_better_solution
 function round(number, precision) {
@@ -13,39 +14,14 @@ function roundFloatStr(number) {
     return round(number, 2).toString();
 }
 
-function squareBufferGeom() {
-    var square = new THREE.BufferGeometry();
-    var vertices = new Float32Array([
-        0, 0, 0,
-        1, 0, 0,
-        1, 1, 0,
-
-        0, 0, 0,
-        1, 1, 0,
-        0, 1, 0,
-
-        1, 1, 0,
-        1, 0, 0,
-        0, 0, 0,
-
-        0, 1, 0,
-        1, 1, 0,
-        0, 0, 0,
-    ]);
-    square.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    return square;
-}
-
-class RotationMatrix {
+export default class RotationFrame extends FrameBase {
     constructor() {
+        super();
+        this.angle = this.addTextInput('angle');
         this.xi = document.getElementById('rotation-xi');
         this.yi = document.getElementById('rotation-yi');
         this.xj = document.getElementById('rotation-xj');
         this.yj = document.getElementById('rotation-yj');
-        this.angle = document.getElementById('angle');
-        this.angle.addEventListener('change', ev => this.update());
-        this.angle.addEventListener('change', ev => this.angle.blur());
-        this.matrix = new THREE.Matrix4();
     }
 
     update() {
@@ -66,22 +42,5 @@ class RotationMatrix {
             0, 0, 1, 0,
             0, 0, 0, 1,
         );
-    }
-}
-
-export default class RotationFrame extends RotationMatrix {
-    constructor() {
-        super()
-        this.undo = new THREE.Matrix4().identity();
-        this.square = squareBufferGeom();
-        this.update();
-    }
-
-    update() {
-        super.update();
-        this.square.applyMatrix(this.undo);
-        this.undo.getInverse(this.matrix);
-
-        if (this.matrix.determinant()) this.square.applyMatrix(this.matrix);
     }
 }
