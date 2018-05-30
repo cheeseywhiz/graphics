@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import FrameBase from './frame';
+import AutoSquareBuffer from './square-buffer';
 
-export default class ManualFrame extends FrameBase {
+export default class ManualSquareBuffer extends AutoSquareBuffer {
     constructor() {
         super();
         this.xi = this.addTextInput('manual-xi');
@@ -11,7 +11,7 @@ export default class ManualFrame extends FrameBase {
     }
 
     update() {
-        this.matrix.set(
+        this.frame.set(
             parseFloat(this.xi.value), parseFloat(this.yi.value), 0, 0,
             parseFloat(this.xj.value), parseFloat(this.yj.value), 0, 0,
             0, 0, 1, 0,

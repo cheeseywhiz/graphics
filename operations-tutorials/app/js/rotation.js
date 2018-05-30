@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import FrameBase from './frame';
+import AutoSquareBuffer from './square-buffer';
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round#A_better_solution
 function round(number, precision) {
@@ -14,7 +14,7 @@ function roundFloatStr(number) {
     return round(number, 2).toString();
 }
 
-export default class RotationFrame extends FrameBase {
+export default class RotationSquareBuffer extends AutoSquareBuffer {
     constructor() {
         super();
         this.angle = this.addTextInput('angle');
@@ -36,7 +36,7 @@ export default class RotationFrame extends FrameBase {
         this.yi.value = roundFloatStr(yi);
         this.xj.value = roundFloatStr(xj);
         this.yj.value = roundFloatStr(yj);
-        this.matrix.set(
+        this.frame.set(
             xi, yi, 0, 0,
             xj, yj, 0, 0,
             0, 0, 1, 0,
