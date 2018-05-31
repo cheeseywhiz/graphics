@@ -26,7 +26,7 @@ export default class AutoSquareBuffer extends THREE.BufferGeometry {
     }
 
     addTextInput(id) {
-        var element = document.getElementById(id);
+        const element = document.getElementById(id);
         element.addEventListener('change', ev => element.blur());
         element.addEventListener('change', ev => this.onChange());
         return element;

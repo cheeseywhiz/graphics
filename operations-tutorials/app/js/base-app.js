@@ -26,8 +26,8 @@ export default class BaseApp {
 
     resizeHandler() {
         this.ratio = window.innerWidth / window.innerHeight;
-        var width = window.innerWidth;
-        var height = width / this.ratio;
+        let width = window.innerWidth;
+        let height = width / this.ratio;
 
         if (this.canvas.offsetTop + height > window.innerHeight) {
             height = window.innerHeight - this.canvas.offsetTop;

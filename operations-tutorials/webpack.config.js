@@ -1,11 +1,11 @@
-var path = require('path');
-var HtmlWebPackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-var ROOT_PATH = path.resolve(__dirname);
-var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
-var APP_PATH = path.resolve(ROOT_PATH, 'app');
-var JS_PATH = path.resolve(APP_PATH, 'js');
+const ROOT_PATH = path.resolve(__dirname);
+const BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
+const APP_PATH = path.resolve(ROOT_PATH, 'app');
+const JS_PATH = path.resolve(APP_PATH, 'js');
 
 module.exports = {
     entry: {
@@ -22,7 +22,6 @@ module.exports = {
             template: path.resolve(APP_PATH, 'index.html'),
             filename: 'index.html',
             chunks: ['index'],
-            inject: 'head',
         }),
     ],
     module: {

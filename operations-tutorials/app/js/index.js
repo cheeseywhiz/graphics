@@ -13,10 +13,10 @@ export default class App extends BaseApp {
     };
 
     addGeometry(geometry, faceColor) {
-        var faceMaterial = new THREE.MeshBasicMaterial({color: faceColor, opacity: 0.75, transparent: true});
-        var wireMaterial = new THREE.MeshBasicMaterial({color: 0x14ae6e, wireframeLinewidth: 3, wireframe: true});
-        var face_mesh = new THREE.Mesh(geometry, faceMaterial);
-        var wire_mesh = new THREE.Mesh(geometry, wireMaterial);
+        const faceMaterial = new THREE.MeshBasicMaterial({color: faceColor, opacity: 0.75, transparent: true});
+        const wireMaterial = new THREE.MeshBasicMaterial({color: 0x14ae6e, wireframeLinewidth: 3, wireframe: true});
+        const face_mesh = new THREE.Mesh(geometry, faceMaterial);
+        const wire_mesh = new THREE.Mesh(geometry, wireMaterial);
         this.scene.add(face_mesh);
         this.scene.add(wire_mesh);
         return geometry;
