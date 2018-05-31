@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import AutoSquareBuffer from './square-buffer';
 
 export default class ManualSquareBuffer extends AutoSquareBuffer {

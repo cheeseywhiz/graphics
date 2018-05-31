@@ -5,9 +5,11 @@ export default class BaseApp {
     constructor(id) {
         this.ratio = window.innerWidth / window.innerHeight;
         this.canvas = document.getElementById(id);
-        this.renderer = new THREE.WebGLRenderer({canvas: this.canvas, antialias: true});
+        this.renderer =
+            new THREE.WebGLRenderer({canvas: this.canvas, antialias: true});
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(55, this.ratio, 0.00001, 1000);
+        this.camera =
+            new THREE.PerspectiveCamera(55, this.ratio, 0.00001, 1000);
         this.camera.position.z = 10;
 
         this.tracker = new TrackballControls(this.camera, this.canvas);
@@ -15,7 +17,7 @@ export default class BaseApp {
         this.tracker.noZoom = true;
         this.tracker.noPan = true;
 
-        window.addEventListener('resize', ev => this.resizeHandler());
+        window.addEventListener('resize', (ev) => this.resizeHandler());
     }
 
     render() {
@@ -36,7 +38,7 @@ export default class BaseApp {
 
         this.canvas.width = width;
         this.canvas.height = height;
-        this.camera.aspect = this.ratio
+        this.camera.aspect = this.ratio;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(width, height);
         this.tracker.handleResize();
