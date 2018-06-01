@@ -17,7 +17,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebPackPlugin({
-            title: 'Composite Operations Tutorial',
+            title: 'Composite Operations',
             template: path.resolve(APP_PATH, 'index.html'),
             filename: 'index.html',
             chunks: ['index'],
