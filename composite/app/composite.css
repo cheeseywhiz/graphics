@@ -1,0 +1,13 @@
+.matrix {
+    text-align: center;
+}
+
+input {
+    width: 55px;
+}
+
+#canvas-container {
+    display: flex;
+    justify-content: center;
+    background: coral;
+}
