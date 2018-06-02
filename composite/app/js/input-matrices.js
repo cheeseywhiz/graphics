@@ -67,7 +67,6 @@ class MatrixInput extends React.Component {
         return <NumberInput
             value={this.props.matrix[this.props.matrixKey]}
             placeholder={this.props.matrixKey}
-            className='matrix'
             onNumberChange={this.onNumberChange}
             disabled={this.props.disabled} />
     }
@@ -85,7 +84,7 @@ MatrixInput.defaultProps = {
 
 export class DefaultMatrix extends React.Component {
     render() {
-        return <table className='matrix'>
+        return <table className='matrix'><tbody>
             <tr>
                 <td>1</td>
                 <td>0</td>
@@ -101,7 +100,7 @@ export class DefaultMatrix extends React.Component {
                 <td>0</td>
                 <td>1</td>
             </tr>
-        </table>
+        </tbody></table>
     }
 }
 
@@ -114,7 +113,7 @@ DefaultMatrix.defaultProps = {
 
 export class ScaleMatrix extends DefaultMatrix {
     render() {
-        return <table className='matrix'>
+        return <table className='matrix'><tbody>
             <tr>
                 <td><MatrixInput matrixKey='xi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
                 <td>0</td>
@@ -130,7 +129,7 @@ export class ScaleMatrix extends DefaultMatrix {
                 <td>0</td>
                 <td>1</td>
             </tr>
-        </table>
+        </tbody></table>
     }
 }
 
@@ -138,7 +137,7 @@ export class RotationMatrix extends DefaultMatrix {
     render() {
         return <div>
             <NumberInput value={this.props.angle} placeholder='angle' onNumberChange={this.props.onAngleChange} />
-            <table className='matrix'>
+            <table className='matrix'><tbody>
                 <tr>
                     <td><MatrixInput matrixKey='xi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} disabled/></td>
                     <td><MatrixInput matrixKey='yi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} disabled/></td>
@@ -154,14 +153,14 @@ export class RotationMatrix extends DefaultMatrix {
                     <td>0</td>
                     <td>1</td>
                 </tr>
-            </table>
+            </tbody></table>
         </div>
     }
 }
 
 export class TranslationMatrix extends DefaultMatrix {
     render() {
-        return <table className='matrix'>
+        return <table className='matrix'><tbody>
             <tr>
                 <td>1</td>
                 <td>0</td>
@@ -177,13 +176,13 @@ export class TranslationMatrix extends DefaultMatrix {
                 <td>0</td>
                 <td>1</td>
             </tr>
-        </table>
+        </tbody></table>
     }
 }
 
 export class ManualMatrix extends DefaultMatrix {
     render() {
-        return <table className='matrix'>
+        return <table className='matrix'><tbody>
             <tr>
                 <td><MatrixInput matrixKey='xi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
                 <td><MatrixInput matrixKey='yi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
@@ -199,6 +198,6 @@ export class ManualMatrix extends DefaultMatrix {
                 <td>0</td>
                 <td>1</td>
             </tr>
-        </table>
+        </tbody></table>
     }
 }
