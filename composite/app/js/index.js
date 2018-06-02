@@ -1,152 +1,79 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {DefaultMatrix, ScaleMatrix, RotationMatrix, TranslationMatrix, ManualMatrix, } from './input-matrices.js';
 
-class DefaultMatrix extends React.Component {
+class OperationSelector extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+
+    render() {
+        return <select value={this.props.value} onChange={this.onChange}>
+            <option value='0' disabled>Operation Type</option>
+            <option value='1'>Scale</option>
+            <option value='2'>Rotation</option>
+            <option value='3'>Translation</option>
+            <option value='4'>Manual</option>
+        </select>
+    }
+
+    onChange(event) {
+        this.props.onValueChange(event.target.value);
+    }
+}
+
+OperationSelector.defaultProps = {
+    value: '0',
+    onValueChange: (value) => null,
+};
+
+class InputMatrix extends React.Component {
+    constructor(props) {
+        super(props);
+        this.matrices = {
+            '0': <DefaultMatrix />,
+            '1': <ScaleMatrix />,
+            '2': <RotationMatrix />,
+            '3': <TranslationMatrix />,
+            '4': <ManualMatrix />,
+        };
+    }
+
+    render() {
+        return this.matrices[this.props.value];
+    }
+}
+
+InputMatrix.defaultProps = {value: '0'};
+
+class InputMatrixGroup extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onValueChange = this.onValueChange.bind(this);
+        this.state = {value: '0'};
+    }
+
+    onValueChange(value) {
+        this.setState({value: value})
+    }
+
     render() {
         return <div>
-            <table class="matrix">
-                <tr>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                </tr>
-            </table>
+            <OperationSelector value={this.state.value} onValueChange={this.onValueChange} />
+            <InputMatrix value={this.state.value} />
         </div>
     }
 }
 
-class ScaleMatrix extends React.Component {
+class App extends React.Component {
     render() {
-        return <div>
-            <table class="matrix">
-                <tr>
-                    <td><input type="number" id="input-xi" value="1"/></td>
-                    <td>0</td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td><input type="number" id="input-yj" value="1"/></td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                </tr>
-            </table>
-        </div>
-    }
-}
-
-class RotationMatrix extends React.Component {
-    render() {
-        return <div>
-            <input type="number" id="rotation-angle" placeholder="angle" />
-            <table class="matrix">
-                <tr>
-                    <td><input type="number" id="input-xi" value="1" disabled /></td>
-                    <td><input type="number" id="input-yi" value="0" disabled /></td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td><input type="number" id="input-xj" value="0" disabled /></td>
-                    <td><input type="number" id="input-yj" value="1" disabled /></td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                </tr>
-            </table>
-        </div>
-    }
-}
-
-class TranslationMatrix extends React.Component {
-    render() {
-        return <div>
-            <table class="matrix">
-                <tr>
-                    <td>1</td>
-                    <td>0</td>
-                    <td><input type="number" id="input-ox" value="0" /></td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>1</td>
-                    <td><input type="number" id="input-oy" value="0" /></td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                </tr>
-            </table>
-        </div>
-    }
-}
-
-class ManualMatrix extends React.Component {
-    render() {
-        return <div>
-            <table class="matrix">
-                <tr>
-                    <td><input type="number" id="input-xi" value="1" /></td>
-                    <td><input type="number" id="input-yi" value="0" /></td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td><input type="number" id="input-xj" value="0" /></td>
-                    <td><input type="number" id="input-yj" value="1" /></td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                </tr>
-            </table>
-        </div>
-    }
-}
-
-function renderMatrix(selector, matrix) {
-    switch (selector.selectedIndex) {
-        case 1:
-            ReactDOM.render(<ScaleMatrix />, matrix);
-            break;
-        case 2:
-            ReactDOM.render(<RotationMatrix />, matrix);
-            break;
-        case 3:
-            ReactDOM.render(<TranslationMatrix />, matrix);
-            break;
-        case 4:
-            ReactDOM.render(<ManualMatrix />, matrix);
-            break;
-        default:
-            ReactDOM.render(<DefaultMatrix />, matrix);
-            break;
+        return <InputMatrixGroup />
     }
 }
 
 function main() {
-    const selector = document.getElementById('operation');
-    const matrix = document.getElementById('input-matrix');
-    selector.addEventListener('change', (ev) => renderMatrix(selector, matrix));
-    renderMatrix(selector, matrix);
+    ReactDOM.render(<App />, document.getElementById('app'));
 }
 
 main();
