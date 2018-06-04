@@ -71,6 +71,7 @@ export class SelectorInputGroup extends React.Component {
                 value={this.props.value}
                 onValueChange={this.props.onValueChange}
                 onTypeChange={this.props.onTypeChange} />
+            <input type='button' value='Reset' onClick={this.props.onReset} />
             <InputMatrix
                 type={this.props.type}
                 matrix={this.props.matrix}

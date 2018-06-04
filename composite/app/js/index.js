@@ -14,6 +14,8 @@ export class App extends React.Component {
         this.onTypeChange = this.onTypeChange.bind(this);
         this.onPush = this.onPush.bind(this);
         this.onPop = this.onPop.bind(this);
+        this.onClear = this.onClear.bind(this);
+        this.resetMatrix = this.resetMatrix.bind(this);
         this.state = dictUpdate({
             currentFrame: new THREE.Matrix4().identity(),
             undo: new THREE.Matrix4().identity(),
@@ -28,8 +30,7 @@ export class App extends React.Component {
 
     onTypeChange(type) {
         this.setState({type: type});
-        this.setState(DefaultMatrix.defaultState);
-        this.onMatrixChange(identityMatrix());
+        this.resetMatrix();
     }
 
     onMatrixChange(matrix) {
@@ -60,6 +61,18 @@ export class App extends React.Component {
         this.updateCompositeFrame(stack);
     }
 
+    onClear() {
+        const stack = [];
+        this.setState({stack: stack});
+        this.updateCompositeFrame(stack);
+    }
+
+    resetMatrix() {
+        const state = DefaultMatrix.defaultState;
+        this.setState(state);
+        this.onMatrixChange(state.matrix);
+    }
+
     updateCompositeFrame(stack) {
         const undo = new THREE.Matrix4().getInverse(this.state.compositeFrame);
         const compositeFrame = new THREE.Matrix4().identity();
@@ -83,9 +96,11 @@ export class App extends React.Component {
                 onValueChange={this.onValueChange}
                 onMatrixChange={this.onMatrixChange}
                 onAngleChange={this.onAngleChange}
-                onTypeChange={this.onTypeChange} />
-            <input type="button" value="Push" onClick={this.onPush} />
-            <input type="button" value="Pop" onClick={this.onPop} />
+                onTypeChange={this.onTypeChange}
+                onReset={this.resetMatrix} />
+            <input type='button' value='Push' onClick={this.onPush} />
+            <input type='button' value='Pop' onClick={this.onPop} />
+            <input type='button' value='Clear' onClick={this.onClear} />
         </div>
     }
 }
