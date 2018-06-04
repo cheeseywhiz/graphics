@@ -56,7 +56,6 @@ export class SelectorInputGroup extends React.Component {
     constructor(props) {
         super(props);
         this.onValueChange = this.onValueChange.bind(this);
-        this.onReset = this.onReset.bind(this);
         this.types = {
             '0': DefaultMatrix,
             '1': ScaleMatrix,
@@ -68,13 +67,7 @@ export class SelectorInputGroup extends React.Component {
 
     onValueChange(type) {
         this.props.onValueChange(type);
-        this.onReset();
-    }
-
-    onReset() {
-        const state = DefaultMatrix.defaultState;
-        this.props.onMatrixChange(state.matrix);
-        this.props.onAngleChange(state.angle);
+        this.props.onReset();
     }
 
     render() {
@@ -83,7 +76,7 @@ export class SelectorInputGroup extends React.Component {
             <OperationSelector
                 value={this.props.value}
                 onValueChange={this.onValueChange} />
-            <input type='button' value='Reset' onClick={this.onReset} />
+            <input type='button' value='Reset' onClick={this.props.onReset} />
             <InputMatrix
                 type={type}
                 matrix={this.props.matrix}
@@ -99,7 +92,8 @@ SelectorInputGroup.defaultState = Object.assign(
     OperationSelector.defaultState,
     DefaultMatrix.defaultState,
 );
-SelectorInputGroup.defaultProps = Object.assign(
-    {},
-    SelectorInputGroup.defaultState
-);
+SelectorInputGroup.defaultProps = Object.assign({
+    onMatrixChange: (matrix) => null,
+    onAngleChange: (angle) => null,
+    onReset: () => null,
+}, SelectorInputGroup.defaultState);

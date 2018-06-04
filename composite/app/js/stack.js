@@ -16,6 +16,7 @@ export class Stack extends React.Component {
         const stack = this.props.stack.slice(0);
         stack.push(this.props.currentFrame);
         this.onStackChange(stack);
+        this.props.onReset();
     }
 
     onPop() {
@@ -58,6 +59,7 @@ Stack.defaultState = {
 Stack.defaultProps = dictUpdate({
     onStackChange: (stack) => null,
     onStackFrameChange: (frame) => null,
+    onReset: () => null,
 }, Stack.defaultState);
 
 export class StaticMatrix extends React.Component {
@@ -84,6 +86,19 @@ export class StaticMatrix extends React.Component {
 }
 
 StaticMatrix.defaultProps = {matrix: new THREE.Matrix4().identity()};
+
+export class CompositeFrame extends React.Component {
+    render() {
+        const matrix = new THREE.Matrix4()
+            .multiplyMatrices(this.props.stackFrame, this.props.currentFrame);
+        return <StaticMatrix matrix={matrix} />
+    }
+}
+
+CompositeFrame.defaultProps = {
+    stackFrame: new THREE.Matrix4().identity(),
+    currentFrame: new THREE.Matrix4().identity(),
+};
 
 class MatrixElement extends React.Component {
     render() {
