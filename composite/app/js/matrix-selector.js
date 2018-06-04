@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    DefaultMatrix, ScaleMatrix, RotationMatrix, TranslationMatrix, ManualMatrix, identityMatrix,
+    DefaultMatrix, ScaleMatrix, RotationMatrix, TranslationMatrix, ManualMatrix,
 } from './input-matrices.js';
 import dictUpdate from './dict-update.js';
 
@@ -63,3 +63,30 @@ InputMatrix.defaultProps = dictUpdate({
     onMatrixChange: (matrix) => null,
     onAngleChange: (angle) => null,
 }, InputMatrix.defaultState);
+
+export class SelectorInputGroup extends React.Component {
+    render() {
+        return <div>
+            <OperationSelector
+                value={this.props.value}
+                onValueChange={this.props.onValueChange}
+                onTypeChange={this.props.onTypeChange} />
+            <InputMatrix
+                type={this.props.type}
+                matrix={this.props.matrix}
+                angle={this.props.angle}
+                onMatrixChange={this.props.onMatrixChange}
+                onAngleChange={this.props.onAngleChange} />
+        </div>
+    }
+}
+
+SelectorInputGroup.defaultState = Object.assign(
+    {},
+    OperationSelector.defaultState,
+    InputMatrix.defaultState,
+);
+SelectorInputGroup.defaultProps = Object.assign(
+    {},
+    SelectorInputGroup.defaultState
+);
