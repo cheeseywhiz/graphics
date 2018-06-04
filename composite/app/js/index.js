@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import {SelectorInputGroup, } from './matrix-selector.js';
-import {DefaultMatrix, } from './input-matrices.js';
+import {identityMatrix, DefaultMatrix, } from './input-matrices.js';
 import dictUpdate from './dict-update.js';
 
 export class App extends React.Component {
@@ -15,9 +15,10 @@ export class App extends React.Component {
         this.onPush = this.onPush.bind(this);
         this.onPop = this.onPop.bind(this);
         this.state = dictUpdate({
-            frame: new THREE.Matrix4().identity(),
+            currentFrame: new THREE.Matrix4().identity(),
             undo: new THREE.Matrix4().identity(),
             stack: [],
+            compositeFrame: new THREE.Matrix4().identity(),
         }, SelectorInputGroup.defaultState);
     }
 
@@ -28,17 +29,17 @@ export class App extends React.Component {
     onTypeChange(type) {
         this.setState({type: type});
         this.setState(DefaultMatrix.defaultState);
+        this.onMatrixChange(identityMatrix());
     }
 
     onMatrixChange(matrix) {
-        const undo = new THREE.Matrix4().getInverse(this.state.frame);
-        const frame = new THREE.Matrix4().set(
+        const currentFrame = new THREE.Matrix4().set(
             matrix.xi || 1, matrix.yi || 0, 0, 0,
             matrix.xj || 0, matrix.yj || 1, 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1,
         );
-        this.setState({matrix: matrix, frame: frame, undo: undo});
+        this.setState({matrix: matrix, currentFrame: currentFrame});
     }
 
     onAngleChange(angle) {
@@ -47,18 +48,33 @@ export class App extends React.Component {
 
     onPush() {
         const stack = this.state.stack.slice(0);
-        stack.push(this.state.frame);
+        stack.push(this.state.currentFrame);
         this.setState({stack: stack});
+        this.updateCompositeFrame(stack);
     }
 
     onPop() {
         const stack = this.state.stack.slice(0);
         stack.pop(-1);
         this.setState({stack: stack});
+        this.updateCompositeFrame(stack);
+    }
+
+    updateCompositeFrame(stack) {
+        const undo = new THREE.Matrix4().getInverse(this.state.compositeFrame);
+        const compositeFrame = new THREE.Matrix4().identity();
+        let frame;
+
+        for (let i = 0; i < stack.length; i++) {
+            frame = stack[i];
+            compositeFrame.multiplyMatrices(frame, compositeFrame);
+        }
+
+        this.setState({compositeFrame: compositeFrame, undo: undo});
     }
 
     render() {
-        return <div> 
+        return <div>
             <SelectorInputGroup
                 value={this.state.value}
                 matrix={this.state.matrix}
