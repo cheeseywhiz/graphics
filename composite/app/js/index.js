@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import {SelectorInputGroup, } from './matrix-selector.js';
+import {Stack, } from './stack.js';
 import dictUpdate from './dict-update.js';
 
 export class App extends React.Component {
@@ -10,16 +11,16 @@ export class App extends React.Component {
         this.onValueChange = this.onValueChange.bind(this);
         this.onMatrixChange = this.onMatrixChange.bind(this);
         this.onAngleChange = this.onAngleChange.bind(this);
-        this.onPush = this.onPush.bind(this);
-        this.onPop = this.onPop.bind(this);
-        this.onClear = this.onClear.bind(this);
-        this.state = dictUpdate({
-            currentFrame: new THREE.Matrix4().identity(),
-            undo: new THREE.Matrix4().identity(),
-            stack: [],
-            stackFrame: new THREE.Matrix4().identity(),
-            compositeFrame: new THREE.Matrix4().identity(),
-        }, SelectorInputGroup.defaultState);
+        this.onStackChange = this.onStackChange.bind(this);
+        this.onStackFrameChange = this.onStackFrameChange.bind(this);
+        this.state = Object.assign(
+            {
+                undo: new THREE.Matrix4().identity(),
+                compositeFrame: new THREE.Matrix4().identity(),
+            },
+            SelectorInputGroup.defaultState,
+            Stack.defaultState,
+        );
     }
 
     onValueChange(value) {
@@ -35,7 +36,7 @@ export class App extends React.Component {
         );
         const undo = new THREE.Matrix4().getInverse(this.state.compositeFrame);
         const compositeFrame = new THREE.Matrix4()
-            .multiplyMatrices(this.state.stackFrame, this.state.currentFrame);
+            .multiplyMatrices(this.state.stackFrame, currentFrame);
         this.setState({matrix, currentFrame, undo, compositeFrame});
     }
 
@@ -43,32 +44,12 @@ export class App extends React.Component {
         this.setState({angle});
     }
 
-    onPush() {
-        const stack = this.state.stack.slice(0);
-        stack.push(this.state.currentFrame);
-        this.updateStack(stack);
+    onStackChange(stack) {
+        this.setState({stack});
     }
 
-    onPop() {
-        const stack = this.state.stack.slice(0);
-        stack.pop(-1);
-        this.updateStack(stack);
-    }
-
-    onClear() {
-        this.updateStack([]);
-    }
-
-    updateStack(stack) {
-        const stackFrame = new THREE.Matrix4().identity();
-        let frame;
-
-        for (let i = 0; i < stack.length; i++) {
-            frame = stack[i];
-            stackFrame.multiplyMatrices(frame, stackFrame);
-        }
-
-        this.setState({stack, stackFrame});
+    onStackFrameChange(stackFrame) {
+        this.setState({stackFrame});
     }
 
     render() {
@@ -80,9 +61,11 @@ export class App extends React.Component {
                 onValueChange={this.onValueChange}
                 onMatrixChange={this.onMatrixChange}
                 onAngleChange={this.onAngleChange} />
-            <input type='button' value='Push' onClick={this.onPush} />
-            <input type='button' value='Pop' onClick={this.onPop} />
-            <input type='button' value='Clear' onClick={this.onClear} />
+            <Stack
+                currentFrame={this.state.currentFrame}
+                stack={this.state.stack}
+                onStackChange={this.onStackChange}
+                onStackFrameChange={this.onStackFrameChange} />
         </div>
     }
 }
