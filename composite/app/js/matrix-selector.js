@@ -2,11 +2,19 @@ import React from 'react';
 import {
     DefaultMatrix, ScaleMatrix, RotationMatrix, TranslationMatrix, ManualMatrix, identityMatrix,
 } from './input-matrices.js';
+import dictUpdate from './dict-update.js';
 
 export class OperationSelector extends React.Component {
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
+        this.types = {
+            '0': DefaultMatrix,
+            '1': ScaleMatrix,
+            '2': RotationMatrix,
+            '3': TranslationMatrix,
+            '4': ManualMatrix,
+        };
     }
 
     render() {
@@ -20,27 +28,23 @@ export class OperationSelector extends React.Component {
     }
 
     onChange(event) {
-        this.props.onValueChange(event.target.value);
+        const value = event.target.value;
+        const type = this.types[value];
+        this.props.onValueChange(value);
+        this.props.onTypeChange(type);
     }
 }
 
-OperationSelector.defaultProps = {
+OperationSelector.defaultState = {
     value: '0',
-    onValueChange: (value) => null,
+    type: DefaultMatrix,
 };
+OperationSelector.defaultProps = dictUpdate({
+    onValueChange: (value) => null,
+    onTypeChange: (type) => null,
+}, OperationSelector.defaultState);
 
 export class InputMatrix extends React.Component {
-    constructor(props) {
-        super(props);
-        this.matrices = {
-            '0': DefaultMatrix,
-            '1': ScaleMatrix,
-            '2': RotationMatrix,
-            '3': TranslationMatrix,
-            '4': ManualMatrix,
-        };
-    }
-
     render() {
         const matrixProps = {
             onMatrixChange: this.props.onMatrixChange,
@@ -48,14 +52,14 @@ export class InputMatrix extends React.Component {
             matrix: this.props.matrix,
             angle: this.props.angle,
         };
-        return React.createElement(this.matrices[this.props.value], matrixProps);
+        return React.createElement(this.props.type, matrixProps);
     }
 }
 
-InputMatrix.defaultProps = {
-    value: '0',
-    onMatrixChange: (value, key) => null,
+InputMatrix.defaultState = dictUpdate({
+    type: DefaultMatrix,
+}, DefaultMatrix.defaultState);
+InputMatrix.defaultProps = dictUpdate({
+    onMatrixChange: (matrix) => null,
     onAngleChange: (angle) => null,
-    matrix: identityMatrix(),
-    angle: '',
-};
+}, InputMatrix.defaultState);

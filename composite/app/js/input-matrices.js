@@ -38,6 +38,7 @@ class NumberInput extends React.Component {
             type: 'number',
             onChange: this.onChange,
         }, this.props);
+        delete inputProps.onNumberChange;
 
         if ('value' in inputProps) {
             if (isNaN(inputProps.value)) {
@@ -57,7 +58,7 @@ class NumberInput extends React.Component {
 
 NumberInput.defaultProps = {onNumberChange: (value) => null};
 
-class MatrixInput extends React.Component {
+class DictInput extends React.Component {
     constructor(props) {
         super(props);
         this.onNumberChange = this.onNumberChange.bind(this);
@@ -65,24 +66,29 @@ class MatrixInput extends React.Component {
 
     render() {
         return <NumberInput
-            value={this.props.matrix[this.props.matrixKey]}
-            placeholder={this.props.matrixKey}
+            value={this.props.dict[this.props.dictKey]}
+            placeholder={this.props.dictKey}
             onNumberChange={this.onNumberChange}
             disabled={this.props.disabled} />
     }
 
     onNumberChange(value) {
-        this.props.onMatrixChange(value, this.props.matrixKey);
+        this.props.onKeyValueChange(this.props.dictKey, value);
     }
 }
 
-MatrixInput.propTypes = {disabled: PropTypes.bool};
-MatrixInput.defaultProps = {
-    matrix: identityMatrix(),
-    onMatrixChange: (value, key) => null,
+DictInput.propTypes = {disabled: PropTypes.bool};
+DictInput.defaultProps = {
+    onKeyValueChange: (key, value) => null,
 };
 
 export class DefaultMatrix extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onAngleChange = this.onAngleChange.bind(this);
+        this.onKeyValueChange = this.onKeyValueChange.bind(this);
+    }
+
     render() {
         return <table className='matrix'><tbody>
             <tr>
@@ -102,26 +108,46 @@ export class DefaultMatrix extends React.Component {
             </tr>
         </tbody></table>
     }
+
+    onKeyValueChange(key, value) {
+        const matrix = Object.assign({}, this.props.matrix);
+        matrix[key] = value;
+        this.props.onMatrixChange(matrix);
+    }
+
+    onAngleChange(angle_degrees) {
+        this.props.onAngleChange(angle_degrees);
+        const angle_radians = angle_degrees * Math.PI / 180;
+        const sin = Math.sin(angle_radians);
+        const cos = Math.cos(angle_radians);
+        const matrix = Object.assign({}, this.props.matrix, {
+            xi: cos, yi: -sin,
+            xj: sin, yj: cos,
+        });
+        this.props.onMatrixChange(matrix);
+    }
 }
 
-DefaultMatrix.defaultProps = {
+DefaultMatrix.defaultState = {
     matrix: identityMatrix(),
     angle: 0,
-    onMatrixChange: (value, matrixKey) => null,
-    onAngleChange: (angle) => null,
 };
+DefaultMatrix.defaultProps = dictUpdate({
+    onMatrixChange: (matrix) => null,
+    onAngleChange: (angle) => null,
+}, DefaultMatrix.defaultState);
 
 export class ScaleMatrix extends DefaultMatrix {
     render() {
         return <table className='matrix'><tbody>
             <tr>
-                <td><MatrixInput matrixKey='xi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
+                <td><DictInput dictKey='xi' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
                 <td>0</td>
                 <td>0</td>
             </tr>
             <tr>
                 <td>0</td>
-                <td><MatrixInput matrixKey='yj' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
+                <td><DictInput dictKey='yj' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
                 <td>0</td>
             </tr>
             <tr>
@@ -136,16 +162,16 @@ export class ScaleMatrix extends DefaultMatrix {
 export class RotationMatrix extends DefaultMatrix {
     render() {
         return <div>
-            <NumberInput value={this.props.angle} placeholder='angle' onNumberChange={this.props.onAngleChange} />
+            <NumberInput value={this.props.angle} placeholder='angle' onNumberChange={this.onAngleChange} />
             <table className='matrix'><tbody>
                 <tr>
-                    <td><MatrixInput matrixKey='xi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} disabled/></td>
-                    <td><MatrixInput matrixKey='yi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} disabled/></td>
+                    <td><DictInput dictKey='xi' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} disabled/></td>
+                    <td><DictInput dictKey='yi' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} disabled/></td>
                     <td>0</td>
                 </tr>
                 <tr>
-                    <td><MatrixInput matrixKey='xj' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} disabled/></td>
-                    <td><MatrixInput matrixKey='yj' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} disabled/></td>
+                    <td><DictInput dictKey='xj' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} disabled/></td>
+                    <td><DictInput dictKey='yj' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} disabled/></td>
                     <td>0</td>
                 </tr>
                 <tr>
@@ -164,12 +190,12 @@ export class TranslationMatrix extends DefaultMatrix {
             <tr>
                 <td>1</td>
                 <td>0</td>
-                <td><MatrixInput matrixKey='ox' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
+                <td><DictInput dictKey='ox' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
             </tr>
             <tr>
                 <td>0</td>
                 <td>1</td>
-                <td><MatrixInput matrixKey='oy' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
+                <td><DictInput dictKey='oy' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
             </tr>
             <tr>
                 <td>0</td>
@@ -184,14 +210,14 @@ export class ManualMatrix extends DefaultMatrix {
     render() {
         return <table className='matrix'><tbody>
             <tr>
-                <td><MatrixInput matrixKey='xi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
-                <td><MatrixInput matrixKey='yi' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
-                <td><MatrixInput matrixKey='ox' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
+                <td><DictInput dictKey='xi' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
+                <td><DictInput dictKey='yi' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
+                <td><DictInput dictKey='ox' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
             </tr>
             <tr>
-                <td><MatrixInput matrixKey='xj' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
-                <td><MatrixInput matrixKey='yj' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
-                <td><MatrixInput matrixKey='oy' matrix={this.props.matrix} onMatrixChange={this.props.onMatrixChange} /></td>
+                <td><DictInput dictKey='xj' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
+                <td><DictInput dictKey='yj' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
+                <td><DictInput dictKey='oy' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
             </tr>
             <tr>
                 <td>0</td>
