@@ -22,7 +22,7 @@ export class App extends React.Component {
     }
 
     onValueChange(value) {
-        this.setState({value: value});
+        this.setState({value});
     }
 
     onMatrixChange(matrix) {
@@ -32,34 +32,31 @@ export class App extends React.Component {
             0, 0, 1, 0,
             0, 0, 0, 1,
         );
-        this.setState({matrix: matrix, currentFrame: currentFrame});
+        this.setState({matrix, currentFrame});
     }
 
     onAngleChange(angle) {
-        this.setState({angle: angle});
+        this.setState({angle});
     }
 
     onPush() {
         const stack = this.state.stack.slice(0);
         stack.push(this.state.currentFrame);
-        this.setState({stack: stack});
-        this.updateCompositeFrame(stack);
+        this.updateStack(stack);
     }
 
     onPop() {
         const stack = this.state.stack.slice(0);
         stack.pop(-1);
-        this.setState({stack: stack});
-        this.updateCompositeFrame(stack);
+        this.updateStack(stack);
     }
 
     onClear() {
-        const stack = [];
-        this.setState({stack: stack});
-        this.updateCompositeFrame(stack);
+        this.updateStack([]);
     }
 
-    updateCompositeFrame(stack) {
+    updateStack(stack) {
+        this.setState({stack});
         const undo = new THREE.Matrix4().getInverse(this.state.compositeFrame);
         const compositeFrame = new THREE.Matrix4().identity();
         let frame;
@@ -69,7 +66,7 @@ export class App extends React.Component {
             compositeFrame.multiplyMatrices(frame, compositeFrame);
         }
 
-        this.setState({compositeFrame: compositeFrame, undo: undo});
+        this.setState({compositeFrame, undo});
     }
 
     render() {
