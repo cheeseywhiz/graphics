@@ -10,7 +10,6 @@ export class App extends React.Component {
         this.onValueChange = this.onValueChange.bind(this);
         this.onMatrixChange = this.onMatrixChange.bind(this);
         this.onAngleChange = this.onAngleChange.bind(this);
-        this.onTypeChange = this.onTypeChange.bind(this);
         this.onPush = this.onPush.bind(this);
         this.onPop = this.onPop.bind(this);
         this.onClear = this.onClear.bind(this);
@@ -24,10 +23,6 @@ export class App extends React.Component {
 
     onValueChange(value) {
         this.setState({value: value});
-    }
-
-    onTypeChange(type) {
-        this.setState({type: type});
     }
 
     onMatrixChange(matrix) {
@@ -83,11 +78,9 @@ export class App extends React.Component {
                 value={this.state.value}
                 matrix={this.state.matrix}
                 angle={this.state.angle}
-                type={this.state.type}
                 onValueChange={this.onValueChange}
                 onMatrixChange={this.onMatrixChange}
-                onAngleChange={this.onAngleChange}
-                onTypeChange={this.onTypeChange} />
+                onAngleChange={this.onAngleChange} />
             <input type='button' value='Push' onClick={this.onPush} />
             <input type='button' value='Pop' onClick={this.onPop} />
             <input type='button' value='Clear' onClick={this.onClear} />
