@@ -84,3 +84,21 @@ export class StaticMatrix extends React.Component {
 }
 
 StaticMatrix.defaultProps = {matrix: new THREE.Matrix4().identity()};
+
+class MatrixElement extends React.Component {
+    render() {
+        return <li><StaticMatrix matrix={this.props.matrix} /></li>
+    }
+}
+
+MatrixElement.defaultProps = {matrix: new THREE.Matrix4().identity()};
+
+export class MatrixList extends React.Component {
+    render() {
+        return <ul>
+            {this.props.matrices.map((matrix, index) => <MatrixElement key={index} matrix={matrix} />)}
+        </ul>
+    }
+}
+
+MatrixList.defaultProps = {matrices: []};

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import {SelectorInputGroup, } from './matrix-selector.js';
-import {Stack, StaticMatrix} from './stack.js';
+import {Stack, StaticMatrix, MatrixList, } from './stack.js';
 import dictUpdate from './dict-update.js';
 
 export class App extends React.Component {
@@ -66,6 +66,11 @@ export class App extends React.Component {
                 stack={this.state.stack}
                 onStackChange={this.onStackChange}
                 onStackFrameChange={this.onStackFrameChange} />
+            <b>Operation Stack</b>
+            <MatrixList matrices={this.state.stack} />
+            <b>Net stack operation</b>
+            <StaticMatrix matrix={this.state.stackFrame} />
+            <b>Composite Frame</b>
             <StaticMatrix matrix={this.state.compositeFrame} />
         </div>
     }
