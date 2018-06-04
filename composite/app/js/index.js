@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as THREE from 'three';
 import {SelectorInputGroup, } from './matrix-selector.js';
 import {DefaultMatrix, } from './input-matrices.js';
+import dictUpdate from './dict-update.js';
 
 export class App extends React.Component {
     constructor(props) {
@@ -10,7 +12,10 @@ export class App extends React.Component {
         this.onMatrixChange = this.onMatrixChange.bind(this);
         this.onAngleChange = this.onAngleChange.bind(this);
         this.onTypeChange = this.onTypeChange.bind(this);
-        this.state = Object.assign({}, SelectorInputGroup.defaultState);
+        this.state = dictUpdate({
+            frame: new THREE.Matrix4().identity(),
+            undo: new THREE.Matrix4().identity(),
+        }, SelectorInputGroup.defaultState);
     }
 
     onValueChange(value) {
@@ -23,7 +28,14 @@ export class App extends React.Component {
     }
 
     onMatrixChange(matrix) {
-        this.setState({matrix: matrix});
+        const undo = new THREE.Matrix4().getInverse(this.state.frame);
+        const frame = new THREE.Matrix4().set(
+            matrix.xi || 1, matrix.yi || 0, 0, 0,
+            matrix.xj || 0, matrix.yj || 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1,
+        );
+        this.setState({matrix: matrix, frame: frame, undo: undo});
     }
 
     onAngleChange(angle) {
