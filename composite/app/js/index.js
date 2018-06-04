@@ -12,9 +12,12 @@ export class App extends React.Component {
         this.onMatrixChange = this.onMatrixChange.bind(this);
         this.onAngleChange = this.onAngleChange.bind(this);
         this.onTypeChange = this.onTypeChange.bind(this);
+        this.onPush = this.onPush.bind(this);
+        this.onPop = this.onPop.bind(this);
         this.state = dictUpdate({
             frame: new THREE.Matrix4().identity(),
             undo: new THREE.Matrix4().identity(),
+            stack: [],
         }, SelectorInputGroup.defaultState);
     }
 
@@ -42,8 +45,21 @@ export class App extends React.Component {
         this.setState({angle: angle});
     }
 
+    onPush() {
+        const stack = this.state.stack.slice(0);
+        stack.push(this.state.frame);
+        this.setState({stack: stack});
+    }
+
+    onPop() {
+        const stack = this.state.stack.slice(0);
+        stack.pop(-1);
+        this.setState({stack: stack});
+    }
+
     render() {
-        return <SelectorInputGroup
+        return <div> 
+            <SelectorInputGroup
                 value={this.state.value}
                 matrix={this.state.matrix}
                 angle={this.state.angle}
@@ -52,6 +68,9 @@ export class App extends React.Component {
                 onMatrixChange={this.onMatrixChange}
                 onAngleChange={this.onAngleChange}
                 onTypeChange={this.onTypeChange} />
+            <input type="button" value="Push" onClick={this.onPush} />
+            <input type="button" value="Pop" onClick={this.onPop} />
+        </div>
     }
 }
 
