@@ -17,6 +17,7 @@ export class App extends React.Component {
             currentFrame: new THREE.Matrix4().identity(),
             undo: new THREE.Matrix4().identity(),
             stack: [],
+            stackFrame: new THREE.Matrix4().identity(),
             compositeFrame: new THREE.Matrix4().identity(),
         }, SelectorInputGroup.defaultState);
     }
@@ -32,7 +33,10 @@ export class App extends React.Component {
             0, 0, 1, 0,
             0, 0, 0, 1,
         );
-        this.setState({matrix, currentFrame});
+        const undo = new THREE.Matrix4().getInverse(this.state.compositeFrame);
+        const compositeFrame = new THREE.Matrix4()
+            .multiplyMatrices(this.state.stackFrame, this.state.currentFrame);
+        this.setState({matrix, currentFrame, undo, compositeFrame});
     }
 
     onAngleChange(angle) {
@@ -56,17 +60,15 @@ export class App extends React.Component {
     }
 
     updateStack(stack) {
-        this.setState({stack});
-        const undo = new THREE.Matrix4().getInverse(this.state.compositeFrame);
-        const compositeFrame = new THREE.Matrix4().identity();
+        const stackFrame = new THREE.Matrix4().identity();
         let frame;
 
         for (let i = 0; i < stack.length; i++) {
             frame = stack[i];
-            compositeFrame.multiplyMatrices(frame, compositeFrame);
+            stackFrame.multiplyMatrices(frame, stackFrame);
         }
 
-        this.setState({compositeFrame, undo});
+        this.setState({stack, stackFrame});
     }
 
     render() {
