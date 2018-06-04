@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import {SelectorInputGroup, } from './matrix-selector.js';
-import {identityMatrix, DefaultMatrix, } from './input-matrices.js';
 import dictUpdate from './dict-update.js';
 
 export class App extends React.Component {
@@ -15,7 +14,6 @@ export class App extends React.Component {
         this.onPush = this.onPush.bind(this);
         this.onPop = this.onPop.bind(this);
         this.onClear = this.onClear.bind(this);
-        this.resetMatrix = this.resetMatrix.bind(this);
         this.state = dictUpdate({
             currentFrame: new THREE.Matrix4().identity(),
             undo: new THREE.Matrix4().identity(),
@@ -30,7 +28,6 @@ export class App extends React.Component {
 
     onTypeChange(type) {
         this.setState({type: type});
-        this.resetMatrix();
     }
 
     onMatrixChange(matrix) {
@@ -67,12 +64,6 @@ export class App extends React.Component {
         this.updateCompositeFrame(stack);
     }
 
-    resetMatrix() {
-        const state = DefaultMatrix.defaultState;
-        this.setState(state);
-        this.onMatrixChange(state.matrix);
-    }
-
     updateCompositeFrame(stack) {
         const undo = new THREE.Matrix4().getInverse(this.state.compositeFrame);
         const compositeFrame = new THREE.Matrix4().identity();
@@ -96,8 +87,7 @@ export class App extends React.Component {
                 onValueChange={this.onValueChange}
                 onMatrixChange={this.onMatrixChange}
                 onAngleChange={this.onAngleChange}
-                onTypeChange={this.onTypeChange}
-                onReset={this.resetMatrix} />
+                onTypeChange={this.onTypeChange} />
             <input type='button' value='Push' onClick={this.onPush} />
             <input type='button' value='Pop' onClick={this.onPop} />
             <input type='button' value='Clear' onClick={this.onClear} />

@@ -65,13 +65,30 @@ InputMatrix.defaultProps = dictUpdate({
 }, InputMatrix.defaultState);
 
 export class SelectorInputGroup extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onTypeChange = this.onTypeChange.bind(this);
+        this.onReset = this.onReset.bind(this);
+    }
+
+    onTypeChange(type) {
+        this.props.onTypeChange(type);
+        this.onReset();
+    }
+
+    onReset() {
+        const state = DefaultMatrix.defaultState;
+        this.props.onMatrixChange(state.matrix);
+        this.props.onAngleChange(state.angle);
+    }
+
     render() {
         return <div>
             <OperationSelector
                 value={this.props.value}
                 onValueChange={this.props.onValueChange}
-                onTypeChange={this.props.onTypeChange} />
-            <input type='button' value='Reset' onClick={this.props.onReset} />
+                onTypeChange={this.onTypeChange} />
+            <input type='button' value='Reset' onReset={this.onReset} />
             <InputMatrix
                 type={this.props.type}
                 matrix={this.props.matrix}
