@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import dictUpdate from './dict-update.js';
+import roundFloatStr from './round-float-str.js';
 
 export class Stack extends React.Component {
     constructor(props) {
@@ -33,7 +34,7 @@ export class Stack extends React.Component {
 
         for (let i = 0; i < stack.length; i++) {
             frame = stack[i];
-            stackFrame.multiplyMatrices(frame, stackFrame);
+            stackFrame.multiply(frame);
         }
 
         this.props.onStackChange(stack);
@@ -58,3 +59,28 @@ Stack.defaultProps = dictUpdate({
     onStackChange: (stack) => null,
     onStackFrameChange: (frame) => null,
 }, Stack.defaultState);
+
+export class StaticMatrix extends React.Component {
+    render() {
+        const elements = this.props.matrix.elements.map(roundFloatStr);
+        return <table className='matrix'><tbody>
+            <tr>
+                <td>{elements[0]}</td>
+                <td>{elements[4]}</td>
+                <td>{elements[12]}</td>
+            </tr>
+            <tr>
+                <td>{elements[1]}</td>
+                <td>{elements[5]}</td>
+                <td>{elements[13]}</td>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+            </tr>
+        </tbody></table>
+    }
+}
+
+StaticMatrix.defaultProps = {matrix: new THREE.Matrix4().identity()};

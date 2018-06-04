@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import {SelectorInputGroup, } from './matrix-selector.js';
-import {Stack, } from './stack.js';
+import {Stack, StaticMatrix} from './stack.js';
 import dictUpdate from './dict-update.js';
 
 export class App extends React.Component {
@@ -29,8 +29,8 @@ export class App extends React.Component {
 
     onMatrixChange(matrix) {
         const currentFrame = new THREE.Matrix4().set(
-            matrix.xi || 1, matrix.yi || 0, 0, 0,
-            matrix.xj || 0, matrix.yj || 1, 0, 0,
+            matrix.xi || 1, matrix.yi || 0, 0, matrix.ox || 0,
+            matrix.xj || 0, matrix.yj || 1, 0, matrix.oy || 0,
             0, 0, 1, 0,
             0, 0, 0, 1,
         );
@@ -66,6 +66,7 @@ export class App extends React.Component {
                 stack={this.state.stack}
                 onStackChange={this.onStackChange}
                 onStackFrameChange={this.onStackFrameChange} />
+            <StaticMatrix matrix={this.state.compositeFrame} />
         </div>
     }
 }

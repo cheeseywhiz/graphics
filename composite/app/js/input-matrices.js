@@ -2,29 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import dictUpdate from './dict-update.js';
+import roundFloatStr from './round-float-str.js';
 
 export function identityMatrix() {
     return {
         xi: 1, yi: 0, ox: 0,
         xj: 0, yj: 1, oy: 0,
     };
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round#A_better_solution
-function round(number, precision) {
-    const shift = function(number, exponent) {
-        const numArray = ('' + number ).split('e');
-        return +(
-            numArray[0] +
-            'e' +
-            (numArray[1] ? (+numArray[1] + exponent) : exponent)
-        );
-    };
-    return shift(Math.round(shift(number, +precision)), -precision);
-}
-
-function roundFloatStr(number) {
-    return round(number, 2).toString();
 }
 
 class NumberInput extends React.Component {
