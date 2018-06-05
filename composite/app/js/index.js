@@ -70,8 +70,6 @@ export class App extends React.Component {
                 onStackChange={this.onStackChange}
                 onStackFrameChange={this.onStackFrameChange}
                 onReset={this.onReset} />
-            <b>Operation Stack</b>
-            <MatrixList matrices={this.state.stack} />
             <b>Net stack operation</b>
             <StaticMatrix matrix={this.state.stackFrame} />
             <b>Composite Frame</b>
