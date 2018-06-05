@@ -11,6 +11,7 @@ export class App extends React.Component {
         super(props);
         this.onValueChange = this.onValueChange.bind(this);
         this.onMatrixChange = this.onMatrixChange.bind(this);
+        this.onFrameChange = this.onFrameChange.bind(this);
         this.onAngleChange = this.onAngleChange.bind(this);
         this.onStackChange = this.onStackChange.bind(this);
         this.onStackFrameChange = this.onStackFrameChange.bind(this);
@@ -27,13 +28,11 @@ export class App extends React.Component {
     }
 
     onMatrixChange(matrix) {
-        const currentFrame = new THREE.Matrix4().set(
-            matrix.xi || 1, matrix.yi || 0, 0, matrix.ox || 0,
-            matrix.xj || 0, matrix.yj || 1, 0, matrix.oy || 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1,
-        );
-        this.setState({matrix, currentFrame});
+        this.setState({matrix});
+    }
+
+    onFrameChange(currentFrame) {
+        this.setState({currentFrame});
     }
 
     onAngleChange(angle) {
@@ -52,6 +51,7 @@ export class App extends React.Component {
         const state = DefaultMatrix.defaultState;
         this.onMatrixChange(state.matrix);
         this.onAngleChange(state.angle);
+        this.onFrameChange(new THREE.Matrix4().identity());
     }
 
     render() {
@@ -63,6 +63,7 @@ export class App extends React.Component {
                 onValueChange={this.onValueChange}
                 onMatrixChange={this.onMatrixChange}
                 onAngleChange={this.onAngleChange}
+                onFrameChange={this.onFrameChange}
                 onReset={this.onReset} />
             <Stack
                 currentFrame={this.state.currentFrame}

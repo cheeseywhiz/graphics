@@ -1,15 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as THREE from 'three';
 import PropTypes from 'prop-types';
 import dictUpdate from './dict-update.js';
 import roundFloatStr from './round-float-str.js';
-
-export function identityMatrix() {
-    return {
-        xi: 1, yi: 0, ox: 0,
-        xj: 0, yj: 1, oy: 0,
-    };
-}
 
 class NumberInput extends React.Component {
     constructor(props) {
@@ -96,7 +90,18 @@ export class DefaultMatrix extends React.Component {
     onKeyValueChange(key, value) {
         const matrix = Object.assign({}, this.props.matrix);
         matrix[key] = value;
+        this.onMatrixChange(matrix);
+    }
+
+    onMatrixChange(matrix) {
+        const frame = new THREE.Matrix4().set(
+            matrix.xi || 1, matrix.yi || 0, 0, matrix.ox || 0,
+            matrix.xj || 0, matrix.yj || 1, 0, matrix.oy || 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1,
+        );
         this.props.onMatrixChange(matrix);
+        this.props.onFrameChange(frame);
     }
 
     onAngleChange(angle_degrees) {
@@ -113,12 +118,16 @@ export class DefaultMatrix extends React.Component {
 }
 
 DefaultMatrix.defaultState = {
-    matrix: identityMatrix(),
+    matrix: {
+        xi: 1, yi: 0, ox: 0,
+        xj: 0, yj: 1, oy: 0,
+    },
     angle: 0,
 };
 DefaultMatrix.defaultProps = dictUpdate({
     onMatrixChange: (matrix) => null,
     onAngleChange: (angle) => null,
+    onFrameChange: (frame) => null,
 }, DefaultMatrix.defaultState);
 
 export class ScaleMatrix extends DefaultMatrix {
