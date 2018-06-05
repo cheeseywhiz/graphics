@@ -113,7 +113,7 @@ export class DefaultMatrix extends React.Component {
             xi: cos, yi: -sin,
             xj: sin, yj: cos,
         });
-        this.props.onMatrixChange(matrix);
+        this.onMatrixChange(matrix);
     }
 }
 
