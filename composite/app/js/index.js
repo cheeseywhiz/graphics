@@ -56,21 +56,22 @@ export class App extends React.Component {
 
     render() {
         return <div>
-            <SelectorInputGroup
-                value={this.state.value}
-                matrix={this.state.matrix}
-                angle={this.state.angle}
-                onValueChange={this.onValueChange}
-                onMatrixChange={this.onMatrixChange}
-                onAngleChange={this.onAngleChange}
-                onFrameChange={this.onFrameChange}
-                onReset={this.onReset} />
             <Stack
                 currentFrame={this.state.currentFrame}
                 stack={this.state.stack}
                 onStackChange={this.onStackChange}
                 onStackFrameChange={this.onStackFrameChange}
-                onReset={this.onReset} />
+                onReset={this.onReset}>
+                <SelectorInputGroup
+                    value={this.state.value}
+                    matrix={this.state.matrix}
+                    angle={this.state.angle}
+                    onValueChange={this.onValueChange}
+                    onMatrixChange={this.onMatrixChange}
+                    onAngleChange={this.onAngleChange}
+                    onFrameChange={this.onFrameChange}
+                    onReset={this.onReset} />
+            </Stack>
             <b>Net stack operation</b>
             <StaticMatrix matrix={this.state.stackFrame} />
             <b>Composite Frame</b>

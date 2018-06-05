@@ -54,6 +54,7 @@ export class MatrixList extends React.Component {
     render() {
         return <ul>
             {this.props.matrices.map((matrix, index) => <MatrixElement key={index} matrix={matrix} />)}
+            <li>{this.props.children}</li>
         </ul>
     }
 }
@@ -100,11 +101,13 @@ export class Stack extends React.Component {
 
     render() {
         return <div>
+            <b>Operation stack</b><br/>
             <input type='button' value='Push' onClick={this.onPush} />
             <input type='button' value='Pop' onClick={this.onPop} />
-            <input type='button' value='Clear' onClick={this.onClear} /><br/>
-            <b>Operation stack</b>
-            <MatrixList matrices={this.props.stack} />
+            <input type='button' value='Clear' onClick={this.onClear} />
+            <MatrixList matrices={this.props.stack}>
+                {this.props.children}
+            </MatrixList>
         </div>
     }
 }
