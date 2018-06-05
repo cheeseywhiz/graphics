@@ -36,10 +36,10 @@ export class InputMatrix extends React.Component {
     render() {
         const matrixProps = {
             onMatrixChange: this.props.onMatrixChange,
-            onAngleChange: this.props.onAngleChange,
+            onNumberChange: this.props.onNumberChange,
             onFrameChange: this.props.onFrameChange,
             matrix: this.props.matrix,
-            angle: this.props.angle,
+            number: this.props.number,
         };
         return React.createElement(this.props.type, matrixProps);
     }
@@ -50,7 +50,7 @@ InputMatrix.defaultState = dictUpdate({
 }, DefaultMatrix.defaultState);
 InputMatrix.defaultProps = dictUpdate({
     onMatrixChange: (matrix) => null,
-    onAngleChange: (angle) => null,
+    onNumberChange: (number) => null,
     onFrameChange: (frame) => null,
 }, InputMatrix.defaultState);
 
@@ -82,9 +82,9 @@ export class SelectorInputGroup extends React.Component {
             <InputMatrix
                 type={type}
                 matrix={this.props.matrix}
-                angle={this.props.angle}
+                number={this.props.number}
                 onMatrixChange={this.props.onMatrixChange}
-                onAngleChange={this.props.onAngleChange}
+                onNumberChange={this.props.onNumberChange}
                 onFrameChange={this.props.onFrameChange} />
         </div>
     }
@@ -97,7 +97,7 @@ SelectorInputGroup.defaultState = Object.assign(
 );
 SelectorInputGroup.defaultProps = Object.assign({
     onMatrixChange: (matrix) => null,
-    onAngleChange: (angle) => null,
+    onNumberChange: (number) => null,
     onFrameChange: (frame) => null,
     onReset: () => null,
 }, SelectorInputGroup.defaultState);

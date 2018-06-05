@@ -63,7 +63,7 @@ DictInput.defaultProps = {
 export class DefaultMatrix extends React.Component {
     constructor(props) {
         super(props);
-        this.onAngleChange = this.onAngleChange.bind(this);
+        this.onNumberChange = this.onNumberChange.bind(this);
         this.onKeyValueChange = this.onKeyValueChange.bind(this);
     }
 
@@ -104,17 +104,7 @@ export class DefaultMatrix extends React.Component {
         this.props.onFrameChange(frame);
     }
 
-    onAngleChange(angle_degrees) {
-        this.props.onAngleChange(angle_degrees);
-        const angle_radians = angle_degrees * Math.PI / 180;
-        const sin = Math.sin(angle_radians);
-        const cos = Math.cos(angle_radians);
-        const matrix = Object.assign({}, this.props.matrix, {
-            xi: cos, yi: -sin,
-            xj: sin, yj: cos,
-        });
-        this.onMatrixChange(matrix);
-    }
+    onNumberChange(number) {}
 }
 
 DefaultMatrix.defaultState = {
@@ -122,40 +112,63 @@ DefaultMatrix.defaultState = {
         xi: 1, yi: 0, ox: 0,
         xj: 0, yj: 1, oy: 0,
     },
-    angle: 0,
+    number: 0,
 };
 DefaultMatrix.defaultProps = dictUpdate({
     onMatrixChange: (matrix) => null,
-    onAngleChange: (angle) => null,
+    onNumberChange: (number) => null,
     onFrameChange: (frame) => null,
 }, DefaultMatrix.defaultState);
 
 export class ScaleMatrix extends DefaultMatrix {
+    onNumberChange(ratio) {
+        const matrix = Object.assign({}, this.props.matrix, {
+            xi: ratio, yj: ratio,
+        });
+        this.props.onNumberChange(ratio);
+        this.onMatrixChange(matrix);
+    }
+
     render() {
-        return <table className='matrix'><tbody>
-            <tr>
-                <td><DictInput dictKey='xi' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
-                <td>0</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>0</td>
-                <td><DictInput dictKey='yj' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>0</td>
-                <td>0</td>
-                <td>1</td>
-            </tr>
-        </tbody></table>
+        return <div>
+            <NumberInput value={this.props.number} placeholder='ratio' onNumberChange={this.onNumberChange} />
+            <table className='matrix'><tbody>
+                <tr>
+                    <td><DictInput dictKey='xi' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td><DictInput dictKey='yj' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} /></td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+            </tbody></table>
+        </div>
     }
 }
 
 export class RotationMatrix extends DefaultMatrix {
+    onNumberChange(angle_degrees) {
+        const angle_radians = angle_degrees * Math.PI / 180;
+        const sin = Math.sin(angle_radians);
+        const cos = Math.cos(angle_radians);
+        const matrix = Object.assign({}, this.props.matrix, {
+            xi: cos, yi: -sin,
+            xj: sin, yj: cos,
+        });
+        this.props.onNumberChange(angle_degrees);
+        this.onMatrixChange(matrix);
+    }
+
     render() {
         return <div>
-            <NumberInput value={this.props.angle} placeholder='angle' onNumberChange={this.onAngleChange} />
+            <NumberInput value={this.props.number} placeholder='angle' onNumberChange={this.onNumberChange} />
             <table className='matrix'><tbody>
                 <tr>
                     <td><DictInput dictKey='xi' dict={this.props.matrix} onKeyValueChange={this.onKeyValueChange} disabled/></td>

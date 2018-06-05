@@ -12,7 +12,7 @@ export class App extends React.Component {
         this.onValueChange = this.onValueChange.bind(this);
         this.onMatrixChange = this.onMatrixChange.bind(this);
         this.onFrameChange = this.onFrameChange.bind(this);
-        this.onAngleChange = this.onAngleChange.bind(this);
+        this.onNumberChange = this.onNumberChange.bind(this);
         this.onStackChange = this.onStackChange.bind(this);
         this.onStackFrameChange = this.onStackFrameChange.bind(this);
         this.onReset = this.onReset.bind(this);
@@ -35,8 +35,8 @@ export class App extends React.Component {
         this.setState({currentFrame});
     }
 
-    onAngleChange(angle) {
-        this.setState({angle});
+    onNumberChange(number) {
+        this.setState({number});
     }
 
     onStackChange(stack) {
@@ -50,7 +50,7 @@ export class App extends React.Component {
     onReset() {
         const state = DefaultMatrix.defaultState;
         this.onMatrixChange(state.matrix);
-        this.onAngleChange(state.angle);
+        this.onNumberChange(state.number);
         this.onFrameChange(new THREE.Matrix4().identity());
     }
 
@@ -65,10 +65,10 @@ export class App extends React.Component {
                 <SelectorInputGroup
                     value={this.state.value}
                     matrix={this.state.matrix}
-                    angle={this.state.angle}
+                    number={this.state.number}
                     onValueChange={this.onValueChange}
                     onMatrixChange={this.onMatrixChange}
-                    onAngleChange={this.onAngleChange}
+                    onNumberChange={this.onNumberChange}
                     onFrameChange={this.onFrameChange}
                     onReset={this.onReset} />
             </Stack>
