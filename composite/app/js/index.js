@@ -14,10 +14,12 @@ export class App extends React.Component {
         this.onFrameChange = this.onFrameChange.bind(this);
         this.onNumberChange = this.onNumberChange.bind(this);
         this.onStackChange = this.onStackChange.bind(this);
-        this.onStackFrameChange = this.onStackFrameChange.bind(this);
         this.onReset = this.onReset.bind(this);
+        this.identity = new THREE.Matrix4().identity();
         this.state = Object.assign(
-            {},
+            {
+                intermediates: [new THREE.Matrix4().identity()],
+            },
             SelectorInputGroup.defaultState,
             Stack.defaultState,
         );
@@ -32,7 +34,9 @@ export class App extends React.Component {
     }
 
     onFrameChange(currentFrame) {
-        this.setState({currentFrame});
+        const stack = this.state.stack.slice(0);
+        stack[stack.length - 1] = currentFrame;
+        this.onStackChange(stack);
     }
 
     onNumberChange(number) {
@@ -40,27 +44,33 @@ export class App extends React.Component {
     }
 
     onStackChange(stack) {
-        this.setState({stack});
-    }
+        const intermediates = [new THREE.Matrix4().identity()];
+        let next;
 
-    onStackFrameChange(stackFrame) {
-        this.setState({stackFrame});
+        for (let frame of stack) {
+            if (!(frame.equals(this.identity))) {
+                next = intermediates[intermediates.length - 1].clone();
+                next.multiplyMatrices(frame, next);
+                intermediates.push(next);
+            }
+        }
+
+        this.setState({stack, intermediates});
     }
 
     onReset() {
+        console.log('onReset');
         const state = DefaultMatrix.defaultState;
         this.onMatrixChange(state.matrix);
         this.onNumberChange(state.number);
-        this.onFrameChange(new THREE.Matrix4().identity());
+        // TODO: Update intermediates on reset
     }
 
     render() {
         return <div>
             <Stack
-                currentFrame={this.state.currentFrame}
                 stack={this.state.stack}
                 onStackChange={this.onStackChange}
-                onStackFrameChange={this.onStackFrameChange}
                 onReset={this.onReset}>
                 <SelectorInputGroup
                     value={this.state.value}
@@ -72,10 +82,8 @@ export class App extends React.Component {
                     onFrameChange={this.onFrameChange}
                     onReset={this.onReset} />
             </Stack>
-            <b>Net stack operation</b>
-            <StaticMatrix matrix={this.state.stackFrame} />
-            <b>Composite Frame</b>
-            <CompositeFrame stackFrame={this.state.stackFrame} currentFrame={this.state.currentFrame} />
+            <b>Intermediate frames</b>
+            <MatrixList matrices={this.state.intermediates} />
         </div>
     }
 }

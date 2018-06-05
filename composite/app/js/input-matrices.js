@@ -19,10 +19,10 @@ class NumberInput extends React.Component {
         delete inputProps.onNumberChange;
 
         if ('value' in inputProps) {
-            if (isNaN(inputProps.value)) {
-                inputProps.value = '';
-            } else {
+            if (Number.isFinite(inputProps.value)) {
                 inputProps.value = roundFloatStr(inputProps.value);
+            } else {
+                inputProps.value = '';
             }
         }
 
@@ -112,7 +112,7 @@ DefaultMatrix.defaultState = {
         xi: 1, yi: 0, ox: 0,
         xj: 0, yj: 1, oy: 0,
     },
-    number: 0,
+    number: '',
 };
 DefaultMatrix.defaultProps = dictUpdate({
     onMatrixChange: (matrix) => null,

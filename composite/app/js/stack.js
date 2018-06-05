@@ -52,9 +52,10 @@ MatrixElement.defaultProps = {matrix: new THREE.Matrix4().identity()};
 
 export class MatrixList extends React.Component {
     render() {
+        const hasChildren = this.props.children !== undefined;
         return <ul>
             {this.props.matrices.map((matrix, index) => <MatrixElement key={index} matrix={matrix} />)}
-            <li>{this.props.children}</li>
+            {hasChildren && <li>{this.props.children}</li>}
         </ul>
     }
 }
@@ -71,32 +72,24 @@ export class Stack extends React.Component {
 
     onPush() {
         const stack = this.props.stack.slice(0);
-        stack.push(this.props.currentFrame);
-        this.onStackChange(stack);
+        stack.push(new THREE.Matrix4().identity());
+        this.props.onStackChange(stack);
         this.props.onReset();
     }
 
     onPop() {
-        const stack = this.props.stack.slice(0);
-        stack.pop(-1);
-        this.onStackChange(stack);
+        if (this.props.stack.length > 1) {
+            const stack = this.props.stack.slice(0);
+            const last = stack.pop();
+            stack.pop();
+            stack.push(last);
+            this.props.onStackChange(stack);
+        }
     }
 
     onClear() {
-        this.onStackChange([]);
-    }
-
-    onStackChange(stack) {
-        const stackFrame = new THREE.Matrix4().identity();
-        let frame;
-
-        for (let i = 0; i < stack.length; i++) {
-            frame = stack[i];
-            stackFrame.multiplyMatrices(frame, stackFrame);
-        }
-
-        this.props.onStackChange(stack);
-        this.props.onStackFrameChange(stackFrame);
+        const state = Stack.defaultState;
+        this.props.onStackChange(state.stack);
     }
 
     render() {
@@ -105,7 +98,7 @@ export class Stack extends React.Component {
             <input type='button' value='Push' onClick={this.onPush} />
             <input type='button' value='Pop' onClick={this.onPop} />
             <input type='button' value='Clear' onClick={this.onClear} />
-            <MatrixList matrices={this.props.stack}>
+            <MatrixList matrices={this.props.stack.slice(0, -1)}>
                 {this.props.children}
             </MatrixList>
         </div>
@@ -113,12 +106,9 @@ export class Stack extends React.Component {
 }
 
 Stack.defaultState = {
-    stack: [],
-    stackFrame: new THREE.Matrix4().identity(),
-    currentFrame: new THREE.Matrix4().identity(),
+    stack: [new THREE.Matrix4().identity()],
 };
 Stack.defaultProps = dictUpdate({
     onStackChange: (stack) => null,
-    onStackFrameChange: (frame) => null,
     onReset: () => null,
 }, Stack.defaultState);
