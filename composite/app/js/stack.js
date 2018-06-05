@@ -32,7 +32,7 @@ StaticMatrix.defaultProps = {matrix: new THREE.Matrix4().identity()};
 export class CompositeFrame extends React.Component {
     render() {
         const matrix = new THREE.Matrix4()
-            .multiplyMatrices(this.props.stackFrame, this.props.currentFrame);
+            .multiplyMatrices(this.props.currentFrame, this.props.stackFrame);
         return <StaticMatrix matrix={matrix} />
     }
 }
@@ -91,7 +91,7 @@ export class Stack extends React.Component {
 
         for (let i = 0; i < stack.length; i++) {
             frame = stack[i];
-            stackFrame.multiply(frame);
+            stackFrame.multiplyMatrices(frame, stackFrame);
         }
 
         this.props.onStackChange(stack);
