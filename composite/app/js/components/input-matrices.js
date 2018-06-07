@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect, } from 'react-redux';
 import {RotationInput, } from './rotation-input.js';
 import {ScaleInput, } from './scale-input.js';
 import {MatrixInput, } from './matrix-input.js';
@@ -128,3 +129,17 @@ export class ManualMatrix extends React.Component {
         </tbody></table>
     }
 }
+
+class InputMatrixBase extends React.Component {
+    render() {
+        return React.createElement(this.props.type);
+    }
+}
+
+function mapStateToProps(state) {
+    return {
+        type: state.type,
+    };
+}
+
+export const InputMatrix = connect(mapStateToProps)(InputMatrixBase);
