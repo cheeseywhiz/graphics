@@ -1,7 +1,7 @@
 import {combineReducers, } from 'redux';
 import * as actions from './actions.js';
 
-function number(state = 0, action) {
+function number(state = '', action) {
     switch (action.type) {
         case actions.types.UPDATE_NUMBER:
             return action.number;
@@ -21,7 +21,9 @@ function matrix(state = identityMatrix, action) {
             const newState = {...state};
             newState[action.key] = action.value;
             return newState;
-        }
+        };
+        case actions.types.SET_MATRIX:
+            return action.matrix;
         default:
             return state;
     }

@@ -40,10 +40,14 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
     return {
-        onNumberChange: (value) => dispatch(actions.updateNumber(value)),
+        onNumberChange: (value) => {
+            dispatch(actions.updateNumber(value))
+            ownProps.onNumberChange(value);
+        },
     };
 }
 
 export const NumberInput = connect(mapStateToProps, mapDispatchToProps)(NumberInputBase);
+NumberInput.defaultProps = {onNumberChange: (value) => null};

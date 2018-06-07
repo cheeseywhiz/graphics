@@ -1,11 +1,13 @@
 import React from 'react';
 import {NumberInput, } from './number-input.js';
+import {RotationInput, } from './rotation-input.js';
 import {MatrixInput, } from './matrix-input.js';
 
 export default class App extends React.Component {
     render() {
         return <div>
             <NumberInput placeholder='number' />
+            <RotationInput />
             <MatrixInput matrixKey='xi' />
             <MatrixInput matrixKey='yi' />
             <MatrixInput matrixKey='xj' />
