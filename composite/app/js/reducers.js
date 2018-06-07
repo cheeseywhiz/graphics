@@ -6,6 +6,9 @@ function number(state = '', action) {
     switch (action.type) {
         case actions.types.UPDATE_NUMBER:
             return action.number;
+        case actions.types.RESET_MATRIX:
+        case actions.types.UPDATE_VALUE:
+            return '';
         default:
             return state;
     }
@@ -25,6 +28,9 @@ function matrix(state = identityMatrix, action) {
         };
         case actions.types.SET_MATRIX:
             return action.matrix;
+        case actions.types.RESET_MATRIX:
+        case actions.types.UPDATE_VALUE:
+            return identityMatrix;
         default:
             return state;
     }
