@@ -8,6 +8,7 @@ function number(state = '', action) {
         case actions.types.UPDATE_NUMBER:
             return action.number;
         case actions.types.RESET_MATRIX:
+        case actions.types.STACK_PUSH:
         case actions.types.UPDATE_VALUE:
             return '';
         default:
@@ -33,12 +34,18 @@ const identityMatrix = {
 const matrixState = {
     ...identityMatrix,
     frame: new THREE.Matrix4().identity(),
+    stack: [],
 }
 
 function matrix(state = matrixState, action) {
     switch (action.type) {
         case actions.types.SET_MATRIX:
             return setFrame({...state, ...action.matrix});
+        case actions.types.STACK_PUSH: {
+            const stack = [...state.stack];
+            stack.push(state);
+            return setFrame({...state, ...{stack}, ...identityMatrix});
+        };
         case actions.types.RESET_MATRIX:
         case actions.types.UPDATE_VALUE:
             return setFrame({...state, ...identityMatrix});

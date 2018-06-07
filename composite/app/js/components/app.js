@@ -2,6 +2,7 @@ import React from 'react';
 import {OperationSelector, } from './operation-selector.js';
 import {InputMatrix, } from './input-matrices.js';
 import {ResetButton, } from './reset-button.js';
+import {Stack, } from './stack.js';
 
 export default class App extends React.Component {
     render() {
@@ -9,6 +10,7 @@ export default class App extends React.Component {
             <OperationSelector />
             <ResetButton />
             <InputMatrix />
+            <Stack />
         </div>
     }
 }

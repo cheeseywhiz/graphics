@@ -5,6 +5,7 @@ export const types = {
     RESET_MATRIX: 'RESET_MATRIX',
     SET_ROTATION_MATRIX: 'SET_ROTATION_MATRIX',
     SET_SCALE_MATRIX: 'SET_SCALE_MATRIX',
+    STACK_PUSH: 'STACK_PUSH',
 };
 
 export function updateNumber(number) {
@@ -50,4 +51,9 @@ export function setScaleMatrix(ratio) {
         xj: 0, yj: ratio, oy: 0,
     };
     return setMatrix(matrix);
+}
+
+export function stackPush() {
+    const type = types.STACK_PUSH;
+    return {type};
 }
