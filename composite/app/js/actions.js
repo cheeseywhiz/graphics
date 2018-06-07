@@ -2,6 +2,7 @@ export const types = {
     UPDATE_NUMBER: 'UPDATE_NUMBER',
     UPDATE_MATRIX: 'UPDATE_MATRIX',
     SET_MATRIX: 'SET_MATRIX',
+    UPDATE_VALUE: 'UPDATE_VALUE',
 };
 
 export function updateNumber(number) {
@@ -17,4 +18,9 @@ export function updateMatrix(key, value) {
 export function setMatrix(matrix) {
     const type = types.SET_MATRIX;
     return {type, matrix};
+}
+
+export function updateValue(value) {
+    const type = types.UPDATE_VALUE;
+    return {type, value};
 }

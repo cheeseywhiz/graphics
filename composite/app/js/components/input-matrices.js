@@ -3,6 +3,28 @@ import {RotationInput, } from './rotation-input.js';
 import {ScaleInput, } from './scale-input.js';
 import {MatrixInput, } from './matrix-input.js';
 
+export class DefaultMatrix extends React.Component {
+    render() {
+        return <table className='matrix'><tbody>
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+            </tr>
+        </tbody></table>
+    }
+}
+
 export class RotationMatrix extends React.Component {
     render() {
         return <table className='matrix'>

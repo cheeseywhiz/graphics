@@ -1,5 +1,6 @@
 import {combineReducers, } from 'redux';
 import * as actions from './actions.js';
+import * as InputMatrices from './components/input-matrices.js';
 
 function number(state = '', action) {
     switch (action.type) {
@@ -29,5 +30,29 @@ function matrix(state = identityMatrix, action) {
     }
 }
 
-const reducer = combineReducers({number, matrix, });
+function value(state = '0', action) {
+    switch (action.type) {
+        case actions.types.UPDATE_VALUE:
+            return action.value;
+        default:
+            return state;
+    }
+}
+
+function type(state = InputMatrices.DefaultMatrix, action) {
+    switch (action.type) {
+        case actions.types.UPDATE_VALUE:
+            return {
+                '0': InputMatrices.DefaultMatrix,
+                '1': InputMatrices.RotationMatrix,
+                '2': InputMatrices.ScaleMatrix,
+                '3': InputMatrices.TranslationMatrix,
+                '4': InputMatrices.ManualMatrix,
+            }[action.value];
+        default:
+            return state;
+    }
+}
+
+const reducer = combineReducers({number, matrix, value, type, });
 export default reducer;
