@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
 import * as actions from '../actions.js';
 import roundFloatStr from '../round-float-str.js';
@@ -17,12 +18,10 @@ export class NumberInputBase extends React.Component {
         };
         delete inputProps.onNumberChange;
 
-        if ('value' in inputProps) {
-            if (Number.isFinite(inputProps.value)) {
-                inputProps.value = roundFloatStr(inputProps.value);
-            } else {
-                inputProps.value = '';
-            }
+        if (Number.isFinite(inputProps.value)) {
+            inputProps.value = roundFloatStr(inputProps.value);
+        } else {
+            inputProps.value = '';
         }
 
         return React.createElement('input', inputProps);
@@ -33,11 +32,10 @@ export class NumberInputBase extends React.Component {
     }
 }
 
-NumberInputBase.defaultProps = {onNumberChange: (value) => null};
+NumberInputBase.propTypes = {onNumberChange: PropTypes.func.isRequired};
 
 function mapStateToProps(state, ownProps) {
     return {
-        ...ownProps,
         value: state.number,
     };
 }

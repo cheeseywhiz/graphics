@@ -10,5 +10,22 @@ function number(state = 0, action) {
     }
 }
 
-const reducer = combineReducers({number});
+const identityMatrix = {
+    xi: 1, yi: 0, ox: 0,
+    xj: 0, yj: 1, oy: 0,
+}
+
+function matrix(state = identityMatrix, action) {
+    switch (action.type) {
+        case actions.types.UPDATE_MATRIX: {
+            const newState = {...state};
+            newState[action.key] = action.value;
+            return newState;
+        }
+        default:
+            return state;
+    }
+}
+
+const reducer = combineReducers({number, matrix, });
 export default reducer;
