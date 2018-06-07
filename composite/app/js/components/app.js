@@ -1,8 +1,8 @@
 import React from 'react';
-import NumberInput from './number-input.js';
+import {NumberInput, } from './number-input.js';
 
 export default class App extends React.Component {
     render() {
-        return <NumberInput />
+        return <NumberInput placeholder='number' />
     }
 }

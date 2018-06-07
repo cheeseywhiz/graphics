@@ -1,29 +1,51 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import * as actions from '../actions.js';
+import roundFloatStr from '../round-float-str.js';
 
-class NumberInputBase extends React.Component {
+export class NumberInputBase extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+
     render() {
-        return <input
-            type='number'
-            value={this.props.value}
-            onChange={this.props.onChange} />
+        const inputProps = {
+            ...this.props,
+            type: 'number',
+            onChange: this.onChange,
+        };
+        delete inputProps.onNumberChange;
+
+        if ('value' in inputProps) {
+            if (Number.isFinite(inputProps.value)) {
+                inputProps.value = roundFloatStr(inputProps.value);
+            } else {
+                inputProps.value = '';
+            }
+        }
+
+        return React.createElement('input', inputProps);
+    }
+
+    onChange(event) {
+        this.props.onNumberChange(parseFloat(event.target.value));
     }
 }
 
-function mapStateToProps(state) {
+NumberInputBase.defaultProps = {onNumberChange: (value) => null};
+
+function mapStateToProps(state, ownProps) {
     return {
+        ...ownProps,
         value: state.number,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onChange: (event) => dispatch(actions.updateNumber(
-            parseFloat(event.target.value)
-        )),
+        onNumberChange: (value) => dispatch(actions.updateNumber(value)),
     };
 }
 
-const NumberInput = connect(mapStateToProps, mapDispatchToProps)(NumberInputBase);
-export default NumberInput;
+export const NumberInput = connect(mapStateToProps, mapDispatchToProps)(NumberInputBase);
