@@ -19,18 +19,17 @@ const identityMatrix = {
     xj: 0, yj: 1, oy: 0,
 }
 
-function matrix(state = identityMatrix, action) {
+const matrixState = {
+    ...identityMatrix,
+}
+
+function matrix(state = matrixState, action) {
     switch (action.type) {
-        case actions.types.UPDATE_MATRIX: {
-            const newState = {...state};
-            newState[action.key] = action.value;
-            return newState;
-        };
         case actions.types.SET_MATRIX:
-            return action.matrix;
+            return {...state, ...action.matrix};
         case actions.types.RESET_MATRIX:
         case actions.types.UPDATE_VALUE:
-            return identityMatrix;
+            return {...state, ...identityMatrix};
         default:
             return state;
     }
