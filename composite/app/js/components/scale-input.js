@@ -10,13 +10,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onNumberChange: (value) => {
-            const matrix = {
-                xi: value, yi: 0, ox: 0,
-                xj: 0, yj: value, oy: 0,
-            };
-            dispatch(actions.setMatrix(matrix));
-        },
+        onNumberChange: (ratio) => dispatch(actions.setScaleMatrix(ratio)),
     };
 }
 
