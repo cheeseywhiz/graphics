@@ -1,4 +1,5 @@
 import {combineReducers, } from 'redux';
+import * as THREE from 'three';
 import * as actions from './actions.js';
 import * as InputMatrices from './components/input-matrices.js';
 
@@ -14,6 +15,16 @@ function number(state = '', action) {
     }
 }
 
+function setFrame(newState) {
+    newState.frame = new THREE.Matrix4().set(
+        newState.xi || 1, newState.yi || 0, 0, newState.ox || 0,
+        newState.xj || 0, newState.yj || 1, 0, newState.oy || 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1,
+    );
+    return newState;
+}
+
 const identityMatrix = {
     xi: 1, yi: 0, ox: 0,
     xj: 0, yj: 1, oy: 0,
@@ -21,15 +32,16 @@ const identityMatrix = {
 
 const matrixState = {
     ...identityMatrix,
+    frame: new THREE.Matrix4().identity(),
 }
 
 function matrix(state = matrixState, action) {
     switch (action.type) {
         case actions.types.SET_MATRIX:
-            return {...state, ...action.matrix};
+            return setFrame({...state, ...action.matrix});
         case actions.types.RESET_MATRIX:
         case actions.types.UPDATE_VALUE:
-            return {...state, ...identityMatrix};
+            return setFrame({...state, ...identityMatrix});
         default:
             return state;
     }
