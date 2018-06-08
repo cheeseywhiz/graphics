@@ -42,7 +42,9 @@ class MatrixList extends React.Component {
 class StackBase extends React.Component {
     render() {
         return <div>
-            <input type='button' value='Push' onClick={this.props.onClick} />
+            <input type='button' value='Push' onClick={this.props.onPush} />
+            <input type='button' value='Pop' onClick={this.props.onPop} />
+            <input type='button' value='Clear' onClick={this.props.onClear} />
             <MatrixList matrices={this.props.stack.map((state) => state.matrix)} />
         </div>
     }
@@ -56,7 +58,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onClick: () => dispatch(actions.stackPush()),
+        onPush: () => dispatch(actions.stackPush()),
+        onPop: () => dispatch(actions.stackPop()),
+        onClear: () => dispatch(actions.stackClear()),
     };
 }
 

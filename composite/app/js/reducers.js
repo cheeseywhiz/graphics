@@ -14,6 +14,11 @@ const defaultState = {
     stack: [],
 };
 
+function stackClear(newState) {
+    const {stack} = defaultState;
+    return Object.assign(newState, {stack});
+}
+
 function resetMatrix(newState) {
     const {matrix, frame} = defaultState;
     return Object.assign(newState, {matrix, frame});
@@ -47,6 +52,17 @@ export default function reducer(state = defaultState, action) {
             stack.push(state);
             return resetMatrix({...state, stack});
         };
+        case actions.types.STACK_POP: {
+            const stack = state.stack;
+            const length = stack.length;
+            if (length) {
+                return stack[length - 1];
+            } else {
+                return state;
+            }
+        };
+        case actions.types.STACK_CLEAR:
+            return stackClear({...state});
         case actions.types.RESET_MATRIX:
             return resetMatrix({...state});
         default:

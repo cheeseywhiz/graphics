@@ -2,6 +2,8 @@ export const types = {
     UPDATE_VALUE: 'UPDATE_VALUE',
     SET_MATRIX: 'SET_MATRIX',
     STACK_PUSH: 'STACK_PUSH',
+    STACK_POP: 'STACK_POP',
+    STACK_CLEAR: 'STACK_CLEAR',
     RESET_MATRIX: 'RESET_MATRIX',
 };
 
@@ -17,6 +19,16 @@ export function setMatrix(matrix) {
 
 export function stackPush() {
     const type = types.STACK_PUSH;
+    return {type};
+}
+
+export function stackPop() {
+    const type = types.STACK_POP;
+    return {type};
+}
+
+export function stackClear() {
+    const type = types.STACK_CLEAR;
     return {type};
 }
 
