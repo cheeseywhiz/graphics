@@ -17,7 +17,7 @@ function mapDispatchToProps(dispatch, ownProps) {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-    const props = {...stateProps, ...dispatchProps, ...ownProps};
+    const props = {...ownProps, ...stateProps, ...dispatchProps};
     delete props.matrixKey;
     return props;
 }

@@ -7,7 +7,7 @@ import App from './components/app.js';
 
 function main() {
     const store = createStore(reducer);
-    store.subscribe(() => console.table(store.getState().matrix.stack));
+    store.subscribe(() => console.table(store.getState().stack));
     ReactDOM.render(
         <Provider store={store}>
             <App />

@@ -1,17 +1,9 @@
 export const types = {
-    UPDATE_NUMBER: 'UPDATE_NUMBER',
     SET_MATRIX: 'SET_MATRIX',
     UPDATE_VALUE: 'UPDATE_VALUE',
     RESET_MATRIX: 'RESET_MATRIX',
-    SET_ROTATION_MATRIX: 'SET_ROTATION_MATRIX',
-    SET_SCALE_MATRIX: 'SET_SCALE_MATRIX',
     STACK_PUSH: 'STACK_PUSH',
 };
-
-export function updateNumber(number) {
-    const type = types.UPDATE_NUMBER;
-    return {type, number};
-}
 
 export function setMatrix(matrix) {
     const type = types.SET_MATRIX;
@@ -41,6 +33,7 @@ export function setRotationMatrix(angle_degrees) {
     const matrix = {
         xi: cos, yi: -sin, ox: 0,
         xj: sin, yj: cos, oy: 0,
+        number: angle_degrees,
     };
     return setMatrix(matrix);
 }
@@ -49,6 +42,7 @@ export function setScaleMatrix(ratio) {
     const matrix = {
         xi: ratio, yi: 0, ox: 0,
         xj: 0, yj: ratio, oy: 0,
+        number: ratio,
     };
     return setMatrix(matrix);
 }

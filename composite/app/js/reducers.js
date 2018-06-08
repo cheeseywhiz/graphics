@@ -1,82 +1,55 @@
-import {combineReducers, } from 'redux';
 import * as THREE from 'three';
 import * as actions from './actions.js';
 import * as InputMatrices from './components/input-matrices.js';
 
-function number(state = '', action) {
-    switch (action.type) {
-        case actions.types.UPDATE_NUMBER:
-            return action.number;
-        case actions.types.RESET_MATRIX:
-        case actions.types.STACK_PUSH:
-        case actions.types.UPDATE_VALUE:
-            return '';
-        default:
-            return state;
-    }
-}
-
-function setFrame(newState) {
-    newState.frame = new THREE.Matrix4().set(
-        newState.xi || 1, newState.yi || 0, 0, newState.ox || 0,
-        newState.xj || 0, newState.yj || 1, 0, newState.oy || 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1,
-    );
-    return newState;
-}
-
-const identityMatrix = {
-    xi: 1, yi: 0, ox: 0,
-    xj: 0, yj: 1, oy: 0,
-}
-
-const matrixState = {
-    ...identityMatrix,
+const defaultState = {
+    matrix: {
+        xi: 1, yi: 0, ox: 0,
+        xj: 0, yj: 1, oy: 0,
+        number: '',
+    },
     frame: new THREE.Matrix4().identity(),
+    value: '0',
+    type: InputMatrices.DefaultMatrix,
     stack: [],
+};
+
+function resetMatrix(newState) {
+    const {matrix, frame} = defaultState;
+    return Object.assign(newState, {matrix, frame});
 }
 
-function matrix(state = matrixState, action) {
+export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case actions.types.SET_MATRIX:
-            return setFrame({...state, ...action.matrix});
-        case actions.types.STACK_PUSH: {
-            const stack = [...state.stack];
-            stack.push(state);
-            return setFrame({...state, ...{stack}, ...identityMatrix});
+        case actions.types.SET_MATRIX: {
+            const matrix = {...state.matrix, ...action.matrix};
+            const frame = new THREE.Matrix4().set(
+                matrix.xi || 1, matrix.yi || 0, 0, matrix.ox || 0,
+                matrix.xj || 0, matrix.yj || 1, 0, matrix.oy || 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+            );
+            return {...state, frame, matrix};
         };
-        case actions.types.RESET_MATRIX:
-        case actions.types.UPDATE_VALUE:
-            return setFrame({...state, ...identityMatrix});
-        default:
-            return state;
-    }
-}
-
-function value(state = '0', action) {
-    switch (action.type) {
-        case actions.types.UPDATE_VALUE:
-            return action.value;
-        default:
-            return state;
-    }
-}
-
-function type(state = InputMatrices.DefaultMatrix, action) {
-    switch (action.type) {
-        case actions.types.UPDATE_VALUE:
-            return {
+        case actions.types.UPDATE_VALUE: {
+            const value = action.value;
+            const type = {
                 '0': InputMatrices.DefaultMatrix,
                 '1': InputMatrices.RotationMatrix,
                 '2': InputMatrices.ScaleMatrix,
                 '3': InputMatrices.TranslationMatrix,
                 '4': InputMatrices.ManualMatrix,
-            }[action.value];
+            }[value];
+            return resetMatrix({...state, value, type});
+        };
+        case actions.types.STACK_PUSH: {
+            const stack = [...state.stack];
+            stack.push(state);
+            return resetMatrix({...state, stack});
+        };
+        case actions.types.RESET_MATRIX:
+            return resetMatrix({...state});
         default:
             return state;
     }
 }
-
-const reducer = combineReducers({number, matrix, value, type, });
-export default reducer;

@@ -43,14 +43,14 @@ class StackBase extends React.Component {
     render() {
         return <div>
             <input type='button' value='Push' onClick={this.props.onClick} />
-            <MatrixList matrices={this.props.stack} />
+            <MatrixList matrices={this.props.stack.map((state) => state.matrix)} />
         </div>
     }
 }
 
 function mapStateToProps(state) {
     return {
-        stack: state.matrix.stack,
+        stack: state.stack,
     };
 }
 

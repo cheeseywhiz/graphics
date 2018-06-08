@@ -34,20 +34,14 @@ export class NumberInputBase extends React.Component {
 
 NumberInputBase.propTypes = {onNumberChange: PropTypes.func.isRequired};
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
     return {
-        value: state.number,
+        value: state.matrix.number,
     };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
-    return {
-        onNumberChange: (value) => {
-            dispatch(actions.updateNumber(value))
-            ownProps.onNumberChange(value);
-        },
-    };
+function mapDispatchToProps(dispatch) {
+    return {};
 }
 
 export const NumberInput = connect(mapStateToProps, mapDispatchToProps)(NumberInputBase);
-NumberInput.defaultProps = {onNumberChange: (value) => null};
