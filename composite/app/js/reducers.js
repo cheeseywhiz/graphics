@@ -12,26 +12,55 @@ const defaultState = {
     frame: identityFrame,
     value: '0',
     type: InputMatrices.DefaultMatrix,
-    intermediates: [identityFrame],
+    globals: [identityFrame],
+    locals: [identityFrame],
     stack: [],
 };
 
-function updateIntermediates(newState) {
-    const intermediates = [...newState.intermediates];
+function updateGlobals(newState) {
+    const globals = [...newState.globals];
     const updateIndex = newState.stack.length + 1;
-    const lastFrame = intermediates[updateIndex - 1];
+    const lastFrame = globals[updateIndex - 1];
 
     if (identityFrame.equals(newState.frame)) {
-        if (intermediates[updateIndex]) {
-            intermediates.pop();
+        if (globals[updateIndex]) {
+            globals.pop();
         }
-    } else if (intermediates[updateIndex]) {
-        intermediates[updateIndex].multiplyMatrices(newState.frame, lastFrame);
+    } else if (globals[updateIndex]) {
+        globals[updateIndex].multiplyMatrices(newState.frame, lastFrame);
     } else {
-        intermediates[updateIndex] = new THREE.Matrix4().multiplyMatrices(newState.frame, lastFrame);
+        globals[updateIndex] = new THREE.Matrix4().multiplyMatrices(newState.frame, lastFrame);
     }
 
-    return Object.assign(newState, {intermediates});
+    return Object.assign(newState, {globals});
+}
+
+function updateLocals(newState) {
+    const reducer = (locals, currentValue) => {
+        const last = locals.push(identityFrame.clone()) - 1;
+        locals[last].multiplyMatrices(locals[last - 1], currentValue);
+        return locals;
+    }
+
+    let stack = newState.stack;
+
+    if (identityFrame.equals(newState.frame)) {
+        stack = stack.slice(0);
+    } else {
+        stack = stack.concat([newState]);
+    }
+
+    const locals = stack
+        .map((state) => state.frame)
+        .reverse()
+        .reduce(reducer, defaultState.locals.slice(0));
+    return Object.assign(newState, {locals});
+}
+
+function updateIntermediates(newState) {
+    updateGlobals(newState);
+    updateLocals(newState);
+    return newState;
 }
 
 function stackPush(state) {
@@ -53,8 +82,8 @@ function stackPop(state) {
 }
 
 function stackClear(newState) {
-    const {stack, intermediates} = defaultState;
-    Object.assign(newState, {stack, intermediates});
+    const {stack, globals, locals} = defaultState;
+    Object.assign(newState, {stack, globals, locals});
     return updateIntermediates(newState);
 }
 

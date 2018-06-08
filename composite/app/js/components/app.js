@@ -13,7 +13,6 @@ export default class App extends React.Component {
                 <ResetButton />
                 <InputMatrix />
             </Stack>
-            <b>Intermediate frames</b>
             <Intermediates />
         </div>
     }
