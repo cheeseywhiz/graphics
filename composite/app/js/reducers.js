@@ -21,16 +21,6 @@ function resetMatrix(newState) {
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case actions.types.SET_MATRIX: {
-            const matrix = {...state.matrix, ...action.matrix};
-            const frame = new THREE.Matrix4().set(
-                matrix.xi || 1, matrix.yi || 0, 0, matrix.ox || 0,
-                matrix.xj || 0, matrix.yj || 1, 0, matrix.oy || 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1,
-            );
-            return {...state, frame, matrix};
-        };
         case actions.types.UPDATE_VALUE: {
             const value = action.value;
             const type = {
@@ -41,6 +31,16 @@ export default function reducer(state = defaultState, action) {
                 '4': InputMatrices.ManualMatrix,
             }[value];
             return resetMatrix({...state, value, type});
+        };
+        case actions.types.SET_MATRIX: {
+            const matrix = {...state.matrix, ...action.matrix};
+            const frame = new THREE.Matrix4().set(
+                matrix.xi || 1, matrix.yi || 0, 0, matrix.ox || 0,
+                matrix.xj || 0, matrix.yj || 1, 0, matrix.oy || 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1,
+            );
+            return {...state, frame, matrix};
         };
         case actions.types.STACK_PUSH: {
             const stack = [...state.stack];
