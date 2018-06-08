@@ -1,0 +1,17 @@
+import {connect, } from 'react-redux';
+import * as actions from '../actions.js';
+import {NumberInput, } from './number-input.js';
+
+function mapStateToProps(state) {
+    return {
+        placeholder: 'ratio',
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onNumberChange: (ratio) => dispatch(actions.setScaleMatrix(ratio)),
+    };
+}
+
+export const ScaleInput = connect(mapStateToProps, mapDispatchToProps)(NumberInput);
