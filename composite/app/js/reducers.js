@@ -14,6 +14,23 @@ const defaultState = {
     stack: [],
 };
 
+function stackPush(state) {
+    const stack = [...state.stack];
+    stack.push(state);
+    return resetMatrix({...state, stack});
+}
+
+function stackPop(state) {
+    const stack = state.stack;
+    const length = stack.length;
+
+    if (length) {
+        return stack[length - 1];
+    } else {
+        return state;
+    }
+}
+
 function stackClear(newState) {
     const {stack} = defaultState;
     return Object.assign(newState, {stack});
@@ -47,20 +64,10 @@ export default function reducer(state = defaultState, action) {
             );
             return {...state, frame, matrix};
         };
-        case actions.types.STACK_PUSH: {
-            const stack = [...state.stack];
-            stack.push(state);
-            return resetMatrix({...state, stack});
-        };
-        case actions.types.STACK_POP: {
-            const stack = state.stack;
-            const length = stack.length;
-            if (length) {
-                return stack[length - 1];
-            } else {
-                return state;
-            }
-        };
+        case actions.types.STACK_PUSH:
+            return stackPush(state);
+        case actions.types.STACK_POP:
+            return stackPop(state);
         case actions.types.STACK_CLEAR:
             return stackClear({...state});
         case actions.types.RESET_MATRIX:
