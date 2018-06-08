@@ -25,6 +25,8 @@ function updateIntermediates(newState) {
         if (intermediates[updateIndex]) {
             intermediates.pop();
         }
+    } else if (intermediates[updateIndex]) {
+        intermediates[updateIndex].multiplyMatrices(newState.frame, lastFrame);
     } else {
         intermediates[updateIndex] = new THREE.Matrix4().multiplyMatrices(newState.frame, lastFrame);
     }
@@ -52,7 +54,8 @@ function stackPop(state) {
 
 function stackClear(newState) {
     const {stack, intermediates} = defaultState;
-    return Object.assign(newState, {stack, intermediates});
+    Object.assign(newState, {stack, intermediates});
+    return updateIntermediates(newState);
 }
 
 function resetMatrix(newState) {
