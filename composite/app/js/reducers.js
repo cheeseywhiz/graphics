@@ -14,6 +14,8 @@ const defaultState = {
     type: InputMatrices.DefaultMatrix,
     globals: [identityFrame],
     locals: [identityFrame],
+    intermediates: [identityFrame],
+    order: actions.operationOrders.GLOBAL_ORDER,
     stack: [],
 };
 
@@ -57,9 +59,23 @@ function updateLocals(newState) {
     return Object.assign(newState, {locals});
 }
 
+function updateOrder(newState) {
+    switch (newState.order) {
+        case actions.operationOrders.GLOBAL_ORDER:
+            newState.intermediates = newState.globals;
+            break;
+        case actions.operationOrders.LOCAL_ORDER:
+            newState.intermediates = newState.locals;
+            break;
+    }
+
+    return newState;
+}
+
 function updateIntermediates(newState) {
     updateGlobals(newState);
     updateLocals(newState);
+    updateOrder(newState);
     return newState;
 }
 
@@ -82,8 +98,8 @@ function stackPop(state) {
 }
 
 function stackClear(newState) {
-    const {stack, globals, locals} = defaultState;
-    Object.assign(newState, {stack, globals, locals});
+    const {stack, globals, locals, intermediates} = defaultState;
+    Object.assign(newState, {stack, globals, locals, intermediates});
     return updateIntermediates(newState);
 }
 
@@ -105,6 +121,10 @@ export default function reducer(state = defaultState, action) {
                 '4': InputMatrices.ManualMatrix,
             }[value];
             return resetMatrix({...state, value, type});
+        };
+        case actions.types.UPDATE_ORDER: {
+            const order = action.order;
+            return updateOrder({...state, order})
         };
         case actions.types.SET_MATRIX: {
             const matrix = {...state.matrix, ...action.matrix};

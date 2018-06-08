@@ -5,18 +5,15 @@ import {FrameList, } from './stack.js';
 class IntermediatesBase extends React.Component {
     render() {
         return <div>
-            <b>Global intermediates</b>
-            <FrameList frames={this.props.globals} />
-            <b>Local intermediates</b>
-            <FrameList frames={this.props.locals} />
+            <b>Intermediate frames</b>
+            <FrameList frames={this.props.frames} />
         </div>
     }
 }
 
 function mapStateToProps(state) {
     return {
-        globals: state.globals,
-        locals: state.locals,
+        frames: state.intermediates,
     };
 }
 

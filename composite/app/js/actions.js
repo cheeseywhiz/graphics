@@ -1,5 +1,6 @@
 export const types = {
     UPDATE_VALUE: 'UPDATE_VALUE',
+    UPDATE_ORDER: 'UPDATE_ORDER',
     SET_MATRIX: 'SET_MATRIX',
     STACK_PUSH: 'STACK_PUSH',
     STACK_POP: 'STACK_POP',
@@ -7,9 +8,19 @@ export const types = {
     RESET_MATRIX: 'RESET_MATRIX',
 };
 
+export const operationOrders = {
+    GLOBAL_ORDER: 'GLOBAL_ORDER',
+    LOCAL_ORDER: 'LOCAL_ORDER',
+};
+
 export function updateValue(value) {
     const type = types.UPDATE_VALUE;
     return {type, value};
+}
+
+export function updateOrder(order) {
+    const type = types.UPDATE_ORDER;
+    return {type, order};
 }
 
 export function setMatrix(matrix) {
