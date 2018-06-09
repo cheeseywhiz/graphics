@@ -46,7 +46,7 @@ export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case actions.types.UPDATE_VALUE: {
             const {value} = action;
-            return {...state, value};
+            return resetMatrix({...state, value});
         };
         case actions.types.UPDATE_ORDER: {
             const {order} = action;
