@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect, } from 'react-redux';
+import selectors from '../selectors.js';
 import {FrameList, } from './stack.js';
 
 function IntermediatesBase({frames}) {
@@ -11,7 +12,7 @@ function IntermediatesBase({frames}) {
 
 function mapStateToProps(state) {
     return {
-        frames: state.intermediates,
+        frames: selectors.intermediates(state),
     };
 }
 

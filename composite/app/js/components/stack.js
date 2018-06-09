@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
 import * as actions from '../actions.js';
+import selectors from '../selectors.js';
 import roundFloatStr from '../round-float-str.js';
 
 function StaticFrame({frame}) {
@@ -41,7 +42,7 @@ function StackBase({onPush, onPop, onClear, stack, children}) {
         <input type='button' value='Push' onClick={onPush} />
         <input type='button' value='Pop' onClick={onPop} />
         <input type='button' value='Clear' onClick={onClear} />
-        <FrameList frames={stack.map((state) => state.frame)}>
+        <FrameList frames={stack.map((state) => selectors.frame(state))}>
             {children}
         </FrameList>
     </div>
@@ -49,7 +50,7 @@ function StackBase({onPush, onPop, onClear, stack, children}) {
 
 function mapStateToProps(state) {
     return {
-        stack: state.stack,
+        stack: selectors.stack(state),
     };
 }
 

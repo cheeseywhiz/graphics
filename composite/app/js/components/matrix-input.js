@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
 import * as actions from '../actions.js';
+import selectors from '../selectors.js';
 import {NumberInputBase, } from './number-input.js';
 
 function mapStateToProps(state, ownProps) {
     return {
-        value: state.matrix[ownProps.matrixKey],
+        value: selectors.matrix(state)[ownProps.matrixKey],
         placeholder: ownProps.matrixKey,
     };
 }
@@ -18,8 +19,8 @@ function mapDispatchToProps(dispatch, ownProps) {
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
     const props = {...ownProps, ...stateProps, ...dispatchProps};
-    delete props.matrixKey;
-    return props;
+    const {matrixKey, ...rest} = props;
+    return rest;
 }
 
 export const MatrixInput = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NumberInputBase);

@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import * as actions from '../actions.js';
+import selectors from '../selectors.js';
 import {FrameList, } from './stack.js';
 
 function OrderSelectorBase({value, onOrderChange}) {
@@ -15,7 +16,7 @@ function OrderSelectorBase({value, onOrderChange}) {
 
 function mapStateToProps(state) {
     return {
-        value: state.order,
+        value: selectors.order(state),
     };
 }
 

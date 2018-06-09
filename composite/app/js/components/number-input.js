@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
 import * as actions from '../actions.js';
+import selectors from '../selectors.js';
 import roundFloatStr from '../round-float-str.js';
 
 export function NumberInputBase({onNumberChange, ...props}) {
@@ -24,7 +25,7 @@ NumberInputBase.propTypes = {onNumberChange: PropTypes.func.isRequired};
 
 function mapStateToProps(state) {
     return {
-        value: state.matrix.number,
+        value: selectors.matrix(state).number,
     };
 }
 
