@@ -3,13 +3,12 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 const ROOT_PATH = path.resolve(__dirname);
 const BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
-const APP_PATH = path.resolve(ROOT_PATH, 'app');
-const JS_PATH = path.resolve(APP_PATH, 'js');
+const SRC_PATH = path.resolve(ROOT_PATH, 'src');
 
 module.exports = {
     mode: "development",
     entry: {
-        index: path.resolve(JS_PATH, 'index.js'),
+        index: path.resolve(SRC_PATH, 'index.js'),
     },
     output: {
         path: BUILD_PATH,
@@ -18,7 +17,7 @@ module.exports = {
     plugins: [
         new HtmlWebPackPlugin({
             title: 'Composite Operations',
-            template: path.resolve(APP_PATH, 'index.html'),
+            template: path.resolve(SRC_PATH, 'index.html'),
             filename: 'index.html',
             chunks: ['index'],
         }),
@@ -27,7 +26,7 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                include: JS_PATH,
+                include: SRC_PATH,
                 exclude: /node_module/,
                 loader: 'babel-loader',
                 options: {
