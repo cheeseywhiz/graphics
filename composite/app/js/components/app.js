@@ -6,16 +6,14 @@ import {Stack, } from './stack.js';
 import {OrderSelector, } from './order-selector.js';
 import {Intermediates, } from './intermediates.js';
 
-export default class App extends React.Component {
-    render() {
-        return <div>
-            <OrderSelector /><br />
-            <Stack>
-                <OperationSelector />
-                <ResetButton />
-                <InputMatrix />
-            </Stack>
-            <Intermediates />
-        </div>
-    }
+export default function App() {
+    return <div>
+        <OrderSelector /><br />
+        <Stack>
+            <OperationSelector />
+            <ResetButton />
+            <InputMatrix />
+        </Stack>
+        <Intermediates />
+    </div>
 }
