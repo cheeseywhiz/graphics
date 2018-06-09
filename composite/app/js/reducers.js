@@ -28,10 +28,10 @@ function updateGlobals(newState) {
         if (globals[updateIndex]) {
             globals.pop();
         }
-    } else if (globals[updateIndex]) {
-        globals[updateIndex].multiplyMatrices(newState.frame, lastFrame);
+    } else if (updateIndex == globals.length) {
+        globals.push(new THREE.Matrix4().multiplyMatrices(newState.frame, lastFrame));
     } else {
-        globals[updateIndex] = new THREE.Matrix4().multiplyMatrices(newState.frame, lastFrame);
+        globals[updateIndex].multiplyMatrices(newState.frame, lastFrame);
     }
 
     return Object.assign(newState, {globals});

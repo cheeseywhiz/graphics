@@ -35,10 +35,10 @@ class FrameElement extends React.Component {
 
 export class FrameList extends React.Component {
     render() {
-        const hasChildren = this.props.children !== undefined;
+        const elements = this.props.frames.map((frame, index) => <StaticFrame key={index} frame={frame} />)
+        if (this.props.children) elements.push(this.props.children);
         return <ul>
-            {this.props.frames.map((frame, index) => <FrameElement frame={frame} key={index} />)}
-            {hasChildren && <li>{this.props.children}</li>}
+            {elements.map((element, index) => <li key={index}>{element}</li>)}
         </ul>
     }
 }

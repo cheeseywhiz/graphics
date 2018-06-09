@@ -49,9 +49,7 @@ export function resetMatrix() {
 }
 
 export function updateMatrix(key, value) {
-    const matrix = {};
-    matrix[key] = value;
-    return setMatrix(matrix);
+    return setMatrix({[key]: value});
 }
 
 export function setRotationMatrix(angle_degrees) {
