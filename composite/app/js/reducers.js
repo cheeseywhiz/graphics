@@ -19,19 +19,26 @@ const defaultState = {
     stack: [],
 };
 
-function updateGlobals(newState) {
-    const globals = [...newState.globals];
-    const updateIndex = newState.stack.length + 1;
-    const lastFrame = globals[updateIndex - 1];
+function updateType(newState) {
+    const {value} = newState;
+    const type = {
+        '0': InputMatrices.DefaultMatrix,
+        '1': InputMatrices.RotationMatrix,
+        '2': InputMatrices.ScaleMatrix,
+        '3': InputMatrices.TranslationMatrix,
+        '4': InputMatrices.ManualMatrix,
+    }[value];
+    Object.assign(newState, {type});
+    return resetMatrix(newState);
+}
 
-    if (identityFrame.equals(newState.frame)) {
-        if (globals[updateIndex]) {
-            globals.pop();
-        }
-    } else if (updateIndex == globals.length) {
-        globals.push(new THREE.Matrix4().multiplyMatrices(newState.frame, lastFrame));
-    } else {
-        globals[updateIndex].multiplyMatrices(newState.frame, lastFrame);
+function updateGlobals(newState) {
+    const last = newState.stack[newState.stack.length - 1] || defaultState;
+    const globals = [...last.globals];
+
+    if (!identityFrame.equals(newState.frame)) {
+        const newLength = globals.push(newState.frame.clone());
+        globals[newLength - 1].multiply(globals[newLength - 2]);
     }
 
     return Object.assign(newState, {globals});
@@ -79,6 +86,18 @@ function updateIntermediates(newState) {
     return newState;
 }
 
+function updateFrame(newState) {
+    const {matrix} = newState;
+    const frame = new THREE.Matrix4().set(
+        matrix.xi || 1, matrix.yi || 0, 0, matrix.ox || 0,
+        matrix.xj || 0, matrix.yj || 1, 0, matrix.oy || 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1,
+    );
+    Object.assign(newState, {frame});
+    return updateIntermediates(newState);
+}
+
 function stackPush(state) {
     if (identityFrame.equals(state.frame)) return state;
     const stack = [...state.stack];
@@ -98,43 +117,30 @@ function stackPop(state) {
 }
 
 function stackClear(newState) {
-    const {stack, globals, locals, intermediates} = defaultState;
-    Object.assign(newState, {stack, globals, locals, intermediates});
+    const {stack} = defaultState;
+    Object.assign(newState, {stack});
     return updateIntermediates(newState);
 }
 
 function resetMatrix(newState) {
-    const {matrix, frame} = defaultState;
-    Object.assign(newState, {matrix, frame});
-    return updateIntermediates(newState);
+    const {matrix} = defaultState;
+    Object.assign(newState, {matrix});
+    return updateFrame(newState);
 }
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case actions.types.UPDATE_VALUE: {
-            const value = action.value;
-            const type = {
-                '0': InputMatrices.DefaultMatrix,
-                '1': InputMatrices.RotationMatrix,
-                '2': InputMatrices.ScaleMatrix,
-                '3': InputMatrices.TranslationMatrix,
-                '4': InputMatrices.ManualMatrix,
-            }[value];
-            return resetMatrix({...state, value, type});
+            const {value} = action;
+            return updateType({...state, value});
         };
         case actions.types.UPDATE_ORDER: {
-            const order = action.order;
-            return updateOrder({...state, order})
+            const {order} = action;
+            return updateOrder({...state, order});
         };
         case actions.types.SET_MATRIX: {
             const matrix = {...state.matrix, ...action.matrix};
-            const frame = new THREE.Matrix4().set(
-                matrix.xi || 1, matrix.yi || 0, 0, matrix.ox || 0,
-                matrix.xj || 0, matrix.yj || 1, 0, matrix.oy || 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1,
-            );
-            return updateIntermediates({...state, frame, matrix});
+            return updateFrame({...state, matrix});
         };
         case actions.types.STACK_PUSH:
             return stackPush(state);
