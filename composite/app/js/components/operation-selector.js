@@ -25,4 +25,5 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(OperationSelectorBase);
+const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(OperationSelectorBase);
+export default OperationSelector;

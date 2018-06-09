@@ -2,7 +2,6 @@ import React from 'react';
 import {connect, } from 'react-redux';
 import * as actions from '../actions.js';
 import selectors from '../selectors.js';
-import {FrameList, } from './stack.js';
 
 function OrderSelectorBase({value, onOrderChange}) {
     return <div>
@@ -26,4 +25,5 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export const OrderSelector = connect(mapStateToProps, mapDispatchToProps)(OrderSelectorBase);
+const OrderSelector = connect(mapStateToProps, mapDispatchToProps)(OrderSelectorBase);
+export default OrderSelector;

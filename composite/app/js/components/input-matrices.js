@@ -1,9 +1,9 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import selectors from '../selectors.js';
-import {RotationInput, } from './rotation-input.js';
-import {ScaleInput, } from './scale-input.js';
-import {MatrixInput, } from './matrix-input.js';
+import RotationInput from './rotation-input.js';
+import ScaleInput from './scale-input.js';
+import MatrixInput from './matrix-input.js';
 
 export function DefaultMatrix() {
     return <table className='matrix'><tbody>
@@ -131,4 +131,5 @@ function mapStateToProps(state) {
     };
 }
 
-export const InputMatrix = connect(mapStateToProps)(InputMatrixBase);
+const InputMatrix = connect(mapStateToProps)(InputMatrixBase);
+export default InputMatrix;

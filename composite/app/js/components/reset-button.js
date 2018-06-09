@@ -16,4 +16,5 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export const ResetButton = connect(mapStateToProps, mapDispatchToProps)(ResetButtonBase);
+const ResetButton = connect(mapStateToProps, mapDispatchToProps)(ResetButtonBase);
+export default ResetButton;

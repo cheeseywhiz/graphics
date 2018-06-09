@@ -33,4 +33,5 @@ function mapDispatchToProps(dispatch) {
     return {};
 }
 
-export const NumberInput = connect(mapStateToProps, mapDispatchToProps)(NumberInputBase);
+const NumberInput = connect(mapStateToProps, mapDispatchToProps)(NumberInputBase);
+export default NumberInput;

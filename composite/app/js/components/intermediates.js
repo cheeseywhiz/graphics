@@ -16,4 +16,5 @@ function mapStateToProps(state) {
     };
 }
 
-export const Intermediates = connect(mapStateToProps)(IntermediatesBase);
+const Intermediates = connect(mapStateToProps)(IntermediatesBase);
+export default Intermediates;

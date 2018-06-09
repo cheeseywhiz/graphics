@@ -23,5 +23,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     return rest;
 }
 
-export const MatrixInput = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NumberInputBase);
+const MatrixInput = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NumberInputBase);
 MatrixInput.propTypes = {matrixKey: PropTypes.string.isRequired};
+export default MatrixInput;

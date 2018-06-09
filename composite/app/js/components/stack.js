@@ -62,4 +62,5 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export const Stack = connect(mapStateToProps, mapDispatchToProps)(StackBase);
+const Stack = connect(mapStateToProps, mapDispatchToProps)(StackBase);
+export default Stack;
