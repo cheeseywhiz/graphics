@@ -11,26 +11,12 @@ const defaultState = {
     },
     frame: identityFrame,
     value: '0',
-    type: InputMatrices.DefaultMatrix,
     globals: [identityFrame],
     locals: [identityFrame],
     intermediates: [identityFrame],
     order: actions.operationOrders.GLOBAL_ORDER,
     stack: [],
 };
-
-function updateType(newState) {
-    const {value} = newState;
-    const type = {
-        '0': InputMatrices.DefaultMatrix,
-        '1': InputMatrices.RotationMatrix,
-        '2': InputMatrices.ScaleMatrix,
-        '3': InputMatrices.TranslationMatrix,
-        '4': InputMatrices.ManualMatrix,
-    }[value];
-    Object.assign(newState, {type});
-    return resetMatrix(newState);
-}
 
 function updateGlobals(newState) {
     const last = newState.stack[newState.stack.length - 1] || defaultState;
@@ -132,7 +118,7 @@ export default function reducer(state = defaultState, action) {
     switch (action.type) {
         case actions.types.UPDATE_VALUE: {
             const {value} = action;
-            return updateType({...state, value});
+            return resetMatrix({...state, value});
         };
         case actions.types.UPDATE_ORDER: {
             const {order} = action;
