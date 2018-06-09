@@ -4,136 +4,124 @@ import {RotationInput, } from './rotation-input.js';
 import {ScaleInput, } from './scale-input.js';
 import {MatrixInput, } from './matrix-input.js';
 
-export class DefaultMatrix extends React.Component {
-    render() {
-        return <table className='matrix'><tbody>
-            <tr>
-                <td>1</td>
-                <td>0</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>0</td>
-                <td>1</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>0</td>
-                <td>0</td>
-                <td>1</td>
-            </tr>
-        </tbody></table>
-    }
+export function DefaultMatrix() {
+    return <table className='matrix'><tbody>
+        <tr>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+    </tbody></table>
 }
 
-export class RotationMatrix extends React.Component {
-    render() {
-        return <table className='matrix'>
-            <thead>
-                <tr>
-                    <td><RotationInput /></td>
-                    {/* TODO: box spans entire row */}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><MatrixInput matrixKey='xi' disabled/></td>
-                    <td><MatrixInput matrixKey='yi' disabled/></td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td><MatrixInput matrixKey='xj' disabled/></td>
-                    <td><MatrixInput matrixKey='yj' disabled/></td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                </tr>
-            </tbody>
-        </table>
-    }
-}
-
-export class ScaleMatrix extends React.Component {
-    render() {
-        return <table className='matrix'>
-            <thead>
-                <tr>
-                    <td><ScaleInput /></td>
-                    {/* TODO: box spans entire row */}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><MatrixInput matrixKey='xi' /></td>
-                    <td>0</td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td><MatrixInput matrixKey='yj' /></td>
-                    <td>0</td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                </tr>
-            </tbody>
-        </table>
-    }
-}
-
-export class TranslationMatrix extends React.Component {
-    render() {
-        return <table className='matrix'><tbody>
+export function RotationMatrix() {
+    return <table className='matrix'>
+        <thead>
             <tr>
-                <td>1</td>
+                <td><RotationInput /></td>
+                {/* TODO: box spans entire row */}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><MatrixInput matrixKey='xi' disabled/></td>
+                <td><MatrixInput matrixKey='yi' disabled/></td>
                 <td>0</td>
-                <td><MatrixInput matrixKey='ox' /></td>
             </tr>
             <tr>
+                <td><MatrixInput matrixKey='xj' disabled/></td>
+                <td><MatrixInput matrixKey='yj' disabled/></td>
                 <td>0</td>
-                <td>1</td>
-                <td><MatrixInput matrixKey='oy' /></td>
             </tr>
             <tr>
                 <td>0</td>
                 <td>0</td>
                 <td>1</td>
             </tr>
-        </tbody></table>
-    }
+        </tbody>
+    </table>
 }
 
-export class ManualMatrix extends React.Component {
-    render() {
-        return <table className='matrix'><tbody>
+export function ScaleMatrix() {
+    return <table className='matrix'>
+        <thead>
+            <tr>
+                <td><ScaleInput /></td>
+                {/* TODO: box spans entire row */}
+            </tr>
+        </thead>
+        <tbody>
             <tr>
                 <td><MatrixInput matrixKey='xi' /></td>
-                <td><MatrixInput matrixKey='yi' /></td>
-                <td><MatrixInput matrixKey='ox' /></td>
+                <td>0</td>
+                <td>0</td>
             </tr>
             <tr>
-                <td><MatrixInput matrixKey='xj' /></td>
+                <td>0</td>
                 <td><MatrixInput matrixKey='yj' /></td>
-                <td><MatrixInput matrixKey='oy' /></td>
+                <td>0</td>
             </tr>
             <tr>
                 <td>0</td>
                 <td>0</td>
                 <td>1</td>
             </tr>
-        </tbody></table>
-    }
+        </tbody>
+    </table>
 }
 
-class InputMatrixBase extends React.Component {
-    render() {
-        return React.createElement(this.props.type);
-    }
+export function TranslationMatrix() {
+    return <table className='matrix'><tbody>
+        <tr>
+            <td>1</td>
+            <td>0</td>
+            <td><MatrixInput matrixKey='ox' /></td>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>1</td>
+            <td><MatrixInput matrixKey='oy' /></td>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+    </tbody></table>
+}
+
+export function ManualMatrix() {
+    return <table className='matrix'><tbody>
+        <tr>
+            <td><MatrixInput matrixKey='xi' /></td>
+            <td><MatrixInput matrixKey='yi' /></td>
+            <td><MatrixInput matrixKey='ox' /></td>
+        </tr>
+        <tr>
+            <td><MatrixInput matrixKey='xj' /></td>
+            <td><MatrixInput matrixKey='yj' /></td>
+            <td><MatrixInput matrixKey='oy' /></td>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+        </tr>
+    </tbody></table>
+}
+
+function InputMatrixBase({type}) {
+    return React.createElement(type);
 }
 
 function mapStateToProps(state) {
