@@ -4,7 +4,7 @@ import {Provider, } from 'react-redux';
 import {createStore, } from 'redux';
 import reducer from './reducers.js';
 import selectors, {doSubscriptions, } from './selectors.js';
-import App from './index/app.js';
+import App from './index/App.js';
 
 function main() {
     const store = createStore(reducer);

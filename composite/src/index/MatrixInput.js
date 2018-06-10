@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
 import * as actions from '../actions.js';
 import selectors from '../selectors.js';
-import {NumberInputBase, } from './number-input.js';
+import {NumberInputBase, } from './NumberInput.js';
 
 function mapStateToProps(state, ownProps) {
     return {

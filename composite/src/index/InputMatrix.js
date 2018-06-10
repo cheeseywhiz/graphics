@@ -1,9 +1,9 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import selectors from '../selectors.js';
-import RotationInput from './rotation-input.js';
-import ScaleInput from './scale-input.js';
-import MatrixInput from './matrix-input.js';
+import RotationInput from './RotationInput.js';
+import ScaleInput from './ScaleInput.js';
+import MatrixInput from './MatrixInput.js';
 
 export function DefaultMatrix() {
     return <table className='matrix'><tbody>

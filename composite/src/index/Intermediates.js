@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import selectors from '../selectors.js';
-import {FrameList, } from './stack.js';
+import {FrameList, } from './Stack.js';
 
 function IntermediatesBase({frames}) {
     return <div>
