@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {createSelector, } from 'reselect';
 import * as actions from './actions.js';
-import * as InputMatrices from './index/InputMatrix.js';
+import * as InputMatrices from './index/App/InputMatrix.js';
 
 const identityFrame = new THREE.Matrix4().identity();
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import * as actions from '../actions.js';
-import selectors from '../selectors.js';
+import * as actions from '../../actions.js';
+import selectors from '../../selectors.js';
 
 function OperationSelectorBase({value, onValueChange}) {
     return <select value={value} onChange={(event) => onValueChange(event.target.value)}>
