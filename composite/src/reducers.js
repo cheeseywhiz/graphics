@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as actions from './actions.js';
+import {types, operationOrders, } from './actions.js';
 import selectors from './selectors.js';
 
 const identityFrame = new THREE.Matrix4().identity();
@@ -10,7 +10,7 @@ const defaultState = {
         number: '',
     },
     value: '0',
-    order: actions.operationOrders.GLOBAL_ORDER,
+    order: operationOrders.GLOBAL_ORDER,
     stack: [],
 };
 
@@ -44,25 +44,25 @@ function resetMatrix(newState) {
 
 export default function reducer(state = defaultState, action) {
     switch (action.type) {
-        case actions.types.UPDATE_VALUE: {
+        case types.UPDATE_VALUE: {
             const {value} = action;
             return resetMatrix({...state, value});
         };
-        case actions.types.UPDATE_ORDER: {
+        case types.UPDATE_ORDER: {
             const {order} = action;
             return {...state, order};
         };
-        case actions.types.SET_MATRIX: {
+        case types.SET_MATRIX: {
             const matrix = {...state.matrix, ...action.matrix};
             return {...state, matrix};
         };
-        case actions.types.STACK_PUSH:
+        case types.STACK_PUSH:
             return stackPush(state);
-        case actions.types.STACK_POP:
+        case types.STACK_POP:
             return stackPop(state);
-        case actions.types.STACK_CLEAR:
+        case types.STACK_CLEAR:
             return stackClear({...state});
-        case actions.types.RESET_MATRIX:
+        case types.RESET_MATRIX:
             return resetMatrix({...state});
         default:
             return state;

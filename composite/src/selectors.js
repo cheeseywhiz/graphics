@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createSelector, } from 'reselect';
-import * as actions from './actions.js';
+import {operationOrders, } from './actions.js';
 import {InputMatrices, } from './index/App/InputMatrix.js';
 
 const identityFrame = new THREE.Matrix4().identity();
@@ -71,8 +71,8 @@ const selectIntermediates = createSelector(
     selectOrder, selectGlobals, selectLocals,
     (order, globals, locals) => (
         {
-            [actions.operationOrders.GLOBAL_ORDER]: globals,
-            [actions.operationOrders.LOCAL_ORDER]: locals,
+            [operationOrders.GLOBAL_ORDER]: globals,
+            [operationOrders.LOCAL_ORDER]: locals,
         }[order]
     ),
 );

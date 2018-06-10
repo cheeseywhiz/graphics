@@ -1,5 +1,5 @@
 import {connect, } from 'react-redux';
-import * as actions from '../../../actions.js';
+import actions from '../../../actions.js';
 import NumberInput from './NumberInput.js';
 
 function mapStateToProps(state) {

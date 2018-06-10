@@ -13,46 +13,46 @@ export const operationOrders = {
     LOCAL_ORDER: 'LOCAL_ORDER',
 };
 
-export function updateValue(value) {
+function updateValue(value) {
     const type = types.UPDATE_VALUE;
     return {type, value};
 }
 
-export function updateOrder(order) {
+function updateOrder(order) {
     const type = types.UPDATE_ORDER;
     return {type, order};
 }
 
-export function setMatrix(matrix) {
+function setMatrix(matrix) {
     const type = types.SET_MATRIX;
     return {type, matrix};
 }
 
-export function stackPush() {
+function stackPush() {
     const type = types.STACK_PUSH;
     return {type};
 }
 
-export function stackPop() {
+function stackPop() {
     const type = types.STACK_POP;
     return {type};
 }
 
-export function stackClear() {
+function stackClear() {
     const type = types.STACK_CLEAR;
     return {type};
 }
 
-export function resetMatrix() {
+function resetMatrix() {
     const type = types.RESET_MATRIX;
     return {type};
 }
 
-export function updateMatrix(key, value) {
+function updateMatrix(key, value) {
     return setMatrix({[key]: value});
 }
 
-export function setRotationMatrix(angle_degrees) {
+function setRotationMatrix(angle_degrees) {
     const angle_radians = angle_degrees * Math.PI / 180;
     const sin = Math.sin(angle_radians);
     const cos = Math.cos(angle_radians);
@@ -64,7 +64,7 @@ export function setRotationMatrix(angle_degrees) {
     return setMatrix(matrix);
 }
 
-export function setScaleMatrix(ratio) {
+function setScaleMatrix(ratio) {
     const matrix = {
         xi: ratio, yi: 0, ox: 0,
         xj: 0, yj: ratio, oy: 0,
@@ -72,3 +72,9 @@ export function setScaleMatrix(ratio) {
     };
     return setMatrix(matrix);
 }
+
+const actions = {
+    updateValue, updateOrder, setMatrix, stackPush, stackPop, stackClear,
+    resetMatrix, updateMatrix, setRotationMatrix, setScaleMatrix,
+};
+export default actions;

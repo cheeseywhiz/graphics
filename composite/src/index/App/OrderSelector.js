@@ -1,14 +1,14 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import * as actions from '../../actions.js';
+import actions, {operationOrders, } from '../../actions.js';
 import selectors from '../../selectors.js';
 
 function OrderSelectorBase({value, onOrderChange}) {
     return <div>
         <b>Operation order</b><br />
         <select value={value} onChange={(event) => onOrderChange(event.target.value)}>
-            <option value={actions.operationOrders.GLOBAL_ORDER}>Global</option>
-            <option value={actions.operationOrders.LOCAL_ORDER}>Local</option>
+            <option value={operationOrders.GLOBAL_ORDER}>Global</option>
+            <option value={operationOrders.LOCAL_ORDER}>Local</option>
         </select>
     </div>
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
-import * as actions from '../../../actions.js';
 import selectors from '../../../selectors.js';
 import roundFloatStr from '../../../round-float-str.js';
 
