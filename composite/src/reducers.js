@@ -1,69 +1,38 @@
-import * as THREE from 'three';
-import {types, operationOrders, } from './actions.js';
-import selectors from './selectors.js';
+import {operationOrders, types, } from './actions.js';
+import combineReducers from './combineReducers.js';
 
-const identityFrame = new THREE.Matrix4().identity();
-const defaultState = {
-    matrix: {
-        xi: 1, yi: 0, ox: 0,
-        xj: 0, yj: 1, oy: 0,
-        number: '',
-    },
-    value: '0',
-    order: operationOrders.GLOBAL_ORDER,
-    stack: [],
+const defaultMatrix = {
+    xi: 1, yi: 0, ox: 0,
+    xj: 0, yj: 1, oy: 0,
+    number: '',
 };
 
-function stackPush(state) {
-    if (selectors.frame(state).equals(identityFrame)) return state;
-    const stack = [...state.stack];
-    stack.push(state);
-    return resetMatrix({...state, stack});
-}
-
-function stackPop(state) {
-    const stack = state.stack;
-    const length = stack.length;
-
-    if (length) {
-        return stack[length - 1];
-    } else {
-        return state;
+export function matrix(state = defaultMatrix, action) {
+    switch (action.type) {
+        case types.SET_MATRIX:
+            return {...state, ...action.matrix};
+        case types.UPDATE_VALUE:
+        case types.STACK_PUSH:
+        case types.RESET_MATRIX:
+            return defaultMatrix;
+        default:
+            return state;
     }
 }
 
-function stackClear(newState) {
-    const {stack} = defaultState;
-    return Object.assign(newState, {stack});
-}
-
-function resetMatrix(newState) {
-    const {matrix} = defaultState;
-    return Object.assign(newState, {matrix});
-}
-
-export default function reducer(state = defaultState, action) {
+export function value(state = '0', action) {
     switch (action.type) {
-        case types.UPDATE_VALUE: {
-            const {value} = action;
-            return resetMatrix({...state, value});
-        };
-        case types.UPDATE_ORDER: {
-            const {order} = action;
-            return {...state, order};
-        };
-        case types.SET_MATRIX: {
-            const matrix = {...state.matrix, ...action.matrix};
-            return {...state, matrix};
-        };
-        case types.STACK_PUSH:
-            return stackPush(state);
-        case types.STACK_POP:
-            return stackPop(state);
-        case types.STACK_CLEAR:
-            return stackClear({...state});
-        case types.RESET_MATRIX:
-            return resetMatrix({...state});
+        case types.UPDATE_VALUE:
+            return action.value;
+        default:
+            return state;
+    }
+}
+
+export function order(state = operationOrders.GLOBAL_ORDER, action) {
+    switch (action.type) {
+        case types.UPDATE_ORDER:
+            return action.order;
         default:
             return state;
     }

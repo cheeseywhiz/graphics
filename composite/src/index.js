@@ -2,12 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider, } from 'react-redux';
 import {createStore, } from 'redux';
-import reducer from './reducers.js';
+import * as reducers from './reducers.js';
+import combineReducers from './combineReducers';
 import selectors, {doSubscriptions, } from './selectors.js';
 import App from './index/App.js';
 
 function main() {
-    const store = createStore(reducer);
+    const store = createStore(combineReducers(reducers));
+    store.subscribe(() => {
+        console.log('store subscription');
+        console.log(store.getState())
+    });
     store.subscribe(() => doSubscriptions(store.getState()));
     selectors.subscribe(
         selectors.type,
