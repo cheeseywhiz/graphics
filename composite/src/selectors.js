@@ -8,7 +8,6 @@ const identityFrame = new THREE.Matrix4().identity();
 const selectValue = (state) => state.value;
 const selectMatrix = (state) => state.matrix;
 const selectOrder = (state) => state.order;
-const selectStack = (state) => state.stack;
 
 const selectType = createSelector(
     selectValue,
@@ -31,6 +30,14 @@ const selectFrame = createSelector(
             0, 0, 1, 0,
             0, 0, 0, 1,
         )
+    ),
+);
+const selectStack = createSelector(
+    (state) => state.stack,
+    (stack) => (
+        stack.filter((state) => (
+            !identityFrame.equals(selectFrame(state))
+        ))
     ),
 );
 const selectStackFrames = createSelector(

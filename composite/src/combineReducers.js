@@ -1,8 +1,6 @@
-import * as THREE from 'three';
 import {types, } from './actions.js';
 import selectors from './selectors.js';
 
-const identityFrame = new THREE.Matrix4().identity();
 const defaultStack = [];
 
 // not a typical reducer
@@ -10,7 +8,6 @@ const defaultStack = [];
 function newStack(state, action) {
     switch(action.type) {
         case types.STACK_PUSH: {
-            if (selectors.frame(state).equals(identityFrame)) return {};
             const stack = [...state.stack];
             stack.push(state);
             return {stack};
