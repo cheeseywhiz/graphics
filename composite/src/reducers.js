@@ -1,3 +1,4 @@
+import {createSelector, } from 'reselect';
 import {operationOrders, types, } from './actions.js';
 import combineReducers from './combineReducers.js';
 
@@ -33,6 +34,18 @@ export function order(state = operationOrders.GLOBAL_ORDER, action) {
     switch (action.type) {
         case types.UPDATE_ORDER:
             return action.order;
+        default:
+            return state;
+    }
+}
+
+export function subscriptions(state = new Set(), action) {
+    switch (action.type) {
+        case types.SELECTOR_SUBSCRIBE: {
+            const newState = new Set(state);
+            newState.add(createSelector(...action.funcs));
+            return newState;
+        };
         default:
             return state;
     }

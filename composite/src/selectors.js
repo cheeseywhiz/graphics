@@ -85,16 +85,8 @@ const selectIntermediates = createSelector(
 );
 
 export function doSubscriptions(state) {
-    const subscriptions = [...doSubscriptions.subscriptions.values()];
+    const subscriptions = [...state.subscriptions.values()];
     subscriptions.forEach((selector) => selector(state));
-}
-doSubscriptions.subscriptions = new Set();
-
-function subscribe(...args) {
-    const selector = createSelector(...args);
-    doSubscriptions.subscriptions.add(selector);
-    const unsubscribe = () => doSubscriptions.subscriptions.remove(selector);
-    return unsubscribe;
 }
 
 const selectors = {
@@ -108,6 +100,5 @@ const selectors = {
     globals: selectGlobals,
     locals: selectLocals,
     intermediates: selectIntermediates,
-    subscribe: subscribe,
 };
 export default selectors;

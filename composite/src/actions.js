@@ -6,6 +6,7 @@ export const types = {
     STACK_POP: 'STACK_POP',
     STACK_CLEAR: 'STACK_CLEAR',
     RESET_MATRIX: 'RESET_MATRIX',
+    SELECTOR_SUBSCRIBE: 'SELECTOR_SUBSCRIBE',
 };
 
 export const operationOrders = {
@@ -48,6 +49,11 @@ function resetMatrix() {
     return {type};
 }
 
+function selectorSubscribe(...funcs) {
+    const type = types.SELECTOR_SUBSCRIBE;
+    return {type, funcs};
+}
+
 function updateMatrix(key, value) {
     return setMatrix({[key]: value});
 }
@@ -76,5 +82,6 @@ function setScaleMatrix(ratio) {
 const actions = {
     updateValue, updateOrder, setMatrix, stackPush, stackPop, stackClear,
     resetMatrix, updateMatrix, setRotationMatrix, setScaleMatrix,
+    selectorSubscribe,
 };
 export default actions;
