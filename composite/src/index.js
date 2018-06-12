@@ -20,7 +20,9 @@ function main() {
             <Provider store={store}>
                 <App />
             </Provider>
-            <Graph store={store} />
+            <div id='canvas-container'>
+                <Graph store={store} />
+            </div>
         </div>,
         document.getElementById('app')
     );

@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import actions from '../actions.js';
 import selectors from '../selectors.js';
+import BaseGraph from './Graph/BaseGraph.js';
 
-export default class Graph extends React.Component {
+export default class Graph extends BaseGraph {
     constructor(props) {
         super(props);
         props.store.dispatch(actions.selectorSubscribe(
@@ -17,8 +18,10 @@ export default class Graph extends React.Component {
         console.log(type);
     }
 
-    render() {
-        return <div></div>
+    componentDidMount() {
+        super.componentDidMount();
+        this.handleResize();
+        this.render();
     }
 }
 
