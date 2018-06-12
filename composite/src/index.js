@@ -2,30 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider, } from 'react-redux';
 import {createStore, } from 'redux';
-import actions from './actions.js';
 import * as reducers from './reducers.js';
 import combineReducers from './combineReducers';
-import selectors, {doSubscriptions, } from './selectors.js';
+import {doSubscriptions, } from './selectors.js';
 import App from './index/App.js';
+import Graph from './index/Graph.js';
 
 function main() {
     const store = createStore(combineReducers(reducers));
-    store.dispatch(actions.selectorSubscribe(
-        selectors.type,
-        (type) => {
-            console.log('selector subscription');
-            console.log(type);
-        },
-    ));
     store.subscribe(() => {
         console.log('store subscription');
         console.log(store.getState());
     });
     store.subscribe(() => doSubscriptions(store.getState()));
     ReactDOM.render(
-        <Provider store={store}>
-            <App />
-        </Provider>,
+        <div>
+            <Provider store={store}>
+                <App />
+            </Provider>
+            <Graph store={store} />
+        </div>,
         document.getElementById('app')
     );
 }
