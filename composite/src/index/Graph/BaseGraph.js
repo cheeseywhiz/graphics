@@ -1,20 +1,18 @@
 import * as THREE from 'three';
 import TrackballControls from 'three-trackballcontrols';
 import React from 'react';
+import Scene from './Scene.js';
 
 export default class BaseGraph extends React.Component {
     constructor(props) {
         super(props);
         this.canvas = React.createRef();
-    }
-
-    setRatio() {
-        this.ratio = window.innerWidth / window.innerHeight;
+        this.scene = new Scene();
     }
 
     componentDidMount() {
+        this.updateRatio();
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas.current, antialias: true});
-        this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(55, this.ratio, 0.00001, 1000);
         this.camera.position.z = 10;
 
@@ -24,16 +22,22 @@ export default class BaseGraph extends React.Component {
         this.tracker.noPan = true;
 
         window.addEventListener('resize', () => this.handleResize());
+        this.handleResize();
+        this.renderCanvas();
     }
 
-    render() {
+    updateRatio() {
+        this.ratio = window.innerWidth / window.innerHeight;
+    }
+
+    renderCanvas() {
         this.renderer.render(this.scene, this.camera);
         this.tracker.update();
-        requestAnimationFrame(() => this.render());
+        requestAnimationFrame(() => this.renderCanvas());
     }
 
     handleResize() {
-        this.setRatio();
+        this.updateRatio();
         let width = window.innerWidth;
         let height = width / this.ratio;
 
