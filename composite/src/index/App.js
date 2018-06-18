@@ -5,7 +5,7 @@ import ResetButton from './App/ResetButton.js';
 import Stack from './App/Stack.js';
 import OrderSelector from './App/OrderSelector.js';
 import Intermediates from './App/Intermediates.js';
-import Graph from './Graph.js';
+import Graph from './App/Graph.js';
 
 export default function App() {
     return <div>
