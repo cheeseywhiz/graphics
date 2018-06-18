@@ -1,23 +1,12 @@
 import React from 'react';
 import roundFloatStr from '../../../../round-float-str.js';
+import Matrix from '../../common/Matrix.js';
 
 export default function Frame({frame}) {
-    const elements = frame.elements.map((num) => roundFloatStr(num));
-    return <table className='matrix'><tbody>
-        <tr>
-            <td>{elements[0]}</td>
-            <td>{elements[4]}</td>
-            <td>{elements[12]}</td>
-        </tr>
-        <tr>
-            <td>{elements[1]}</td>
-            <td>{elements[5]}</td>
-            <td>{elements[13]}</td>
-        </tr>
-        <tr>
-            <td>0</td>
-            <td>0</td>
-            <td>1</td>
-        </tr>
-    </tbody></table>
+    const elements = frame.elements.map(roundFloatStr);
+    const matrix = {
+        xi: elements[0], yi: elements[4], ox: elements[12],
+        xj: elements[1], yj: elements[5], oy: elements[13],
+    };
+    return <Matrix matrix={matrix} />
 }

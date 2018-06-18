@@ -1,124 +1,57 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import selectors from '../../selectors.js';
+import Matrix from './common/Matrix.js';
 import RotationInput from './InputMatrix/RotationInput.js';
 import ScaleInput from './InputMatrix/ScaleInput.js';
 import MatrixInput from './InputMatrix/MatrixInput.js';
 
-export function DefaultMatrix() {
-    return <table className='matrix'><tbody>
-        <tr>
-            <td>1</td>
-            <td>0</td>
-            <td>0</td>
-        </tr>
-        <tr>
-            <td>0</td>
-            <td>1</td>
-            <td>0</td>
-        </tr>
-        <tr>
-            <td>0</td>
-            <td>0</td>
-            <td>1</td>
-        </tr>
-    </tbody></table>
+function DefaultMatrix() {
+    return <Matrix />
 }
 
-export function RotationMatrix() {
-    return <table className='matrix'>
-        <thead>
-            <tr>
-                <td><RotationInput /></td>
-                {/* TODO: box spans entire row */}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><MatrixInput matrixKey='xi' disabled/></td>
-                <td><MatrixInput matrixKey='yi' disabled/></td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td><MatrixInput matrixKey='xj' disabled/></td>
-                <td><MatrixInput matrixKey='yj' disabled/></td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>0</td>
-                <td>0</td>
-                <td>1</td>
-            </tr>
-        </tbody>
-    </table>
+function RotationMatrix() {
+    const matrix = {
+        xi: <MatrixInput matrixKey='xi' disabled/>,
+        yi: <MatrixInput matrixKey='yi' disabled/>,
+        xj: <MatrixInput matrixKey='xj' disabled/>,
+        yj: <MatrixInput matrixKey='yj' disabled/>,
+    };
+    return <div>
+        <RotationInput />
+        <Matrix matrix={matrix} />
+    </div>
 }
 
-export function ScaleMatrix() {
-    return <table className='matrix'>
-        <thead>
-            <tr>
-                <td><ScaleInput /></td>
-                {/* TODO: box spans entire row */}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><MatrixInput matrixKey='xi' /></td>
-                <td>0</td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>0</td>
-                <td><MatrixInput matrixKey='yj' /></td>
-                <td>0</td>
-            </tr>
-            <tr>
-                <td>0</td>
-                <td>0</td>
-                <td>1</td>
-            </tr>
-        </tbody>
-    </table>
+function ScaleMatrix() {
+    const matrix = {
+        xi: <MatrixInput matrixKey='xi' />,
+        yj: <MatrixInput matrixKey='yj' />,
+    };
+    return <div>
+        <ScaleInput />
+        <Matrix matrix={matrix} />
+    </div>
 }
 
-export function TranslationMatrix() {
-    return <table className='matrix'><tbody>
-        <tr>
-            <td>1</td>
-            <td>0</td>
-            <td><MatrixInput matrixKey='ox' /></td>
-        </tr>
-        <tr>
-            <td>0</td>
-            <td>1</td>
-            <td><MatrixInput matrixKey='oy' /></td>
-        </tr>
-        <tr>
-            <td>0</td>
-            <td>0</td>
-            <td>1</td>
-        </tr>
-    </tbody></table>
+function TranslationMatrix() {
+    const matrix = {
+        ox: <MatrixInput matrixKey='ox' />,
+        oy: <MatrixInput matrixKey='oy' />,
+    };
+    return <Matrix matrix={matrix} />
 }
 
-export function ManualMatrix() {
-    return <table className='matrix'><tbody>
-        <tr>
-            <td><MatrixInput matrixKey='xi' /></td>
-            <td><MatrixInput matrixKey='yi' /></td>
-            <td><MatrixInput matrixKey='ox' /></td>
-        </tr>
-        <tr>
-            <td><MatrixInput matrixKey='xj' /></td>
-            <td><MatrixInput matrixKey='yj' /></td>
-            <td><MatrixInput matrixKey='oy' /></td>
-        </tr>
-        <tr>
-            <td>0</td>
-            <td>0</td>
-            <td>1</td>
-        </tr>
-    </tbody></table>
+function ManualMatrix() {
+    const matrix = {
+            xi: <MatrixInput matrixKey='xi' />,
+            yi: <MatrixInput matrixKey='yi' />,
+            ox: <MatrixInput matrixKey='ox' />,
+            xj: <MatrixInput matrixKey='xj' />,
+            yj: <MatrixInput matrixKey='yj' />,
+            oy: <MatrixInput matrixKey='oy' />,
+    };
+    return <Matrix matrix={matrix} />
 }
 
 export const InputMatrices = {
