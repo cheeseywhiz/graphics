@@ -10,18 +10,26 @@ export default class Graph extends BaseGraph {
     constructor(props) {
         super(props);
         this.props.dispatch(actions.selectorSubscribe(
-            selectors.intermediates, this.onIntermediatesChange.bind(this),
+            selectors.globals, selectors.locals,
+            this.onIntermediatesChange.bind(this),
         ));
     }
 
-    onIntermediatesChange(intermediates) {
-        console.log('selector subscription');
-        console.log(intermediates);
-        this.scene.clear();
+    addIntermediates(intermediates, color) {
         intermediates
             .map(SquareBuffer)
             .forEach((buffer) => {
-                this.scene.addGeometry(buffer);
+                this.scene.addGeometry(buffer, color);
             });
+    }
+
+    onIntermediatesChange(globals, locals) {
+        console.log('selector subscription');
+        console.table({globals, locals});
+        this.scene.clear();
+        this.addIntermediates(locals.slice(0, 1), 0x000000);
+        this.addIntermediates(locals.slice(1, -1), 0x0000ff);
+        this.addIntermediates(globals.slice(1, -1), 0xff0000);
+        this.addIntermediates(globals.slice(-1), 0xffffff);
     }
 }

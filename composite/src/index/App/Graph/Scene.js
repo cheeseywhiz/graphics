@@ -5,9 +5,9 @@ export default class Scene extends THREE.Scene {
         this.remove.apply(this, this.children.reverse());
     }
 
-    addGeometry(geometry) {
+    addGeometry(geometry, color = 0xff8c00) {
         const faceMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff8c00, transparent: true, opacity: 0.75,
+            color, transparent: true, opacity: 0.75,
         });
         const wireMaterial = new THREE.MeshBasicMaterial({
             color: 0x14ae6e, wireframe: true, wireframeLinewidth: 3,

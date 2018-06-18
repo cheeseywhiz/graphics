@@ -74,16 +74,6 @@ const selectLocals = createSelector(
             .reduce(reducer, [identityFrame]);
     },
 );
-const selectIntermediates = createSelector(
-    selectOrder, selectGlobals, selectLocals,
-    (order, globals, locals) => (
-        {
-            [operationOrders.GLOBAL_ORDER]: globals,
-            [operationOrders.LOCAL_ORDER]: locals,
-        }[order]
-    ),
-);
-
 export function doSubscriptions(state) {
     const subscriptions = [...state.subscriptions.values()];
     subscriptions.forEach((selector) => selector(state));
@@ -99,6 +89,5 @@ const selectors = {
     stackFrames: selectStackFrames,
     globals: selectGlobals,
     locals: selectLocals,
-    intermediates: selectIntermediates,
 };
 export default selectors;

@@ -5,15 +5,18 @@ import FrameList from './Stack/FrameList.js';
 
 function mapStateToProps(state) {
     return {
-        frames: selectors.intermediates(state),
+        globals: selectors.globals(state),
+        locals: selectors.locals(state),
     };
 }
 
 const Intermediates = connect(mapStateToProps)(
-    ({frames}) => (
+    ({globals, locals}) => (
         <div>
-            <b>Intermediate frames</b>
-            <FrameList frames={frames} />
+            <b>Global frames</b>
+            <FrameList frames={globals} />
+            <b>Local frames</b>
+            <FrameList frames={locals} />
         </div>
     )
 );
