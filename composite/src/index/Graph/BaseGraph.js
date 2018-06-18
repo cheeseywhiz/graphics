@@ -55,6 +55,8 @@ export default class BaseGraph extends React.Component {
     }
 
     render() {
-        return <canvas ref={this.canvas} />
+        return <div id='canvas-container'>
+            <canvas ref={this.canvas} />
+        </div>
     }
 }

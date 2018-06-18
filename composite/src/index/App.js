@@ -5,6 +5,7 @@ import ResetButton from './App/ResetButton.js';
 import Stack from './App/Stack.js';
 import OrderSelector from './App/OrderSelector.js';
 import Intermediates from './App/Intermediates.js';
+import Graph from './Graph.js';
 
 export default function App() {
     return <div>
@@ -15,5 +16,6 @@ export default function App() {
             <InputMatrix />
         </Stack>
         <Intermediates />
+        <Graph />
     </div>
 }

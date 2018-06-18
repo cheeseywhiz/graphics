@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
+import {connect, } from 'react-redux';
 import actions from '../actions.js';
 import selectors from '../selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
 import SquareBuffer from './Graph/SquareBuffer.js';
 
-export default class Graph extends BaseGraph {
+class GraphBase extends BaseGraph {
     constructor(props) {
         super(props);
-        props.store.dispatch(actions.selectorSubscribe(
+        this.props.dispatch(actions.selectorSubscribe(
             selectors.intermediates, this.onIntermediatesChange.bind(this),
         ));
     }
@@ -22,4 +23,5 @@ export default class Graph extends BaseGraph {
     }
 }
 
-Graph.propTypes = {store: PropTypes.object.isRequired};
+const Graph = connect()(GraphBase);
+export default Graph;
