@@ -5,7 +5,8 @@ import selectors from '../../selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
 import SquareBuffer from './Graph/SquareBuffer.js';
 
-class GraphBase extends BaseGraph {
+@connect()
+export default class Graph extends BaseGraph {
     constructor(props) {
         super(props);
         this.props.dispatch(actions.selectorSubscribe(
@@ -24,6 +25,3 @@ class GraphBase extends BaseGraph {
             });
     }
 }
-
-const Graph = connect()(GraphBase);
-export default Graph;
