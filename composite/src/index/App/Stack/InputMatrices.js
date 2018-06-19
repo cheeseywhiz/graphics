@@ -1,10 +1,10 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import selectors from '../../selectors.js';
+import selectors from '../../../selectors.js';
 import Matrix from './common/Matrix.js';
-import RotationInput from './InputMatrix/RotationInput.js';
-import ScaleInput from './InputMatrix/ScaleInput.js';
-import MatrixInput from './InputMatrix/MatrixInput.js';
+import RotationInput from './InputMatrices/RotationInput.js';
+import ScaleInput from './InputMatrices/ScaleInput.js';
+import MatrixInput from './InputMatrices/MatrixInput.js';
 
 function DefaultMatrix({selector, reset}) {
     return <Matrix

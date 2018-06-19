@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import actions from '../../actions.js';
-import selectors from '../../selectors.js';
+import actions from '../../../actions.js';
+import selectors from '../../../selectors.js';
 
 function mapStateToProps(state) {
     return {
