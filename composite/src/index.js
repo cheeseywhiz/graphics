@@ -8,7 +8,10 @@ import {doSubscriptions, } from './selectors.js';
 import App from './index/App.js';
 
 function main() {
-    const store = createStore(combineReducers(reducers));
+    const store = createStore(
+        combineReducers(reducers),
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    );
     store.subscribe(() => {
         console.log('store subscription');
         console.log(store.getState());
