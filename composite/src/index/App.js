@@ -11,9 +11,9 @@ export default function App() {
     return <div>
         <OrderSelector /><br />
         <Stack>
-            <OperationSelector />
-            <ResetButton />
-            <InputMatrix />
+            <InputMatrix
+                selector={<OperationSelector />}
+                reset={<ResetButton />} />
         </Stack>
         <Intermediates />
         <Graph />

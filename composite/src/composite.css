@@ -1,9 +1,45 @@
+ul {
+    overflow: auto;
+}
+
+li {
+    display: inline;
+    white-space: nowrap;
+}
+
+li:before {
+    content: "\2022";  /* Bullet point */
+}
+
 .matrix {
+    display: inline-grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-right: 25px;
+}
+
+.matrix-selector {
+    grid-column: 1 / 3;
+}
+
+.matrix-input {
+    grid-column: 1 / -1;
+}
+
+.matrix-reset {
+    grid-column: -2;
+}
+
+.matrix-cell {
+    width: 55px;
     text-align: center;
 }
 
-input {
-    width: 55px;
+input, select {
+    width: inherit;
+}
+
+.matrix-cell input {
+    text-align: inherit;
 }
 
 #canvas-container {

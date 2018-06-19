@@ -6,43 +6,50 @@ import RotationInput from './InputMatrix/RotationInput.js';
 import ScaleInput from './InputMatrix/ScaleInput.js';
 import MatrixInput from './InputMatrix/MatrixInput.js';
 
-function DefaultMatrix() {
-    return <Matrix />
+function DefaultMatrix({selector, reset}) {
+    return <Matrix
+        selector={selector}
+        reset={reset} />
 }
 
-function RotationMatrix() {
+function RotationMatrix({selector, reset}) {
     const matrix = {
         xi: <MatrixInput matrixKey='xi' disabled/>,
         yi: <MatrixInput matrixKey='yi' disabled/>,
         xj: <MatrixInput matrixKey='xj' disabled/>,
         yj: <MatrixInput matrixKey='yj' disabled/>,
     };
-    return <div>
-        <RotationInput />
-        <Matrix matrix={matrix} />
-    </div>
+    return <Matrix
+        input={<RotationInput />}
+        selector={selector}
+        reset={reset}
+        matrix={matrix} />
 }
 
-function ScaleMatrix() {
+function ScaleMatrix({selector, reset}) {
     const matrix = {
         xi: <MatrixInput matrixKey='xi' />,
         yj: <MatrixInput matrixKey='yj' />,
     };
-    return <div>
-        <ScaleInput />
-        <Matrix matrix={matrix} />
-    </div>
+    return <Matrix
+        input={<ScaleInput />}
+        selector={selector}
+        reset={reset}
+        matrix={matrix} />
 }
 
-function TranslationMatrix() {
+function TranslationMatrix({selector, reset}) {
     const matrix = {
         ox: <MatrixInput matrixKey='ox' />,
         oy: <MatrixInput matrixKey='oy' />,
     };
-    return <Matrix matrix={matrix} />
+    return <Matrix
+        selector={selector}
+        reset={reset}
+        matrix={matrix} />
 }
 
-function ManualMatrix() {
+function ManualMatrix({selector, reset}) {
     const matrix = {
             xi: <MatrixInput matrixKey='xi' />,
             yi: <MatrixInput matrixKey='yi' />,
@@ -51,15 +58,19 @@ function ManualMatrix() {
             yj: <MatrixInput matrixKey='yj' />,
             oy: <MatrixInput matrixKey='oy' />,
     };
-    return <Matrix matrix={matrix} />
+    return <Matrix
+        selector={selector}
+        reset={reset}
+        matrix={matrix} />
 }
 
 export const InputMatrices = {
     DefaultMatrix, RotationMatrix, ScaleMatrix, TranslationMatrix, ManualMatrix,
 };
 
-function InputMatrixBase({type}) {
-    return React.createElement(type);
+function InputMatrixBase(props) {
+    const {type, ...newProps} = props;
+    return React.createElement(type, newProps);
 }
 
 function mapStateToProps(state) {
