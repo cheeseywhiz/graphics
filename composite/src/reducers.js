@@ -1,6 +1,5 @@
 import {createSelector, } from 'reselect';
-import {operationOrders, types, } from './actions.js';
-import combineReducers from './combineReducers.js';
+import {types, } from './actions.js';
 
 const defaultMatrix = {
     xi: 1, yi: 0, ox: 0,
@@ -30,10 +29,15 @@ export function value(state = '0', action) {
     }
 }
 
-export function order(state = operationOrders.GLOBAL_ORDER, action) {
+const defaultOrder = {
+    globals: true,
+    locals: false,
+}
+
+export function order(state = defaultOrder, action) {
     switch (action.type) {
-        case types.UPDATE_ORDER:
-            return action.order;
+        case types.TOGGLE_ORDER:
+            return {...state, [action.value]: !state[action.value]};
         default:
             return state;
     }

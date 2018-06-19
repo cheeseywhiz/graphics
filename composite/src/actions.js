@@ -1,27 +1,17 @@
 export const types = {
     UPDATE_VALUE: 'UPDATE_VALUE',
-    UPDATE_ORDER: 'UPDATE_ORDER',
     SET_MATRIX: 'SET_MATRIX',
     STACK_PUSH: 'STACK_PUSH',
     STACK_POP: 'STACK_POP',
     STACK_CLEAR: 'STACK_CLEAR',
     RESET_MATRIX: 'RESET_MATRIX',
     SELECTOR_SUBSCRIBE: 'SELECTOR_SUBSCRIBE',
-};
-
-export const operationOrders = {
-    GLOBAL_ORDER: 'GLOBAL_ORDER',
-    LOCAL_ORDER: 'LOCAL_ORDER',
+    TOGGLE_ORDER: 'TOGGLE_ORDER',
 };
 
 function updateValue(value) {
     const type = types.UPDATE_VALUE;
     return {type, value};
-}
-
-function updateOrder(order) {
-    const type = types.UPDATE_ORDER;
-    return {type, order};
 }
 
 function setMatrix(matrix) {
@@ -54,6 +44,11 @@ function selectorSubscribe(...funcs) {
     return {type, funcs};
 }
 
+function toggleOrder(value) {
+    const type = types.TOGGLE_ORDER;
+    return {type, value};
+}
+
 function updateMatrix(key, value) {
     return setMatrix({[key]: value});
 }
@@ -80,8 +75,8 @@ function setScaleMatrix(ratio) {
 }
 
 const actions = {
-    updateValue, updateOrder, setMatrix, stackPush, stackPop, stackClear,
+    updateValue, setMatrix, stackPush, stackPop, stackClear,
     resetMatrix, updateMatrix, setRotationMatrix, setScaleMatrix,
-    selectorSubscribe,
+    selectorSubscribe, toggleOrder,
 };
 export default actions;

@@ -5,26 +5,47 @@ import selectors from '../../selectors.js';
 
 function mapStateToProps(state) {
     return {
-        value: selectors.order(state),
+        order: selectors.order(state),
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onOrderChange: (order) => dispatch(actions.updateOrder(order)),
+        onOrderChange: (value) => dispatch(actions.toggleOrder(value)),
     };
 }
 
-const OrderSelector = connect(mapStateToProps, mapDispatchToProps)(
-    ({value, onOrderChange}) => (
-        <div>
-            <b>Operation order</b><br />
-            <select value={value} onChange={(event) => onOrderChange(event.target.value)}>
-                <option value={operationOrders.GLOBAL_ORDER}>Global</option>
-                <option value={operationOrders.LOCAL_ORDER}>Local</option>
-            </select>
-        </div>
-    )
-);
+@connect(mapStateToProps, mapDispatchToProps)
+export default class OrderSelector extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onOrderChange = this.onOrderChange.bind(this);
+    }
 
-export default OrderSelector;
+    onOrderChange(event) {
+        this.props.onOrderChange(event.target.value);
+    }
+
+    render() {
+        const {order} = this.props;
+        return <div>
+            <b>Operation order</b><br />
+            <label>
+                <input
+                    type='checkbox'
+                    value='globals'
+                    checked={order.globals}
+                    onChange={this.onOrderChange} />
+                Globals
+            </label>
+            <label>
+                <input
+                    type='checkbox'
+                    value='locals'
+                    checked={order.locals}
+                    onChange={this.onOrderChange} />
+                Locals
+            </label>
+        </div>
+    }
+}
