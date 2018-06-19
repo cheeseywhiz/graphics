@@ -64,20 +64,7 @@ function ManualMatrix({selector, reset}) {
         matrix={matrix} />
 }
 
-export const InputMatrices = {
+const InputMatrices = {
     DefaultMatrix, RotationMatrix, ScaleMatrix, TranslationMatrix, ManualMatrix,
 };
-
-function InputMatrixBase(props) {
-    const {type, ...newProps} = props;
-    return React.createElement(type, newProps);
-}
-
-function mapStateToProps(state) {
-    return {
-        type: selectors.type(state),
-    };
-}
-
-const InputMatrix = connect(mapStateToProps)(InputMatrixBase);
-export default InputMatrix;
+export default InputMatrices;

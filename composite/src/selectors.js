@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {createSelector, } from 'reselect';
 import {operationOrders, } from './actions.js';
-import {InputMatrices, } from './index/App/InputMatrix.js';
+import InputMatrices from './index/App/InputMatrices.js';
 
 const identityFrame = new THREE.Matrix4().identity();
 
@@ -9,7 +9,7 @@ const selectValue = (state) => state.value;
 const selectMatrix = (state) => state.matrix;
 const selectOrder = (state) => state.order;
 
-const selectType = createSelector(
+const selectInputMatrix = createSelector(
     selectValue,
     (value) => (
         {
@@ -84,7 +84,7 @@ const selectors = {
     matrix: selectMatrix,
     order: selectOrder,
     stack: selectStack,
-    type: selectType,
+    InputMatrix: selectInputMatrix,
     frame: selectFrame,
     stackFrames: selectStackFrames,
     globals: selectGlobals,
