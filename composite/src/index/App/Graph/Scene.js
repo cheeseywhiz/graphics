@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import SquareBuffer from './SquareBuffer.js';
 
 export default class Scene extends THREE.Scene {
     clear() {
@@ -17,5 +18,10 @@ export default class Scene extends THREE.Scene {
         this.add(faceMesh);
         this.add(wireMesh);
         return geometry;
+    }
+
+    addFrame(frame, color) {
+        const buffer = SquareBuffer(frame);
+        this.addGeometry(buffer, color);
     }
 }

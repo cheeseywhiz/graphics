@@ -1,9 +1,7 @@
-import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
 import actions from '../../actions.js';
 import selectors from '../../selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
-import SquareBuffer from './Graph/SquareBuffer.js';
 
 @connect()
 export default class Graph extends BaseGraph {
@@ -17,9 +15,8 @@ export default class Graph extends BaseGraph {
 
     addIntermediates(intermediates, color) {
         intermediates
-            .map(SquareBuffer)
-            .forEach((buffer) => {
-                this.scene.addGeometry(buffer, color);
+            .forEach((frame) => {
+                this.scene.addFrame(frame, color);
             });
     }
 
