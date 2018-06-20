@@ -5,11 +5,12 @@ import selectors from '../../selectors.js';
 import FrameList from './Stack/FrameList.js';
 import OperationSelector from './Stack/OperationSelector.js';
 import ResetButton from './Stack/ResetButton.js';
+import {getInputMatrixType, } from './Stack/InputMatrices.js';
 
 function mapStateToProps(state) {
     return {
         stack: selectors.stack(state),
-        InputMatrix: selectors.InputMatrix(state),
+        operation: selectors.operation(state),
     };
 }
 
@@ -22,8 +23,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 const Stack = connect(mapStateToProps, mapDispatchToProps)(
-    ({stack, InputMatrix, onPush, onPop, onClear}) => (
-        <div>
+    ({stack, operation, onPush, onPop, onClear}) => {
+        const InputMatrix = getInputMatrixType(operation);
+        return <div>
             <b>Operation stack</b><br />
             <input type='button' value='Push' onClick={onPush} />
             <input type='button' value='Pop' onClick={onPop} />
@@ -34,7 +36,7 @@ const Stack = connect(mapStateToProps, mapDispatchToProps)(
                     reset={<ResetButton />} />
             </FrameList>
         </div>
-    )
+    }
 );
 
 export default Stack;

@@ -1,5 +1,5 @@
 import {createSelector, } from 'reselect';
-import {types, } from './actions.js';
+import {types, operationTypes, } from './actions.js';
 
 const defaultMatrix = {
     xi: 1, yi: 0, ox: 0,
@@ -20,10 +20,10 @@ export function matrix(state = defaultMatrix, action) {
     }
 }
 
-export function value(state = '0', action) {
+export function operation(state = operationTypes.DEFAULT, action) {
     switch (action.type) {
-        case types.UPDATE_VALUE:
-            return action.value;
+        case types.UPDATE_OPERATION:
+            return action.operationType;
         default:
             return state;
     }

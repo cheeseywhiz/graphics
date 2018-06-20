@@ -1,30 +1,42 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import actions from '../../../actions.js';
+import actions, {operationTypes, } from '../../../actions.js';
 import selectors from '../../../selectors.js';
+import zip from './common/zip.js';
 
 function mapStateToProps(state) {
     return {
-        value: selectors.value(state),
+        operation: selectors.operation(state),
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onValueChange: (value) => dispatch(actions.updateValue(value)),
+        onValueChange: (operation) => dispatch(actions.updateOperation(operation)),
     };
 }
 
 const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(
-    ({value, onValueChange}) => (
-        <select value={value} onChange={(event) => onValueChange(event.target.value)}>
-            <option value='0' disabled>Operation Type</option>
-            <option value='1'>Rotation</option>
-            <option value='2'>Scale</option>
-            <option value='3'>Translation</option>
-            <option value='4'>Manual</option>
+    ({operation, onValueChange}) => {
+        const operations = Object.values(operationTypes);
+        const labels = [
+            'Operation type',
+            'Rotation',
+            'Scale',
+            'Translation',
+            'Manual',
+        ];
+        return <select value={operation} onChange={(event) => onValueChange(event.target.value)}>
+            {zip(operations, labels).map(([value, label], index) => (
+                <option
+                    key={value}
+                    value={value}
+                    disabled={index === 0} >
+                    {label}
+                </option>
+            ))}
         </select>
-    )
+    }
 );
 
 export default OperationSelector;

@@ -1,26 +1,12 @@
 import * as THREE from 'three';
 import {createSelector, } from 'reselect';
-import {operationOrders, } from './actions.js';
-import InputMatrices from './index/App/Stack/InputMatrices.js';
 
 const identityFrame = new THREE.Matrix4().identity();
 
-const selectValue = (state) => state.value;
 const selectMatrix = (state) => state.matrix;
+const selectOperation = (state) => state.operation;
 const selectOrder = (state) => state.order;
 
-const selectInputMatrix = createSelector(
-    selectValue,
-    (value) => (
-        {
-            '0': InputMatrices.DefaultMatrix,
-            '1': InputMatrices.RotationMatrix,
-            '2': InputMatrices.ScaleMatrix,
-            '3': InputMatrices.TranslationMatrix,
-            '4': InputMatrices.ManualMatrix,
-        }[value]
-    ),
-);
 const selectFrame = createSelector(
     selectMatrix,
     (matrix) => (
@@ -80,11 +66,10 @@ export function doSubscriptions(state) {
 }
 
 const selectors = {
-    value: selectValue,
     matrix: selectMatrix,
+    operation: selectOperation,
     order: selectOrder,
     stack: selectStack,
-    InputMatrix: selectInputMatrix,
     frame: selectFrame,
     stackFrames: selectStackFrames,
     globals: selectGlobals,
