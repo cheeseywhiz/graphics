@@ -17,5 +17,4 @@ const ResetButton = connect(mapStateToProps, mapDispatchToProps)(
         <input type='button' value='Reset' onClick={onClick} />
     )
 );
-
 export default ResetButton;

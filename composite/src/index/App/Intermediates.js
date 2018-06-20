@@ -20,5 +20,4 @@ const Intermediates = connect(mapStateToProps)(
         </div>
     )
 );
-
 export default Intermediates;

@@ -15,37 +15,29 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
-export default class OrderSelector extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onOrderChange = this.onOrderChange.bind(this);
-    }
-
-    onOrderChange(event) {
-        this.props.onOrderChange(event.target.value);
-    }
-
-    render() {
-        const {order} = this.props;
+const OrderSelector = connect(mapStateToProps, mapDispatchToProps)(
+    ({order, onOrderChange}) => {
+        const onChange = (event) => onOrderChange(event.target.value);
+        const {globals, locals} = order;
         return <div>
             <b>Operation order</b><br />
             <label>
                 <input
                     type='checkbox'
                     value='globals'
-                    checked={order.globals}
-                    onChange={this.onOrderChange} />
+                    checked={globals}
+                    onChange={onChange} />
                 Globals
             </label>
             <label>
                 <input
                     type='checkbox'
                     value='locals'
-                    checked={order.locals}
-                    onChange={this.onOrderChange} />
+                    checked={locals}
+                    onChange={onChange} />
                 Locals
             </label>
         </div>
     }
-}
+);
+export default OrderSelector;

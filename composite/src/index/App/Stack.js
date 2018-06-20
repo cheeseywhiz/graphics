@@ -38,5 +38,4 @@ const Stack = connect(mapStateToProps, mapDispatchToProps)(
         </div>
     }
 );
-
 export default Stack;
