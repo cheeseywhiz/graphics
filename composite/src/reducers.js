@@ -11,7 +11,7 @@ export function matrix(state = defaultMatrix, action) {
     switch (action.type) {
         case types.SET_MATRIX:
             return {...state, ...action.matrix};
-        case types.UPDATE_VALUE:
+        case types.UPDATE_OPERATION:
         case types.STACK_PUSH:
         case types.RESET_MATRIX:
             return defaultMatrix;

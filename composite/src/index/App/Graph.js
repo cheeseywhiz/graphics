@@ -29,6 +29,6 @@ export default class Graph extends BaseGraph {
         this.addIntermediates(first, 0x000000);
         if (order.locals) this.addIntermediates(locals.slice(1, -1), 0x0000ff);
         if (order.globals) this.addIntermediates(globals.slice(1, -1), 0xff0000);
-        this.addIntermediates(last, 0xffffff);
+        if (globals.length > 1) this.addIntermediates(last, 0xffffff);
     }
 }
