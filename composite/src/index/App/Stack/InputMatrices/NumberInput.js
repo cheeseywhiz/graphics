@@ -4,21 +4,13 @@ import {connect, } from 'react-redux';
 import selectors from '../../../../selectors.js';
 import roundFloatStr from '../common/roundFloatStr.js';
 
-export function NumberInputBase({onNumberChange, ...props}) {
-    const inputProps = {
-        ...props,
-        type: 'number',
-        onChange: (event) => onNumberChange(parseFloat(event.target.value)),
-    };
-
-    if (Number.isFinite(inputProps.value)) {
-        inputProps.value = roundFloatStr(inputProps.value);
-    } else {
-        inputProps.value = '';
-    }
-
-    return React.createElement('input', inputProps);
-}
+export const NumberInputBase = ({value, onNumberChange, ...props}) => (
+    <input
+        {...props}
+        type='number'
+        value={Number.isFinite(value) ? roundFloatStr(value) : ''}
+        onChange={(event) => onNumberChange(parseFloat(event.target.value))} />
+);
 
 NumberInputBase.propTypes = {onNumberChange: PropTypes.func.isRequired};
 
