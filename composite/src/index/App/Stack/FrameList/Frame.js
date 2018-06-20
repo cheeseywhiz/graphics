@@ -1,5 +1,5 @@
 import React from 'react';
-import roundFloatStr from '../../../../round-float-str.js';
+import roundFloatStr from '../common/roundFloatStr.js';
 import Matrix from '../common/Matrix.js';
 
 export default function Frame({frame}) {

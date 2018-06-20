@@ -14,4 +14,3 @@ function round(number, precision) {
 export default function roundFloatStr(number) {
     return round(number, 2).toString();
 }
-
