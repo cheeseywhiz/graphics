@@ -1,6 +1,6 @@
 import {createSelector, } from 'reselect';
 import combineReducersStack from './combineReducersStack.js';
-import {types, operationTypes, shapeNames, } from './actions.js';
+import {types, operationNames, shapeNames, } from './actions.js';
 
 const defaultMatrix = {
     xi: 1, yi: 0, ox: 0,
@@ -8,10 +8,10 @@ const defaultMatrix = {
     number: '',
 };
 
-function matrix(state = defaultMatrix, action) {
-    switch (action.type) {
+function matrix(state = defaultMatrix, {type, matrix}) {
+    switch (type) {
         case types.SET_MATRIX:
-            return {...state, ...action.matrix};
+            return {...state, ...matrix};
         case types.UPDATE_OPERATION:
         case types.STACK_PUSH:
         case types.RESET_MATRIX:
@@ -21,10 +21,10 @@ function matrix(state = defaultMatrix, action) {
     }
 }
 
-function operation(state = operationTypes.DEFAULT, action) {
-    switch (action.type) {
+function operation(state = operationNames.DEFAULT, {type, operationName}) {
+    switch (type) {
         case types.UPDATE_OPERATION:
-            return action.operationType;
+            return operationName;
         default:
             return state;
     }
@@ -37,29 +37,29 @@ const defaultOrder = {
     locals: false,
 }
 
-export function order(state = defaultOrder, action) {
-    switch (action.type) {
+export function order(state = defaultOrder, {type, value}) {
+    switch (type) {
         case types.TOGGLE_ORDER:
-            return {...state, [action.value]: !state[action.value]};
+            return {...state, [value]: !state[value]};
         default:
             return state;
     }
 }
 
-export function shape(state = shapeNames.DEFAULT, action) {
-    switch (action.type) {
+export function shape(state = shapeNames.DEFAULT, {type, shapeName}) {
+    switch (type) {
         case types.UPDATE_SHAPE:
-            return action.shapeName;
+            return shapeName;
         default:
             return state;
     }
 }
 
-export function subscriptions(state = new Set(), action) {
-    switch (action.type) {
+export function subscriptions(state = new Set(), {type, funcs}) {
+    switch (type) {
         case types.SELECTOR_SUBSCRIBE: {
             const newState = new Set(state);
-            newState.add(createSelector(...action.funcs));
+            newState.add(createSelector(...funcs));
             return newState;
         };
         default:

@@ -1,5 +1,5 @@
 import React from 'react';
-import {operationTypes, } from '../../../actions.js';
+import {operationNames, } from '../../../actions.js';
 import Matrix from './common/Matrix.js';
 import zip from '../common/zip.js';
 import RotationInput from './InputMatrices/RotationInput.js';
@@ -69,12 +69,12 @@ const InputMatrices = {
 };
 export default InputMatrices;
 
-export function getInputMatrixType(operation) {
-    const operations = Object.values(operationTypes);
+export function getInputMatrixType(operationName) {
+    const names = Object.values(operationNames);
     const types = Object.values(InputMatrices);
     const map = {};
-    zip(operations, types).forEach(([key, value]) => {
-        map[key] = value;
+    zip(names, types).forEach(([name, type]) => {
+        map[name] = type;
     });
-    return map[operation];
+    return map[operationName];
 }

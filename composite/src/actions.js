@@ -10,7 +10,7 @@ export const types = {
     UPDATE_SHAPE: 'UPDATE_SHAPE',
 };
 
-export const operationTypes = {
+export const operationNames = {
     DEFAULT: 'DEFAULT',
     ROTATION: 'ROTATION',
     SCALE: 'SCALE',
@@ -23,9 +23,9 @@ export const shapeNames = {
     SQUARE: 'SQUARE',
 };
 
-function updateOperation(operationType) {
+function updateOperation(operationName) {
     const type = types.UPDATE_OPERATION;
-    return {type, operationType};
+    return {type, operationName};
 }
 
 function setMatrix(matrix) {

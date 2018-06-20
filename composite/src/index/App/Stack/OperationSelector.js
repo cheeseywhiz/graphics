@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import actions, {operationTypes, } from '../../../actions.js';
+import actions, {operationNames, } from '../../../actions.js';
 import selectors from '../../../selectors.js';
 import zip from '../common/zip.js';
 
@@ -18,7 +18,7 @@ function mapDispatchToProps(dispatch) {
 
 const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(
     ({operation, onValueChange}) => {
-        const operations = Object.values(operationTypes);
+        const names = Object.values(operationNames);
         const labels = [
             'Operation type',
             'Rotation',
@@ -27,10 +27,10 @@ const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(
             'Manual',
         ];
         return <select value={operation} onChange={(event) => onValueChange(event.target.value)}>
-            {zip(operations, labels).map(([value, label], index) => (
+            {zip(names, labels).map(([name, label], index) => (
                 <option
-                    key={value}
-                    value={value}
+                    key={name}
+                    value={name}
                     disabled={index === 0} >
                     {label}
                 </option>
@@ -38,5 +38,4 @@ const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(
         </select>
     }
 );
-
 export default OperationSelector;
