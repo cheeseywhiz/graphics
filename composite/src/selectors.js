@@ -76,3 +76,11 @@ const selectors = {
     locals: selectLocals,
 };
 export default selectors;
+
+export function selectAll(state) {
+    const derived = {};
+    Object.entries(selectors).forEach(([name, selector]) => {
+        derived[name] = selector(state);
+    });
+    return derived;
+}
