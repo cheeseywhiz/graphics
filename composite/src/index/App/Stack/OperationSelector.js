@@ -4,17 +4,13 @@ import actions, {operationNames, } from '../../../actions.js';
 import selectors from '../../../selectors.js';
 import zip from '../common/zip.js';
 
-function mapStateToProps(state) {
-    return {
-        operation: selectors.operation(state),
-    };
-}
+const mapStateToProps = (state) => ({
+    operation: selectors.operation(state),
+});
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onValueChange: (operation) => dispatch(actions.updateOperation(operation)),
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    onValueChange: (operation) => dispatch(actions.updateOperation(operation)),
+});
 
 const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(
     ({operation, onValueChange}) => {

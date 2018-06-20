@@ -4,24 +4,18 @@ import actions from '../../../../actions.js';
 import selectors from '../../../../selectors.js';
 import {NumberInputBase, } from './NumberInput.js';
 
-function mapStateToProps(state, ownProps) {
-    return {
-        value: selectors.matrix(state)[ownProps.matrixKey],
-        placeholder: ownProps.matrixKey,
-    };
-}
+const mapStateToProps = (state, {matrixKey}) => ({
+    value: selectors.matrix(state)[matrixKey],
+    placeholder: matrixKey,
+});
 
-function mapDispatchToProps(dispatch, ownProps) {
-    return {
-        onNumberChange: (value) => dispatch(actions.updateMatrix(ownProps.matrixKey, value)),
-    };
-}
+const mapDispatchToProps = (dispatch, {matrixKey}) => ({
+    onNumberChange: (value) => dispatch(actions.updateMatrix(matrixKey, value)),
+});
 
-function mergeProps(stateProps, dispatchProps, ownProps) {
-    const props = {...ownProps, ...stateProps, ...dispatchProps};
-    const {matrixKey, ...rest} = props;
-    return rest;
-}
+const mergeProps = (stateProps, dispatchProps, {matrixKey, ...ownProps}) => ({
+    ...ownProps, ...stateProps, ...dispatchProps,
+});
 
 const MatrixInput = connect(mapStateToProps, mapDispatchToProps, mergeProps)(NumberInputBase);
 MatrixInput.propTypes = {matrixKey: PropTypes.string.isRequired};

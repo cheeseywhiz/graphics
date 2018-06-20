@@ -2,15 +2,11 @@ import React from 'react';
 import {connect, } from 'react-redux';
 import actions from '../../../actions.js';
 
-function mapStateToProps(state) {
-    return {};
-}
+const mapStateToProps = (state) => ({});
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onClick: () => dispatch(actions.resetMatrix()),
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    onClick: () => dispatch(actions.resetMatrix()),
+});
 
 const ResetButton = connect(mapStateToProps, mapDispatchToProps)(
     ({onClick}) => (

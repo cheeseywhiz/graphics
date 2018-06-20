@@ -7,20 +7,16 @@ import OperationSelector from './Stack/OperationSelector.js';
 import ResetButton from './Stack/ResetButton.js';
 import {getInputMatrixType, } from './Stack/InputMatrices.js';
 
-function mapStateToProps(state) {
-    return {
-        stack: selectors.stack(state),
-        operation: selectors.operation(state),
-    };
-}
+const mapStateToProps = (state) => ({
+    stack: selectors.stack(state),
+    operation: selectors.operation(state),
+});
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onPush: () => dispatch(actions.stackPush()),
-        onPop: () => dispatch(actions.stackPop()),
-        onClear: () => dispatch(actions.stackClear()),
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    onPush: () => dispatch(actions.stackPush()),
+    onPop: () => dispatch(actions.stackPop()),
+    onClear: () => dispatch(actions.stackClear()),
+});
 
 const Stack = connect(mapStateToProps, mapDispatchToProps)(
     ({stack, operation, onPush, onPop, onClear}) => {

@@ -2,17 +2,13 @@ import {connect, } from 'react-redux';
 import actions from '../../../../actions.js';
 import NumberInput from './NumberInput.js';
 
-function mapStateToProps(state) {
-    return {
-        placeholder: 'ratio',
-    };
-}
+const mapStateToProps = (state) => ({
+    placeholder: 'ratio',
+});
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onNumberChange: (ratio) => dispatch(actions.setScaleMatrix(ratio)),
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    onNumberChange: (ratio) => dispatch(actions.setScaleMatrix(ratio)),
+});
 
 const ScaleInput = connect(mapStateToProps, mapDispatchToProps)(NumberInput);
 export default ScaleInput;

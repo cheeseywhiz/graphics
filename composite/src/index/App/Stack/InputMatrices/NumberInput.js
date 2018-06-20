@@ -22,15 +22,11 @@ export function NumberInputBase({onNumberChange, ...props}) {
 
 NumberInputBase.propTypes = {onNumberChange: PropTypes.func.isRequired};
 
-function mapStateToProps(state) {
-    return {
-        value: selectors.matrix(state).number,
-    };
-}
+const mapStateToProps = (state) => ({
+    value: selectors.matrix(state).number,
+});
 
-function mapDispatchToProps(dispatch) {
-    return {};
-}
+const mapDispatchToProps = (dispatch) => ({});
 
 const NumberInput = connect(mapStateToProps, mapDispatchToProps)(NumberInputBase);
 export default NumberInput;

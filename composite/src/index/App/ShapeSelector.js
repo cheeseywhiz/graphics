@@ -4,17 +4,13 @@ import actions, {shapeNames, } from '../../actions.js';
 import selectors from '../../selectors.js';
 import zip from './common/zip.js';
 
-function mapStateToProps(state) {
-    return {
-        shape: selectors.shape(state),
-    };
-}
+const mapStateToProps = (state) => ({
+    shape: selectors.shape(state),
+});
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onShapeChange: (shapeName) => dispatch(actions.updateShape(shapeName)),
-    };
-}
+const mapDispatchToProps = (dispatch) => ({
+    onShapeChange: (shapeName) => dispatch(actions.updateShape(shapeName)),
+});
 
 const ShapeSelector = connect(mapStateToProps, mapDispatchToProps)(
     ({shape, onShapeChange}) => {
