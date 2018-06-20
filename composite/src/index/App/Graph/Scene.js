@@ -17,6 +17,7 @@ export default class Scene extends THREE.Scene {
         const faceMaterial = new THREE.MeshBasicMaterial({
             color, transparent: true, opacity: 0.75,
         });
+        faceMaterial.side = THREE.DoubleSide;
         const wireMaterial = new THREE.MeshBasicMaterial({
             color: 0x14ae6e, wireframe: true, wireframeLinewidth: 3,
         });
@@ -55,7 +56,8 @@ export default class Scene extends THREE.Scene {
         const shapeFunc = getShape(shapeName);
 
         if (shapeFunc) {
-            const buffer = shapeFunc(frame);
+            const buffer = shapeFunc();
+            buffer.applyMatrix(frame);
             this.addGeometry(buffer, color);
         }
 
