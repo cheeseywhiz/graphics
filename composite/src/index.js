@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider, } from 'react-redux';
-import {createStore, } from 'redux';
+import {createStore, combineReducers, } from 'redux';
 import * as reducers from './reducers.js';
-import combineReducers from './combineReducers';
 import {doSubscriptions, selectAll, } from './selectors.js';
 import App from './index/App.js';
 

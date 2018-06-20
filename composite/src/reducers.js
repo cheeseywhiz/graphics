@@ -1,4 +1,5 @@
 import {createSelector, } from 'reselect';
+import combineReducersStack from './combineReducersStack.js';
 import {types, operationTypes, shapeNames, } from './actions.js';
 
 const defaultMatrix = {
@@ -7,7 +8,7 @@ const defaultMatrix = {
     number: '',
 };
 
-export function matrix(state = defaultMatrix, action) {
+function matrix(state = defaultMatrix, action) {
     switch (action.type) {
         case types.SET_MATRIX:
             return {...state, ...action.matrix};
@@ -20,7 +21,7 @@ export function matrix(state = defaultMatrix, action) {
     }
 }
 
-export function operation(state = operationTypes.DEFAULT, action) {
+function operation(state = operationTypes.DEFAULT, action) {
     switch (action.type) {
         case types.UPDATE_OPERATION:
             return action.operationType;
@@ -28,6 +29,8 @@ export function operation(state = operationTypes.DEFAULT, action) {
             return state;
     }
 }
+
+export const stack = combineReducersStack({matrix, operation});
 
 const defaultOrder = {
     globals: true,

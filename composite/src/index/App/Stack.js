@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import actions from '../../actions.js';
-import selectors from '../../selectors.js';
+import selectors, {matrixToFrame, } from '../../selectors.js';
 import FrameList from './Stack/FrameList.js';
 import OperationSelector from './Stack/OperationSelector.js';
 import ResetButton from './Stack/ResetButton.js';
@@ -30,7 +30,7 @@ const Stack = connect(mapStateToProps, mapDispatchToProps)(
             <input type='button' value='Push' onClick={onPush} />
             <input type='button' value='Pop' onClick={onPop} />
             <input type='button' value='Clear' onClick={onClear} />
-            <FrameList frames={stack.map(selectors.frame)}>
+            <FrameList frames={stack.map(({matrix}) => matrixToFrame(matrix))}>
                 <InputMatrix
                     selector={<OperationSelector />}
                     reset={<ResetButton />} />
