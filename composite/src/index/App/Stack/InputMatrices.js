@@ -1,7 +1,7 @@
 import React from 'react';
 import {operationTypes, } from '../../../actions.js';
 import Matrix from './common/Matrix.js';
-import zip from './common/zip.js';
+import zip from '../common/zip.js';
 import RotationInput from './InputMatrices/RotationInput.js';
 import ScaleInput from './InputMatrices/ScaleInput.js';
 import MatrixInput from './InputMatrices/MatrixInput.js';

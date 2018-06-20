@@ -7,6 +7,7 @@ export const types = {
     RESET_MATRIX: 'RESET_MATRIX',
     SELECTOR_SUBSCRIBE: 'SELECTOR_SUBSCRIBE',
     TOGGLE_ORDER: 'TOGGLE_ORDER',
+    UPDATE_SHAPE: 'UPDATE_SHAPE',
 };
 
 export const operationTypes = {
@@ -15,6 +16,11 @@ export const operationTypes = {
     SCALE: 'SCALE',
     TRANSLATION: 'TRANSLATION',
     MANUAL: 'MANUAL',
+};
+
+export const shapeNames = {
+    DEFAULT: 'DEFAULT',
+    SQUARE: 'SQUARE',
 };
 
 function updateOperation(operationType) {
@@ -57,6 +63,11 @@ function toggleOrder(value) {
     return {type, value};
 }
 
+function updateShape(shapeName) {
+    const type = types.UPDATE_SHAPE;
+    return {type, shapeName};
+}
+
 function updateMatrix(key, value) {
     return setMatrix({[key]: value});
 }
@@ -85,6 +96,6 @@ function setScaleMatrix(ratio) {
 const actions = {
     updateOperation, setMatrix, stackPush, stackPop, stackClear,
     resetMatrix, updateMatrix, setRotationMatrix, setScaleMatrix,
-    selectorSubscribe, toggleOrder,
+    selectorSubscribe, toggleOrder, updateShape,
 };
 export default actions;

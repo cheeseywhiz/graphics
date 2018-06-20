@@ -1,5 +1,5 @@
 import {createSelector, } from 'reselect';
-import {types, operationTypes, } from './actions.js';
+import {types, operationTypes, shapeNames, } from './actions.js';
 
 const defaultMatrix = {
     xi: 1, yi: 0, ox: 0,
@@ -38,6 +38,15 @@ export function order(state = defaultOrder, action) {
     switch (action.type) {
         case types.TOGGLE_ORDER:
             return {...state, [action.value]: !state[action.value]};
+        default:
+            return state;
+    }
+}
+
+export function shape(state = shapeNames.DEFAULT, action) {
+    switch (action.type) {
+        case types.UPDATE_SHAPE:
+            return action.shapeName;
         default:
             return state;
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import {connect, } from 'react-redux';
 import actions, {operationTypes, } from '../../../actions.js';
 import selectors from '../../../selectors.js';
-import zip from './common/zip.js';
+import zip from '../common/zip.js';
 
 function mapStateToProps(state) {
     return {
