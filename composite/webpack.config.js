@@ -27,12 +27,26 @@ module.exports = {
             {
                 test: /\.js$/,
                 include: SRC_PATH,
-                exclude: /node_module/,
                 loader: 'babel-loader',
                 options: {
                     presets: ['env', 'react', 'stage-2'],
                     plugins: ['transform-decorators-legacy'],
                 },
+            },
+            {
+                test: /\.css$/,
+                include: SRC_PATH,
+                loaders: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            // localIdentName: '[path][name]--[local]--[hash:hex:5]',
+                            localIdentName: '[local]',  // FIXME: Write individual CSS modules
+                        },
+                    },
+                ],
             },
         ],
     },
