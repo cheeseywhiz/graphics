@@ -37,7 +37,12 @@ module.exports = {
                 test: /\.css$/,
                 include: SRC_PATH,
                 loaders: [
-                    'style-loader',
+                    {
+                        loader: 'style-loader',
+                        options: {
+                            singleton: true,
+                        },
+                    },
                     {
                         loader: 'css-loader',
                         options: {

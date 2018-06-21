@@ -1,0 +1,13 @@
+/* FrameList.css */
+.frameList {
+    overflow: auto;
+}
+
+.frameItem {
+    display: inline;
+    white-space: nowrap;
+}
+
+.frameItem:before {
+    content: "\2022";  /* Bullet point */
+}
