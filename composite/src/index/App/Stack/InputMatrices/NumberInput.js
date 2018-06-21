@@ -5,10 +5,14 @@ import actions from '../../../../actions.js';
 import selectors from '../../../../selectors.js';
 import roundFloatStr from '../common/roundFloatStr.js';
 
-export const focusInput = (input) => input.select();
+const mapStateToProps = (state) => ({});
 
-@connect()
-export class NumberInputBase extends React.Component {
+const mapDispatchToProps = (dispatch) => ({
+    onEnter: () => dispatch(actions.stackPush()),
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class NumberInput extends React.Component {
     constructor(props) {
         super(props);
         this.input = React.createRef();
@@ -19,7 +23,7 @@ export class NumberInputBase extends React.Component {
     onKeyPress({key}) {
         switch (key) {
             case "Enter":
-                this.props.dispatch(actions.stackPush());
+                this.props.onEnter();
         }
     }
 
@@ -28,11 +32,11 @@ export class NumberInputBase extends React.Component {
     }
 
     componentDidMount() {
-        this.props.onMount(this.input.current);
+        if (this.props.autofocus) this.input.current.select();
     }
 
     render() {
-        const {value, onNumberChange, onMount, dispatch, ...props} = this.props;
+        const {value, autofocus, onNumberChange, onEnter, ...props} = this.props;
         return <input
             {...props}
             ref={this.input}
@@ -43,14 +47,4 @@ export class NumberInputBase extends React.Component {
     }
 }
 
-NumberInputBase.propTypes = {onNumberChange: PropTypes.func.isRequired};
-NumberInputBase.defaultProps = {
-    onMount: (input) => {},
-};
-
-const mapStateToProps = (state) => ({
-    value: selectors.matrix(state).number,
-});
-
-const NumberInput = connect(mapStateToProps)(NumberInputBase);
-export default NumberInput;
+NumberInput.propTypes = {onNumberChange: PropTypes.func.isRequired};

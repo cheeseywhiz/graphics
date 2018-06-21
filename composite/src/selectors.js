@@ -4,6 +4,7 @@ import {createSelector, } from 'reselect';
 const identityFrame = new THREE.Matrix4().identity();
 
 const selectMatrix = (state) => state.stack.matrix;
+const selectNumber = (state) => selectMatrix(state).number;
 const selectOperation = (state) => state.stack.operation;
 const selectOrder = (state) => state.order;
 const selectShape = (state) => state.shape;
@@ -67,6 +68,7 @@ export function doSubscriptions(state) {
 
 const selectors = {
     matrix: selectMatrix,
+    number: selectNumber,
     operation: selectOperation,
     order: selectOrder,
     shape: selectShape,
