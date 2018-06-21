@@ -21,6 +21,8 @@ export const operationNames = {
 export const shapeNames = {
     DEFAULT: 'DEFAULT',
     SQUARE: 'SQUARE',
+    UNIT_CIRCLE: 'UNIT_CIRCLE',
+    KNOT: 'KNOT',
 };
 
 function updateOperation(operationName) {

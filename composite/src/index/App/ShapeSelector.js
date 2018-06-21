@@ -18,6 +18,8 @@ const ShapeSelector = connect(mapStateToProps, mapDispatchToProps)(
         const labels = [
             'None',
             'Square',
+            'Unit circle',
+            'Knot',
         ];
         return <div>
             <b>Shape</b><br />

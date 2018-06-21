@@ -9,7 +9,7 @@ function verticesToBuffer(vertices) {
     return buffer;
 }
 
-const SquareBuffer = () => verticesToBuffer([
+const Square = () => verticesToBuffer([
         0, 0, 0,
         1, 0, 0,
         1, 1, 0,
@@ -19,8 +19,12 @@ const SquareBuffer = () => verticesToBuffer([
         0, 1, 0,
 ]);
 
+const UnitCircle = () => new THREE.CircleBufferGeometry(1, 16);
+
+const Knot = () => new THREE.TorusKnotBufferGeometry();
+
 const shapes = {
-    Default: undefined, SquareBuffer,
+    Default: undefined, Square, UnitCircle, Knot,
 };
 export default shapes;
 
