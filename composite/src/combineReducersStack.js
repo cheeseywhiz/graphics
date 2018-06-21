@@ -5,8 +5,8 @@ const defaultStack = [];
 
 // not a typical reducer
 // computes any fields that need updating given the entire state
-function newStack(state, action) {
-    switch(action.type) {
+function newStack(state, {type}) {
+    switch(type) {
         case types.STACK_PUSH: {
             const stack = [...state.stack];
             stack.push(state);

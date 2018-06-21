@@ -2,6 +2,7 @@ import React from 'react';
 import {operationNames, } from '../../../actions.js';
 import Matrix from './common/Matrix.js';
 import zip from '../common/zip.js';
+import {focusInput, } from './InputMatrices/NumberInput.js';
 import RotationInput from './InputMatrices/RotationInput.js';
 import ScaleInput from './InputMatrices/ScaleInput.js';
 import MatrixInput from './InputMatrices/MatrixInput.js';
@@ -20,7 +21,7 @@ function RotationMatrix({selector, reset}) {
         yj: <MatrixInput matrixKey='yj' disabled/>,
     };
     return <Matrix
-        input={<RotationInput />}
+        input={<RotationInput onMount={focusInput} />}
         selector={selector}
         reset={reset}
         matrix={matrix} />
@@ -32,7 +33,7 @@ function ScaleMatrix({selector, reset}) {
         yj: <MatrixInput matrixKey='yj' />,
     };
     return <Matrix
-        input={<ScaleInput />}
+        input={<ScaleInput onMount={focusInput} />}
         selector={selector}
         reset={reset}
         matrix={matrix} />
@@ -40,7 +41,7 @@ function ScaleMatrix({selector, reset}) {
 
 function TranslationMatrix({selector, reset}) {
     const matrix = {
-        ox: <MatrixInput matrixKey='ox' />,
+        ox: <MatrixInput matrixKey='ox' onMount={focusInput} />,
         oy: <MatrixInput matrixKey='oy' />,
     };
     return <Matrix
@@ -51,7 +52,7 @@ function TranslationMatrix({selector, reset}) {
 
 function ManualMatrix({selector, reset}) {
     const matrix = {
-            xi: <MatrixInput matrixKey='xi' />,
+            xi: <MatrixInput matrixKey='xi' onMount={focusInput} />,
             yi: <MatrixInput matrixKey='yi' />,
             ox: <MatrixInput matrixKey='ox' />,
             xj: <MatrixInput matrixKey='xj' />,
