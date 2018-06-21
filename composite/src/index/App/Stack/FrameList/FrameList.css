@@ -1,11 +1,13 @@
-/* FrameList.css */
 .frameList {
-    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
 }
 
 .frameItem {
-    display: inline;
+    display: inline-block;
     white-space: nowrap;
+    margin-right: 25px;
 }
 
 .frameItem:before {

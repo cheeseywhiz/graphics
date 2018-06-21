@@ -1,4 +1,5 @@
 import React from 'react';
+import style from './Matrix.css';
 
 export default function Matrix({selector, reset, input, matrix}) {
     const updatedMatrix = {
@@ -7,14 +8,14 @@ export default function Matrix({selector, reset, input, matrix}) {
         ...matrix,
         xh: 0, yh: 0, oh: 1,
     };
-    return <span className='matrix'>
-        {selector && <span className='matrix-selector'>{selector}</span>}
-        {reset && <span className='matrix-reset'>{reset}</span>}
-        {input && <span className='matrix-input'>{input}</span>}
+    return <div className={style.matrix}>
+        {selector && <div className={style.selector}>{selector}</div>}
+        {reset && <div className={style.reset}>{reset}</div>}
+        {input && <div className={style.input}>{input}</div>}
         {Object.entries(updatedMatrix).map(([key, value]) => (
-            <span key={key} className='matrix-cell'>
+            <div key={key} className={style.cell}>
                 {value}
-            </span>
+            </div>
         ))}
-    </span>
+    </div>
 }

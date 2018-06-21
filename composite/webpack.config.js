@@ -47,8 +47,7 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             modules: true,
-                            // localIdentName: '[path][name]--[local]--[hash:hex:5]',
-                            localIdentName: '[local]',  // FIXME: Write individual CSS modules
+                            localIdentName: '[name]--[local]--[hash:hex:5]',
                         },
                     },
                 ],
