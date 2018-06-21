@@ -29,9 +29,3 @@ input, select {
 .matrix-cell input {
     text-align: inherit;
 }
-
-#canvas-container {
-    display: flex;
-    justify-content: center;
-    background: coral;
-}

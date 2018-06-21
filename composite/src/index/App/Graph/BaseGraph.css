@@ -1,0 +1,6 @@
+/* BaseGraph.css */
+.baseGraph {
+    display: flex;
+    justify-content: center;
+    background: coral;
+}

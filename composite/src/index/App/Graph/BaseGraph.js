@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import TrackballControls from 'three-trackballcontrols';
 import React from 'react';
 import Scene from './Scene.js';
+import style from './BaseGraph.css';
 
 export default class BaseGraph extends React.Component {
     constructor(props) {
@@ -55,7 +56,7 @@ export default class BaseGraph extends React.Component {
     }
 
     render() {
-        return <div id='canvas-container'>
+        return <div className={style.baseGraph}>
             <canvas ref={this.canvas} />
         </div>
     }
