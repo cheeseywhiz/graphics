@@ -1,41 +1,33 @@
 import {types, } from './actions.js';
 import selectors from './selectors.js';
 
-const defaultStack = [];
+const defaultState = {stack: []};
 
 // not a typical reducer
 // computes any fields that need updating given the entire state
 function newStack(state, {type}) {
     switch(type) {
-        case types.STACK_PUSH: {
-            const stack = [...state.stack];
-            stack.push(state);
-            return {stack};
-        };
+        case types.STACK_PUSH:
+            return {stack: [...state.stack, state]};
         case types.STACK_POP: {
             const stack = state.stack;
             const length = stack.length;
-
-            if (length) {
-                return stack[length - 1];
-            } else {
-                return {};
-            }
+            return length ? stack[length - 1] : {};
         };
         case types.STACK_CLEAR:
-            return {stack: defaultStack};
+            return defaultState;
         default:
             return {};
     }
 }
 
-export default function combineReducers(fields) {
+export default function combineReducersStack(fields) {
     const entries = Object.entries(fields);
-    const defaultState = {stack: defaultStack};
+    const defaultState_ = {...defaultState};
     entries.forEach(([field, reducer]) => {
-        defaultState[field] = reducer(undefined, {type: undefined});
+        defaultState_[field] = reducer(undefined, {type: undefined});
     });
-    return (state = defaultState, action) => {
+    return (state = defaultState_, action) => {
         const {stack} = state;
         const newState = {stack};
         entries.forEach(([field, reducer]) => {
