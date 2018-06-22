@@ -41,7 +41,7 @@ export default class NumberInput extends React.Component {
             {...props}
             ref={this.input}
             type='number'
-            value={Number.isFinite(value) ? roundFloatStr(value) : undefined}
+            value={Number.isFinite(value) ? roundFloatStr(value) : ''}
             onKeyPress={this.onKeyPress}
             onChange={this.onChange} />
     }
