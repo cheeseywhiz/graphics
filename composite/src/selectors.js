@@ -3,34 +3,33 @@ import {createSelector, } from 'reselect';
 
 const identityFrame = new THREE.Matrix4().identity();
 
-const selectMatrix = (state) => state.stack.matrix;
+const selectMatrix = (state) => state.matrix;
 const selectNumber = (state) => selectMatrix(state).number;
-const selectOperation = (state) => state.stack.operation;
+const selectOperation = (state) => state.operation;
 const selectOrder = (state) => state.order;
 const selectShape = (state) => state.shape;
 
-export function matrixToFrame({xi, yi, ox, xj, yj, oy}) {
-    return new THREE.Matrix4().set(
+const selectFrame = createSelector(
+    selectMatrix,
+    ({xi, yi, ox, xj, yj, oy}) => new THREE.Matrix4().set(
         xi || 1, yi || 0, 0, ox || 0,
         xj || 0, yj || 1, 0, oy || 0,
         0, 0, 1, 0,
         0, 0, 0, 1,
-    );
-}
-
-const selectFrame = createSelector(selectMatrix, matrixToFrame);
+    )
+);
 const selectStack = createSelector(
-    (state) => state.stack.stack,
+    (state) => state.stack,
     (stack) => (
-        stack.filter(({matrix}) => (
-            !identityFrame.equals(matrixToFrame(matrix))
+        stack.filter((state) => (
+            !identityFrame.equals(selectFrame(state))
         ))
     ),
 );
 const selectStackFrames = createSelector(
     selectStack, selectFrame,
     (stack, frame) => {
-        const stackFrames = stack.map(({matrix}) => matrixToFrame(matrix));
+        const stackFrames = stack.map(selectFrame);
         if (!identityFrame.equals(frame)) stackFrames.push(frame);
         return stackFrames;
     },

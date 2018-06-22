@@ -1,5 +1,4 @@
-import {types, } from './actions.js';
-import selectors from './selectors.js';
+import {types, } from '../actions.js';
 
 const defaultState = {stack: []};
 
