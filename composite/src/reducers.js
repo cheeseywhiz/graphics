@@ -54,15 +54,3 @@ export function shape(state = shapeNames.DEFAULT, {type, shapeName}) {
             return state;
     }
 }
-
-export function subscriptions(state = new Set(), {type, funcs}) {
-    switch (type) {
-        case types.SELECTOR_SUBSCRIBE: {
-            const newState = new Set(state);
-            newState.add(createSelector(...funcs));
-            return newState;
-        };
-        default:
-            return state;
-    }
-}

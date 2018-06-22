@@ -19,7 +19,6 @@ export default class Graph extends BaseGraph {
     }
 
     render() {
-        console.log('rerendering Graph');
         const {globals, locals, order, shape} = this.props;
 
         const first = globals.slice(0, 1);

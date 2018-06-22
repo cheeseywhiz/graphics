@@ -61,10 +61,6 @@ const selectLocals = createSelector(
             .reduce(reducer, [identityFrame]);
     },
 );
-export function doSubscriptions(state) {
-    const subscriptions = [...state.subscriptions.values()];
-    subscriptions.forEach((selector) => selector(state));
-}
 
 const selectors = {
     matrix: selectMatrix,
