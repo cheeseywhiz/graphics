@@ -6,7 +6,7 @@ const identityFrame = new THREE.Matrix4().identity();
 const selectMatrix = (state) => state.matrix;
 const selectNumber = (state) => selectMatrix(state).number;
 const selectOperation = (state) => state.operation;
-const selectOrder = (state) => state.order;
+const selectGeometry = (state) => state.geometry;
 const selectShape = (state) => state.shape;
 
 const selectFrame = createSelector(
@@ -65,7 +65,7 @@ const selectors = {
     matrix: selectMatrix,
     number: selectNumber,
     operation: selectOperation,
-    order: selectOrder,
+    geometry: selectGeometry,
     shape: selectShape,
     stack: selectStack,
     frame: selectFrame,

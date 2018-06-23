@@ -9,16 +9,16 @@ const list = (label, frames) => <div>
 </div>
 
 const mapStateToProps = (state) => ({
-    order: selectors.order(state),
+    geometry: selectors.geometry(state),
     globals: selectors.globals(state),
     locals: selectors.locals(state),
 });
 
 const Intermediates = connect(mapStateToProps)(
-    ({order, globals, locals}) => (
+    ({geometry, globals, locals}) => (
         <div>
-            {order.globals && list('Global frames', globals)}
-            {order.locals && list('Local frames', locals)}
+            {geometry.globals && list('Global frames', globals)}
+            {geometry.locals && list('Local frames', locals)}
         </div>
     )
 );

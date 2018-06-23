@@ -28,14 +28,14 @@ export function operation(state = operationNames.DEFAULT, {type, operationName})
     }
 }
 
-const defaultOrder = {
+const defaultGeometry = {
     globals: true,
     locals: false,
 }
 
-export function order(state = defaultOrder, {type, value}) {
+export function geometry(state = defaultGeometry, {type, value}) {
     switch (type) {
-        case types.TOGGLE_ORDER:
+        case types.TOGGLE_GEOMETRY:
             return {...state, [value]: !state[value]};
         default:
             return state;

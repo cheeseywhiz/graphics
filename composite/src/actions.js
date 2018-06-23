@@ -5,7 +5,7 @@ export const types = {
     STACK_POP: 'STACK_POP',
     STACK_CLEAR: 'STACK_CLEAR',
     RESET_MATRIX: 'RESET_MATRIX',
-    TOGGLE_ORDER: 'TOGGLE_ORDER',
+    TOGGLE_GEOMETRY: 'TOGGLE_GEOMETRY',
     UPDATE_SHAPE: 'UPDATE_SHAPE',
 };
 
@@ -54,8 +54,8 @@ function resetMatrix() {
     return {type};
 }
 
-function toggleOrder(value) {
-    const type = types.TOGGLE_ORDER;
+function toggleGeometry(value) {
+    const type = types.TOGGLE_GEOMETRY;
     return {type, value};
 }
 
@@ -91,6 +91,7 @@ function setScaleMatrix(ratio) {
 
 const actions = {
     updateOperation, setMatrix, stackPush, stackPop, stackClear, resetMatrix,
-    updateMatrix, setRotationMatrix, setScaleMatrix, toggleOrder, updateShape,
+    updateMatrix, setRotationMatrix, setScaleMatrix, toggleGeometry,
+    updateShape,
 };
 export default actions;

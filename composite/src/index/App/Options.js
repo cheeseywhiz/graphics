@@ -1,9 +1,9 @@
 import React from 'react';
-import OrderSelector from './Options/OrderSelector.js';
+import GeometryOptions from './Options/GeometryOptions.js';
 import ShapeSelector from './Options/ShapeSelector.js';
 
 const Options = () => <div>
-    <OrderSelector />
+    <GeometryOptions />
     <ShapeSelector />
 </div>
 export default Options;

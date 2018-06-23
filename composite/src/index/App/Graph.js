@@ -5,7 +5,7 @@ import BaseGraph from './Graph/BaseGraph.js';
 const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
     locals: selectors.locals(state),
-    order: selectors.order(state),
+    geometry: selectors.geometry(state),
     shape: selectors.shape(state),
 });
 
@@ -20,14 +20,14 @@ export default class Graph extends BaseGraph {
     }
 
     render() {
-        const {globals, locals, order} = this.props;
+        const {globals, locals, geometry} = this.props;
 
         const first = globals.slice(0, 1);
         const last = globals.slice(-1);
         this.scene.clear();
         this.addIntermediates(first, 0x000000);
-        if (order.locals) this.addIntermediates(locals.slice(1, -1), 0x0000ff);
-        if (order.globals) this.addIntermediates(globals.slice(1, -1), 0xff0000);
+        if (geometry.locals) this.addIntermediates(locals.slice(1, -1), 0x0000ff);
+        if (geometry.globals) this.addIntermediates(globals.slice(1, -1), 0xff0000);
         if (globals.length > 1) this.addIntermediates(last, 0xffffff);
 
         return super.render();
