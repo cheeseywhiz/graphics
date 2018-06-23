@@ -18,6 +18,7 @@ const GeometryOptions = connect(mapStateToProps, mapDispatchToProps)(
             globals: 'Globals',
             locals: 'Locals',
             frames: 'Coordinate frames',
+            intermediateHelpers: 'Intermediate helpers',
         };
         return <div>
             <b>Geometry options</b>

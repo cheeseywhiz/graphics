@@ -32,6 +32,7 @@ const defaultGeometry = {
     globals: false,
     locals: false,
     frames: true,
+    intermediateHelpers: false,
 }
 
 export function geometry(state = defaultGeometry, {type, value}) {
