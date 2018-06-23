@@ -1,6 +1,23 @@
 import * as THREE from 'three';
 import zip from '../../../common/zip.js';
+import {operationNames, } from '../../../actions.js';
 import {getShape, } from './shapes.js';
+
+const getIHat = (frame) => new THREE.Vector3(
+    frame.elements[0],
+    frame.elements[1],
+    0,
+);
+const getJHat = (frame) => new THREE.Vector3(
+    frame.elements[4],
+    frame.elements[5],
+    0,
+);
+const getOrigin = (frame) => new THREE.Vector3(
+    frame.elements[12],
+    frame.elements[13],
+    0,
+);
 
 export default class Scene extends THREE.Scene {
     clear() {
@@ -36,24 +53,25 @@ export default class Scene extends THREE.Scene {
     }
 
     addArrows(frame) {
-        const elements = frame.elements;
-        const i_hat = new THREE.Vector3(elements[0], elements[1], 0);
-        const j_hat = new THREE.Vector3(elements[4], elements[5], 0);
-        const origin = new THREE.Vector3(elements[12], elements[13], 0);
-        this.addArrow(i_hat, origin, 0xff0000);
-        this.addArrow(j_hat, origin, 0x00ff00);
+        const origin = getOrigin(frame);
+        this.addArrow(getIHat(frame), origin, 0xff0000);
+        this.addArrow(getJHat(frame), origin, 0x00ff00);
     }
 
     addIntermediateHelpers(operations, numbers, frames, changes) {
-        zip(operations, numbers, frames, changes)
-            .map(([operation, number, frame, {initial, final}]) => ({
-                operation,
-                number,
-                frame: frame.elements,
-                initial: initial.elements,
-                final: final.elements,
-            }))
-            .forEach(console.table);
+        zip(
+            operations, numbers, frames, changes,
+        ).forEach(([operation, number, frame, {initial, final}]) => {
+            switch (operation) {
+                case operationNames.TRANSLATION: {
+                    const initialOrigin = getOrigin(initial);
+                    const change = new THREE.Vector3().subVectors(
+                        getOrigin(final), initialOrigin
+                    );
+                    this.addArrow(change, initialOrigin, 0x0000ff);
+                };
+            }
+        });
     }
 
     addFrame(frame, color, shapeName, drawVectors) {
