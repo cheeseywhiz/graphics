@@ -1,14 +1,12 @@
 import React from 'react';
-import OrderSelector from './App/OrderSelector.js';
-import ShapeSelector from './App/ShapeSelector.js';
+import Options from './App/Options.js';
 import Stack from './App/Stack.js';
 import Intermediates from './App/Intermediates.js';
 import Graph from './App/Graph.js';
 
 export default function App() {
     return <div>
-        <OrderSelector /><br />
-        <ShapeSelector /><br />
+        <Options />
         <Stack />
         <Intermediates />
         <Graph />
