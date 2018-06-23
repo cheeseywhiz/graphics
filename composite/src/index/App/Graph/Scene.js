@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import zip from '../../../common/zip.js';
 import {getShape, } from './shapes.js';
 
 export default class Scene extends THREE.Scene {
@@ -41,6 +42,18 @@ export default class Scene extends THREE.Scene {
         const origin = new THREE.Vector3(elements[12], elements[13], 0);
         this.addArrow(i_hat, origin, 0xff0000);
         this.addArrow(j_hat, origin, 0x00ff00);
+    }
+
+    addIntermediateHelpers(operations, numbers, frames, changes) {
+        zip(operations, numbers, frames, changes)
+            .map(([operation, number, frame, {initial, final}]) => ({
+                operation,
+                number,
+                frame: frame.elements,
+                initial: initial.elements,
+                final: final.elements,
+            }))
+            .forEach(console.table);
     }
 
     addFrame(frame, color, shapeName, drawVectors) {

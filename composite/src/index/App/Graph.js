@@ -2,11 +2,19 @@ import {connect, } from 'react-redux';
 import selectors from '../../selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
 
+// [a, b, c, d] => [[a, b], [b, c], [c, d]]
+function consecutivePairs(array) {
+    return array
+        .slice(0, -1)
+        .map((item, index) => [item, array[index + 1]]);
+}
+
 const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
     locals: selectors.locals(state),
     geometry: selectors.geometry(state),
     shape: selectors.shape(state),
+    fullStack: selectors.fullStack(state),
 });
 
 @connect(mapStateToProps)
@@ -29,16 +37,39 @@ export default class Graph extends BaseGraph {
         if (globals.length > 1) this.addFrames(last, 0xffffff);
     }
 
-    addIntermediateHelpers() {}
+    addIntermediateHelpers(stack, intermediates) {
+        const operations = stack.map(selectors.operation);
+        const numbers = stack.map(selectors.number);
+        const frames = stack.map(selectors.frame);
+        const changes = consecutivePairs(intermediates)
+            .map(([initial, final]) => ({initial, final}));
+        this.scene.addIntermediateHelpers(operations, numbers, frames, changes);
+    }
+
+    addGlobalHelpers() {
+        console.log('addGlobalHelpers');
+        const {globals, fullStack} = this.props;
+        const stack = [...fullStack];
+        this.addIntermediateHelpers(stack, globals);
+    }
+
+    addLocalHelpers() {
+        console.log('addLocalHelpers');
+        const {locals, fullStack} = this.props;
+        const stack = [...fullStack].reverse();
+        this.addIntermediateHelpers(stack, locals);
+    }
 
     intermediateHelpers() {
         const {globals, locals, geometry} = this.props;
 
         if (geometry.intermediateHelpers) {
             if (geometry.globals && globals.length > 1) {
-                this.addIntermediateHelpers(globals);
-            } else if (geometry.locals && locals.length > 1) {
-                this.addIntermediateHelpers(locals);
+                this.addGlobalHelpers();
+            }
+
+            if (geometry.locals && locals.length > 1) {
+                this.addLocalHelpers();
             }
         }
     }
