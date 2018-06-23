@@ -8,7 +8,7 @@ import ResetButton from './Stack/ResetButton.js';
 import {getInputMatrixType, } from './Stack/InputMatrices.js';
 
 const mapStateToProps = (state) => ({
-    stack: selectors.stack(state),
+    shortStack: selectors.shortStack(state),
     operation: selectors.operation(state),
 });
 
@@ -19,14 +19,14 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const Stack = connect(mapStateToProps, mapDispatchToProps)(
-    ({stack, operation, onPush, onPop, onClear}) => {
+    ({shortStack, operation, onPush, onPop, onClear}) => {
         const InputMatrix = getInputMatrixType(operation);
         return <div>
             <b>Operation stack</b><br />
             <input type='button' value='Push' onClick={onPush} />
             <input type='button' value='Pop' onClick={onPop} />
             <input type='button' value='Clear' onClick={onClear} />
-            <FrameList frames={stack.map(selectors.frame)}>
+            <FrameList frames={shortStack.map(selectors.frame)}>
                 <InputMatrix
                     selector={<OperationSelector />}
                     reset={<ResetButton />} />

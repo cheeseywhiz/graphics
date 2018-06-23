@@ -18,7 +18,8 @@ const selectFrame = createSelector(
         0, 0, 0, 1,
     )
 );
-const selectStack = createSelector(
+// Only the stack field
+const selectShortStack = createSelector(
     (state) => state.stack,
     (stack) => (
         stack.filter((state) => (
@@ -26,36 +27,42 @@ const selectStack = createSelector(
         ))
     ),
 );
-const selectStackFrames = createSelector(
-    selectStack, selectFrame,
-    (stack, frame) => {
-        const stackFrames = stack.map(selectFrame);
-        if (!identityFrame.equals(frame)) stackFrames.push(frame);
-        return stackFrames;
+// The stack and the input matrix
+const selectFullStack = createSelector(
+    selectShortStack, selectMatrix, selectOperation, selectFrame,
+    (shortStack, matrix, operation, frame) => {
+        const fullStack = [...shortStack];
+        if (!identityFrame.equals(frame)) {
+            fullStack.push({matrix, operation, stack: shortStack});
+        }
+        return fullStack;
     },
 );
 const selectGlobals = createSelector(
-    selectStackFrames,
-    (stackFrames) => {
+    selectFullStack,
+    (fullStack) => {
         const reducer = (globals, currentValue) => {
             const newLength = globals.push(currentValue.clone());
             globals[newLength - 1].multiply(globals[newLength - 2]);
             return globals;
         };
 
-        return stackFrames.reduce(reducer, [identityFrame]);
+        return fullStack
+            .map(selectFrame)
+            .reduce(reducer, [identityFrame]);
     },
 );
 const selectLocals = createSelector(
-    selectStackFrames,
-    (stackFrames) => {
+    selectFullStack,
+    (fullStack) => {
         const reducer = (locals, currentValue) => {
             const newLength = locals.push(identityFrame.clone());
             locals[newLength - 1].multiplyMatrices(locals[newLength - 2], currentValue);
             return locals;
         }
 
-        return stackFrames
+        return fullStack
+            .map(selectFrame)
             .reverse()
             .reduce(reducer, [identityFrame]);
     },
@@ -67,9 +74,9 @@ const selectors = {
     operation: selectOperation,
     geometry: selectGeometry,
     shape: selectShape,
-    stack: selectStack,
     frame: selectFrame,
-    stackFrames: selectStackFrames,
+    shortStack: selectShortStack,
+    fullStack: selectFullStack,
     globals: selectGlobals,
     locals: selectLocals,
 };
