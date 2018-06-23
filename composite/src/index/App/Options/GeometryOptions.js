@@ -17,9 +17,10 @@ const GeometryOptions = connect(mapStateToProps, mapDispatchToProps)(
         const labels = {
             globals: 'Globals',
             locals: 'Locals',
+            frames: 'Coordinate frames',
         };
         return <div>
-            <b>Geometry options</b><br />
+            <b>Geometry options</b>
             {Object.entries(labels).map(([name, label]) => <div key={name}>
                 <input
                     type='checkbox'

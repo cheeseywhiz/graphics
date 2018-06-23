@@ -12,10 +12,10 @@ const mapStateToProps = (state) => ({
 @connect(mapStateToProps)
 export default class Graph extends BaseGraph {
     addIntermediates(intermediates, color) {
-        const {shape} = this.props;
+        const {shape, geometry} = this.props;
         intermediates
             .forEach((frame) => {
-                this.scene.addFrame(frame, color, shape);
+                this.scene.addFrame(frame, color, shape, geometry.frames);
             });
     }
 

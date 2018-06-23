@@ -29,8 +29,9 @@ export function operation(state = operationNames.DEFAULT, {type, operationName})
 }
 
 const defaultGeometry = {
-    globals: true,
+    globals: false,
     locals: false,
+    frames: true,
 }
 
 export function geometry(state = defaultGeometry, {type, value}) {

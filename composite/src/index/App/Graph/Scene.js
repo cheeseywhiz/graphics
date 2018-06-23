@@ -3,7 +3,7 @@ import {getShape, } from './shapes.js';
 
 export default class Scene extends THREE.Scene {
     clear() {
-        this.remove.apply(this, this.children.reverse());
+        this.remove(...this.children.reverse());
     }
 
     addGeometry(geometry, color = 0xff8c00) {
@@ -43,7 +43,7 @@ export default class Scene extends THREE.Scene {
         this.addArrow(j_hat, origin, 0x00ff00);
     }
 
-    addFrame(frame, color, shapeName) {
+    addFrame(frame, color, shapeName, drawVectors) {
         const shapeFunc = getShape(shapeName);
 
         if (shapeFunc) {
@@ -52,6 +52,6 @@ export default class Scene extends THREE.Scene {
             this.addGeometry(buffer, color);
         }
 
-        this.addArrows(frame);
+        if (drawVectors) this.addArrows(frame);
     }
 }
