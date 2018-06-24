@@ -3,22 +3,6 @@ import zip from '../../../common/zip.js';
 import {operationNames, } from '../../../actions.js';
 import {getShape, } from './shapes.js';
 
-const getIHat = (frame) => new THREE.Vector3(
-    frame.elements[0],
-    frame.elements[1],
-    0,
-);
-const getJHat = (frame) => new THREE.Vector3(
-    frame.elements[4],
-    frame.elements[5],
-    0,
-);
-const getOrigin = (frame) => new THREE.Vector3(
-    frame.elements[12],
-    frame.elements[13],
-    0,
-);
-
 export default class Scene extends THREE.Scene {
     clear() {
         this.remove(...this.children.reverse());
@@ -53,9 +37,8 @@ export default class Scene extends THREE.Scene {
     }
 
     addArrows(frame) {
-        const origin = getOrigin(frame);
-        this.addArrow(getIHat(frame), origin, 0xff0000);
-        this.addArrow(getJHat(frame), origin, 0x00ff00);
+        this.addArrow(frame.iHat, frame.origin, 0xff0000);
+        this.addArrow(frame.jHat, frame.origin, 0x00ff00);
     }
 
     addIntermediateHelpers(operations, numbers, frames, changes) {
@@ -64,11 +47,10 @@ export default class Scene extends THREE.Scene {
         ).forEach(([operation, number, frame, {initial, final}]) => {
             switch (operation) {
                 case operationNames.TRANSLATION: {
-                    const initialOrigin = getOrigin(initial);
                     const change = new THREE.Vector3().subVectors(
-                        getOrigin(final), initialOrigin
+                        final.origin, initial.origin
                     );
-                    this.addArrow(change, initialOrigin, 0x0000ff);
+                    this.addArrow(change, initial.origin, 0x0000ff);
                 };
             }
         });

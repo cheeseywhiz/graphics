@@ -47,14 +47,12 @@ export default class Graph extends BaseGraph {
     }
 
     addGlobalHelpers() {
-        console.log('addGlobalHelpers');
         const {globals, fullStack} = this.props;
         const stack = [...fullStack];
         this.addIntermediateHelpers(stack, globals);
     }
 
     addLocalHelpers() {
-        console.log('addLocalHelpers');
         const {locals, fullStack} = this.props;
         const stack = [...fullStack].reverse();
         this.addIntermediateHelpers(stack, locals);

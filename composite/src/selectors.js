@@ -1,7 +1,5 @@
-import * as THREE from 'three';
 import {createSelector, } from 'reselect';
-
-const identityFrame = new THREE.Matrix4().identity();
+import Frame, {identityFrame, } from './Frame.js';
 
 const selectMatrix = (state) => state.matrix;
 const selectNumber = (state) => selectMatrix(state).number;
@@ -11,7 +9,7 @@ const selectShape = (state) => state.shape;
 
 const selectFrame = createSelector(
     selectMatrix,
-    ({xi, yi, ox, xj, yj, oy}) => new THREE.Matrix4().set(
+    ({xi, yi, ox, xj, yj, oy}) => new Frame().set(
         xi || 1, yi || 0, 0, ox || 0,
         xj || 0, yj || 1, 0, oy || 0,
         0, 0, 1, 0,
@@ -23,7 +21,7 @@ const selectShortStack = createSelector(
     (state) => state.stack,
     (stack) => (
         stack.filter((state) => (
-            !identityFrame.equals(selectFrame(state))
+            !selectFrame(state).isIdentity()
         ))
     ),
 );
@@ -32,7 +30,7 @@ const selectFullStack = createSelector(
     selectShortStack, selectMatrix, selectOperation, selectFrame,
     (shortStack, matrix, operation, frame) => {
         const fullStack = [...shortStack];
-        if (!identityFrame.equals(frame)) {
+        if (!frame.isIdentity()) {
             fullStack.push({matrix, operation, stack: shortStack});
         }
         return fullStack;
