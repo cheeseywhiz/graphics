@@ -37,37 +37,30 @@ export default class Graph extends BaseGraph {
         if (globals.length > 1) this.addFrames(last, 0xffffff);
     }
 
-    addIntermediateHelpers(stack, intermediates) {
+    addHelpers(intermediates, stack, helpersAdder) {
         const operations = stack.map(selectors.operation);
-        const numbers = stack.map(selectors.number);
-        const frames = stack.map(selectors.frame);
-        const changes = consecutivePairs(intermediates)
-            .map(([initial, final]) => ({initial, final}));
-        this.scene.addIntermediateHelpers(operations, numbers, frames, changes);
-    }
-
-    addGlobalHelpers() {
-        const {globals, fullStack} = this.props;
-        const stack = [...fullStack];
-        this.addIntermediateHelpers(stack, globals);
-    }
-
-    addLocalHelpers() {
-        const {locals, fullStack} = this.props;
-        const stack = [...fullStack].reverse();
-        this.addIntermediateHelpers(stack, locals);
+        const changes = consecutivePairs(intermediates);
+        helpersAdder(operations, changes);
     }
 
     intermediateHelpers() {
-        const {globals, locals, geometry} = this.props;
+        const {geometry, globals, locals, fullStack} = this.props;
 
         if (geometry.intermediateHelpers) {
             if (geometry.globals && globals.length > 1) {
-                this.addGlobalHelpers();
+                this.addHelpers(
+                    globals,
+                    [...fullStack],
+                    this.scene.addGlobalHelpers,
+                );
             }
 
             if (geometry.locals && locals.length > 1) {
-                this.addLocalHelpers();
+                this.addHelpers(
+                    locals,
+                    [...fullStack].reverse(),
+                    this.scene.addLocalHelpers,
+                );
             }
         }
     }

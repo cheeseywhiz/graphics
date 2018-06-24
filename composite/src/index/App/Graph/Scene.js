@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import zip from '../../../common/zip.js';
 import {operationNames, } from '../../../actions.js';
+import {identityFrame, } from '../../../Frame.js';
 import {getShape, } from './shapes.js';
 
 export default class Scene extends THREE.Scene {
@@ -41,21 +42,6 @@ export default class Scene extends THREE.Scene {
         this.addArrow(frame.jHat, frame.origin, 0x00ff00);
     }
 
-    addIntermediateHelpers(operations, numbers, frames, changes) {
-        zip(
-            operations, numbers, frames, changes,
-        ).forEach(([operation, number, frame, {initial, final}]) => {
-            switch (operation) {
-                case operationNames.TRANSLATION: {
-                    const change = new THREE.Vector3().subVectors(
-                        final.origin, initial.origin
-                    );
-                    this.addArrow(change, initial.origin, 0x0000ff);
-                };
-            }
-        });
-    }
-
     addFrame(frame, color, shapeName, drawVectors) {
         const shapeFunc = getShape(shapeName);
 
@@ -67,4 +53,39 @@ export default class Scene extends THREE.Scene {
 
         if (drawVectors) this.addArrows(frame);
     }
+
+    addTranslation(initial, final) {
+        const change = new THREE.Vector3().subVectors(
+            final.origin, initial.origin
+        );
+        this.addArrow(change, initial.origin, 0x0000ff);
+    }
+
+    addGlobalHelper(operation, initial, final) {
+        switch (operation) {
+            case operationNames.TRANSLATION:
+                this.addTranslation(initial, final);
+                break;
+        }
+    }
+
+    addLocalHelper(operation, initial, final) {
+        switch (operation) {
+            case operationNames.TRANSLATION:
+                this.addTranslation(initial, final);
+                break;
+        }
+    }
+
+    helpersAdder(addHelper) {
+        return (operations, changes) => {
+            zip(operations, changes)
+                .forEach(([operation, [initial, final]]) => {
+                    addHelper(operation, initial, final);
+                });
+        };
+    }
+
+    addGlobalHelpers = this.helpersAdder(this.addGlobalHelper.bind(this));
+    addLocalHelpers = this.helpersAdder(this.addLocalHelper.bind(this));
 }
