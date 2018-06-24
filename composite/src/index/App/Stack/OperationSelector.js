@@ -1,8 +1,8 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import actions, {operationNames, } from '../../../actions.js';
-import selectors from '../../../selectors.js';
-import zip from '../../../common/zip.js';
+import actions, {operationNames, } from '../../actions.js';
+import selectors from '../common/selectors.js';
+import zip from '../../common/zip.js';
 
 const mapStateToProps = (state) => ({
     operation: selectors.operation(state),

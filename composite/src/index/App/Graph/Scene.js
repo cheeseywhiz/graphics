@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import zip from '../../../common/zip.js';
-import {operationNames, } from '../../../actions.js';
-import {identityFrame, } from '../../../Frame.js';
+import zip from '../../common/zip.js';
+import {operationNames, } from '../../actions.js';
+import {identityFrame, } from '../common/Frame.js';
 import {getShape, } from './shapes.js';
 
 export default class Scene extends THREE.Scene {

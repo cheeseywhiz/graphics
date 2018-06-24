@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import selectors from '../../selectors.js';
+import selectors from './common/selectors.js';
 import FrameList from './Stack/FrameList.js';
 
 const list = (label, frames) => <div>

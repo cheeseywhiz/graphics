@@ -1,5 +1,5 @@
 import {connect, } from 'react-redux';
-import selectors from '../../selectors.js';
+import selectors from './common/selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
 
 // [a, b, c, d] => [[a, b], [b, c], [c, d]]

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
-import actions from '../../../../actions.js';
-import selectors from '../../../../selectors.js';
+import actions from '../../../actions.js';
+import selectors from '../../common/selectors.js';
 import roundFloatStr from '../common/roundFloatStr.js';
 
 const mapStateToProps = (state) => ({});

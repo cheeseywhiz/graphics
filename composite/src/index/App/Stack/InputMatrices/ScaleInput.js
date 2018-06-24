@@ -1,6 +1,6 @@
 import {connect, } from 'react-redux';
-import actions from '../../../../actions.js';
-import selectors from '../../../../selectors.js';
+import actions from '../../../actions.js';
+import selectors from '../../common/selectors.js';
 import NumberInput from './NumberInput.js';
 
 const mapStateToProps = (state) => ({

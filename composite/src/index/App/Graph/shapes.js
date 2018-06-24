@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {shapeNames, } from '../../../actions.js';
-import zip from '../../../common/zip.js';
+import {shapeNames, } from '../../actions.js';
+import zip from '../../common/zip.js';
 
 function verticesToBuffer(vertices) {
     const buffer = new THREE.BufferGeometry();

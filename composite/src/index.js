@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider, } from 'react-redux';
 import {createStore, combineReducers, } from 'redux';
-import reducer from './reducer.js';
-import {selectAll, } from './selectors.js';
+import reducer from './index/reducer.js';
+import {selectAll, } from './index/App/common/selectors.js';
 import App from './index/App.js';
 
 function main() {

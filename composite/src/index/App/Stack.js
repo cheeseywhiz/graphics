@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect, } from 'react-redux';
-import actions from '../../actions.js';
-import selectors from '../../selectors.js';
+import actions from '../actions.js';
+import selectors from './common/selectors.js';
 import FrameList from './Stack/FrameList.js';
 import OperationSelector from './Stack/OperationSelector.js';
 import ResetButton from './Stack/ResetButton.js';
