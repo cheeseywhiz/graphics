@@ -24,7 +24,7 @@ const UnitCircle = () => new THREE.CircleBufferGeometry(1, 16);
 const Knot = () => new THREE.TorusKnotBufferGeometry();
 
 const shapes = {
-    Default: undefined, Square, UnitCircle, Knot,
+    None: undefined, Square, UnitCircle, Knot,
 };
 export default shapes;
 

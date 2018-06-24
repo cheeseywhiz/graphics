@@ -1,12 +1,18 @@
 export const types = {
-    UPDATE_OPERATION: 'UPDATE_OPERATION',
     SET_MATRIX: 'SET_MATRIX',
+    RESET_MATRIX: 'RESET_MATRIX',
+    UPDATE_OPERATION: 'UPDATE_OPERATION',
+    TOGGLE_GEOMETRY: 'TOGGLE_GEOMETRY',
+    UPDATE_SHAPE: 'UPDATE_SHAPE',
     STACK_PUSH: 'STACK_PUSH',
     STACK_POP: 'STACK_POP',
     STACK_CLEAR: 'STACK_CLEAR',
-    RESET_MATRIX: 'RESET_MATRIX',
-    TOGGLE_GEOMETRY: 'TOGGLE_GEOMETRY',
-    UPDATE_SHAPE: 'UPDATE_SHAPE',
+};
+
+export const defaultMatrix = {
+    xi: 1, yi: 0, ox: 0,
+    xj: 0, yj: 1, oy: 0,
+    number: '',
 };
 
 export const operationNames = {
@@ -17,21 +23,43 @@ export const operationNames = {
     MANUAL: 'MANUAL',
 };
 
+export const defaultGeometry = {
+    globals: false,
+    locals: false,
+    frames: true,
+    intermediateHelpers: false,
+}
+
 export const shapeNames = {
-    DEFAULT: 'DEFAULT',
+    NONE: 'NONE',
     SQUARE: 'SQUARE',
     UNIT_CIRCLE: 'UNIT_CIRCLE',
     KNOT: 'KNOT',
 };
+
+function setMatrix(matrix) {
+    const type = types.SET_MATRIX;
+    return {type, matrix};
+}
+
+function resetMatrix() {
+    const type = types.RESET_MATRIX;
+    return {type};
+}
 
 function updateOperation(operationName) {
     const type = types.UPDATE_OPERATION;
     return {type, operationName};
 }
 
-function setMatrix(matrix) {
-    const type = types.SET_MATRIX;
-    return {type, matrix};
+function toggleGeometry(value) {
+    const type = types.TOGGLE_GEOMETRY;
+    return {type, value};
+}
+
+function updateShape(shapeName) {
+    const type = types.UPDATE_SHAPE;
+    return {type, shapeName};
 }
 
 function stackPush() {
@@ -47,21 +75,6 @@ function stackPop() {
 function stackClear() {
     const type = types.STACK_CLEAR;
     return {type};
-}
-
-function resetMatrix() {
-    const type = types.RESET_MATRIX;
-    return {type};
-}
-
-function toggleGeometry(value) {
-    const type = types.TOGGLE_GEOMETRY;
-    return {type, value};
-}
-
-function updateShape(shapeName) {
-    const type = types.UPDATE_SHAPE;
-    return {type, shapeName};
 }
 
 function updateMatrix(key, value) {
@@ -90,8 +103,8 @@ function setScaleMatrix(ratio) {
 }
 
 const actions = {
-    updateOperation, setMatrix, stackPush, stackPop, stackClear, resetMatrix,
-    updateMatrix, setRotationMatrix, setScaleMatrix, toggleGeometry,
-    updateShape,
+    setMatrix, resetMatrix, updateOperation, toggleGeometry, updateShape,
+    stackPush, stackPop, stackClear, updateMatrix, setRotationMatrix,
+    setScaleMatrix,
 };
 export default actions;
