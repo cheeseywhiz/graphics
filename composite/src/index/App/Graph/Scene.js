@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import zip from '../../common/zip.js';
 import {operationNames, } from '../../actions.js';
-import {identityFrame, } from '../common/Frame.js';
+import Frame, {identityFrame, } from '../common/Frame.js';
 import {getShape, } from './shapes.js';
 
 export default class Scene extends THREE.Scene {
@@ -54,6 +54,44 @@ export default class Scene extends THREE.Scene {
         if (drawVectors) this.addArrows(frame);
     }
 
+    addSector(radius, startAngle, endAngle, center) {
+        console.table({startAngle, endAngle});
+        const buffer = new THREE.CircleBufferGeometry(
+            radius, 4, startAngle, endAngle - startAngle,
+        );
+        const {x, y, z} = center;
+        const frame = new Frame().makeTranslation(x, y, z);
+        buffer.applyMatrix(frame);
+        this.addGeometry(buffer, 0x000000);
+    }
+
+    addRotation(initial, final, center) {
+        // arguments are all vectors
+        const {radius, phi} = initial.spherical();
+        this.addSector(
+            radius,
+            phi,
+            final.spherical().phi,
+            center,
+        );
+    }
+
+    addGlobalRotation(initial, final) {
+        this.addRotation(
+            initial.origin,
+            final.origin,
+            identityFrame.origin,
+        );
+    }
+
+    addLocalRotation(initial, final) {
+        this.addRotation(
+            initial.iHat,
+            final.iHat,
+            initial.origin,
+        );
+    }
+
     addTranslation(initial, final) {
         const change = new THREE.Vector3().subVectors(
             final.origin, initial.origin
@@ -63,6 +101,12 @@ export default class Scene extends THREE.Scene {
 
     addGlobalHelper(operation, initial, final) {
         switch (operation) {
+            case operationNames.ROTATION:
+                (identityFrame.origin.equals(initial.origin)
+                    ? this.addLocalRotation.bind(this)
+                    : this.addGlobalRotation.bind(this)
+                )(initial, final);
+                break;
             case operationNames.TRANSLATION:
                 this.addTranslation(initial, final);
                 break;
@@ -71,6 +115,9 @@ export default class Scene extends THREE.Scene {
 
     addLocalHelper(operation, initial, final) {
         switch (operation) {
+            case operationNames.ROTATION:
+                this.addLocalRotation(initial, final);
+                break;
             case operationNames.TRANSLATION:
                 this.addTranslation(initial, final);
                 break;
