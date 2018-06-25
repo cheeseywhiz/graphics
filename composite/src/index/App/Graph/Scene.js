@@ -3,7 +3,7 @@ import zip, {range, } from '../../common/zip.js';
 import {operationNames, } from '../../actions.js';
 import selectors from '../common/selectors.js';
 import Frame, {identityFrame, } from '../common/Frame.js';
-import {getShape, } from './shapes.js';
+import GraphObjects from './GraphObjects.js';
 
 const palette = {
     red: 0xff0000,
@@ -40,54 +40,6 @@ const flatten = (array) => (
     ), [])
 );
 
-function addGeometry(geometry, color = 0xff8c00) {
-        const faceMaterial = new THREE.MeshBasicMaterial({
-            color, transparent: true, opacity: 0.75,
-        });
-        faceMaterial.side = THREE.DoubleSide;
-        const wireMaterial = new THREE.MeshBasicMaterial({
-            color: colors.wire, wireframe: true, wireframeLinewidth: 3,
-        });
-        return [
-            new THREE.Mesh(geometry, faceMaterial),
-            new THREE.Mesh(geometry, wireMaterial),
-        ];
-}
-
-function addArrow(vector, origin, color) {
-    const arrow = new THREE.ArrowHelper(
-        vector.clone().normalize(),
-        origin,
-        vector.length(),
-        color,
-        1 / 3,
-        1 / 3,
-    );
-    arrow.line.material.linewidth = 3;
-    return arrow;
-}
-
-function addArrows(frame) {
-    return [
-        addArrow(frame.iHat, frame.origin, colors.iHat),
-        addArrow(frame.jHat, frame.origin, colors.jHat),
-    ];
-}
-
-export function addFrame(frame, color, shapeName, drawVectors) {
-    const ret = [];
-    const shapeFunc = getShape(shapeName);
-
-    if (shapeFunc) {
-        const buffer = shapeFunc();
-        buffer.applyMatrix(frame);
-        ret.push(addGeometry(buffer, color));
-    }
-
-    if (drawVectors) ret.push(addArrows(frame));
-    return ret;
-}
-
 export default class Scene extends THREE.Scene {
     clear() {
         this.remove(...this.children.reverse());
@@ -104,7 +56,7 @@ export default class Scene extends THREE.Scene {
         const {x, y, z} = center;
         const frame = new Frame().makeTranslation(x, y, z);
         buffer.applyMatrix(frame);
-        this.addAll(addGeometry(buffer, colors.rotation));
+        this.addAll(GraphObjects.geometry(buffer, colors.rotation));
     }
 
     addRotation(start, end, center) {
@@ -170,7 +122,7 @@ export default class Scene extends THREE.Scene {
         const change = new THREE.Vector3().subVectors(
             final.origin, initial.origin
         );
-        this.addAll(addArrow(change, initial.origin, colors.translation));
+        this.addAll(GraphObjects.arrow(change, initial.origin, colors.translation));
     }
 
     addGlobalHelper(initial, final, operation) {

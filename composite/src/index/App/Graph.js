@@ -1,7 +1,8 @@
 import {connect, } from 'react-redux';
 import selectors from './common/selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
-import {colors, addFrame} from './Graph/Scene.js';
+import {colors, } from './Graph/Scene.js';
+import GraphObjects from './Graph/GraphObjects.js';
 
 const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
@@ -15,10 +16,9 @@ const mapStateToProps = (state) => ({
 export default class Graph extends BaseGraph {
     addFrames(intermediates, color) {
         const {shape, geometry} = this.props;
-        return intermediates
-            .map((frame) => (
-                addFrame(frame, color, shape, geometry.frames)
-            ));
+        return intermediates.map((frame) => (
+            GraphObjects.frame(frame, color, shape, geometry.frames)
+        ));
     }
 
     frames() {
