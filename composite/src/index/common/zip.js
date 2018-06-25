@@ -1,4 +1,4 @@
-function range(a, b, step = 1) {
+export function range(a, b, step = 1) {
     const start = b === undefined ? 0 : a;
     const end = b === undefined ? a : b;
     const array = [];

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import zip from '../../common/zip.js';
+import zip, {range, } from '../../common/zip.js';
 import {operationNames, } from '../../actions.js';
 import selectors from '../common/selectors.js';
 import Frame, {identityFrame, } from '../common/Frame.js';
@@ -29,18 +29,18 @@ export const colors = {
 };
 
 // [a, b, c, d] => [[a, b], [b, c], [c, d]]
-function consecutivePairs(array) {
-    return array
-        .slice(0, -1)
-        .map((item, index) => [item, array[index + 1]]);
-}
+const consecutivePairs = (array) => range(array.length - 1)
+    .map((index) => [array[index], array[index + 1]]);
 
-export default class Scene extends THREE.Scene {
-    clear() {
-        this.remove(...this.children.reverse());
-    }
+const flatten = (array) => (
+    array.reduce((accumulator, currentValue) => (
+        Array.isArray(currentValue)
+            ? accumulator.concat(flatten(currentValue))
+            : accumulator.concat(currentValue)
+    ), [])
+);
 
-    addGeometry(geometry, color) {
+function addGeometry(geometry, color = 0xff8c00) {
         const faceMaterial = new THREE.MeshBasicMaterial({
             color, transparent: true, opacity: 0.75,
         });
@@ -48,41 +48,53 @@ export default class Scene extends THREE.Scene {
         const wireMaterial = new THREE.MeshBasicMaterial({
             color: colors.wire, wireframe: true, wireframeLinewidth: 3,
         });
-        const faceMesh = new THREE.Mesh(geometry, faceMaterial);
-        const wireMesh = new THREE.Mesh(geometry, wireMaterial);
-        this.add(faceMesh);
-        this.add(wireMesh);
-        return geometry;
+        return [
+            new THREE.Mesh(geometry, faceMaterial),
+            new THREE.Mesh(geometry, wireMaterial),
+        ];
+}
+
+function addArrow(vector, origin, color) {
+    const arrow = new THREE.ArrowHelper(
+        vector.clone().normalize(),
+        origin,
+        vector.length(),
+        color,
+        1 / 3,
+        1 / 3,
+    );
+    arrow.line.material.linewidth = 3;
+    return arrow;
+}
+
+function addArrows(frame) {
+    return [
+        addArrow(frame.iHat, frame.origin, colors.iHat),
+        addArrow(frame.jHat, frame.origin, colors.jHat),
+    ];
+}
+
+export function addFrame(frame, color, shapeName, drawVectors) {
+    const ret = [];
+    const shapeFunc = getShape(shapeName);
+
+    if (shapeFunc) {
+        const buffer = shapeFunc();
+        buffer.applyMatrix(frame);
+        ret.push(addGeometry(buffer, color));
     }
 
-    addArrow(vector, origin, color) {
-        const arrow = new THREE.ArrowHelper(
-            vector.clone().normalize(),
-            origin,
-            vector.length(),
-            color,
-            1 / 3,
-            1 / 3,
-        );
-        arrow.line.material.linewidth = 3;
-        this.add(arrow);
+    if (drawVectors) ret.push(addArrows(frame));
+    return ret;
+}
+
+export default class Scene extends THREE.Scene {
+    clear() {
+        this.remove(...this.children.reverse());
     }
 
-    addArrows(frame) {
-        this.addArrow(frame.iHat, frame.origin, colors.iHat);
-        this.addArrow(frame.jHat, frame.origin, colors.jHat);
-    }
-
-    addFrame(frame, color, shapeName, drawVectors) {
-        const shapeFunc = getShape(shapeName);
-
-        if (shapeFunc) {
-            const buffer = shapeFunc();
-            buffer.applyMatrix(frame);
-            this.addGeometry(buffer, color);
-        }
-
-        if (drawVectors) this.addArrows(frame);
+    addAll(objects) {
+        flatten([objects]).forEach((object) => this.add(object));
     }
 
     addSector(radius, startAngle, endAngle, center) {
@@ -92,7 +104,7 @@ export default class Scene extends THREE.Scene {
         const {x, y, z} = center;
         const frame = new Frame().makeTranslation(x, y, z);
         buffer.applyMatrix(frame);
-        this.addGeometry(buffer, colors.rotation);
+        this.addAll(addGeometry(buffer, colors.rotation));
     }
 
     addRotation(start, end, center) {
@@ -158,7 +170,7 @@ export default class Scene extends THREE.Scene {
         const change = new THREE.Vector3().subVectors(
             final.origin, initial.origin
         );
-        this.addArrow(change, initial.origin, colors.translation);
+        this.addAll(addArrow(change, initial.origin, colors.translation));
     }
 
     addGlobalHelper(initial, final, operation) {

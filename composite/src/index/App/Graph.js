@@ -1,7 +1,7 @@
 import {connect, } from 'react-redux';
 import selectors from './common/selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
-import {colors, } from './Graph/Scene.js';
+import {colors, addFrame} from './Graph/Scene.js';
 
 const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
@@ -15,20 +15,22 @@ const mapStateToProps = (state) => ({
 export default class Graph extends BaseGraph {
     addFrames(intermediates, color) {
         const {shape, geometry} = this.props;
-        intermediates
-            .forEach((frame) => {
-                this.scene.addFrame(frame, color, shape, geometry.frames);
-            });
+        return intermediates
+            .map((frame) => (
+                addFrame(frame, color, shape, geometry.frames)
+            ));
     }
 
     frames() {
+        const ret = [];
         const {globals, locals, geometry} = this.props;
         const first = globals.slice(0, 1);
         const last = globals.slice(-1);
-        this.addFrames(first, colors.first);
-        if (geometry.locals) this.addFrames(locals.slice(1, -1), colors.locals);
-        if (geometry.globals) this.addFrames(globals.slice(1, -1), colors.globals);
-        if (globals.length > 1) this.addFrames(last, colors.last);
+        ret.push(this.addFrames(first, colors.first));
+        if (geometry.locals) ret.push(this.addFrames(locals.slice(1, -1), colors.locals));
+        if (geometry.globals) ret.push(this.addFrames(globals.slice(1, -1), colors.globals));
+        if (globals.length > 1) ret.push(this.addFrames(last, colors.last));
+        return ret;
     }
 
     intermediateHelpers() {
@@ -47,7 +49,7 @@ export default class Graph extends BaseGraph {
 
     render() {
         this.scene.clear();
-        this.frames();
+        this.scene.addAll(this.frames());
         this.intermediateHelpers();
         return super.render();
     }
