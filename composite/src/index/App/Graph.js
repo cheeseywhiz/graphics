@@ -1,6 +1,7 @@
 import {connect, } from 'react-redux';
 import selectors from './common/selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
+import {colors, } from './Graph/Scene.js';
 
 const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
@@ -24,10 +25,10 @@ export default class Graph extends BaseGraph {
         const {globals, locals, geometry} = this.props;
         const first = globals.slice(0, 1);
         const last = globals.slice(-1);
-        this.addFrames(first, 0x000000);
-        if (geometry.locals) this.addFrames(locals.slice(1, -1), 0x0000ff);
-        if (geometry.globals) this.addFrames(globals.slice(1, -1), 0xff0000);
-        if (globals.length > 1) this.addFrames(last, 0xffffff);
+        this.addFrames(first, colors.first);
+        if (geometry.locals) this.addFrames(locals.slice(1, -1), colors.locals);
+        if (geometry.globals) this.addFrames(globals.slice(1, -1), colors.globals);
+        if (globals.length > 1) this.addFrames(last, colors.last);
     }
 
     intermediateHelpers() {
@@ -35,11 +36,11 @@ export default class Graph extends BaseGraph {
 
         if (geometry.intermediateHelpers) {
             if (geometry.globals && globals.length > 1) {
-                this.scene.addGlobalHelpers([...fullStack], globals);
+                this.scene.addGlobalHelpers(globals, [...fullStack]);
             }
 
             if (geometry.locals && locals.length > 1) {
-                this.scene.addLocalHelpers([...fullStack].reverse(), locals);
+                this.scene.addLocalHelpers(locals, [...fullStack].reverse());
             }
         }
     }

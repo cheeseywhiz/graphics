@@ -5,6 +5,29 @@ import selectors from '../common/selectors.js';
 import Frame, {identityFrame, } from '../common/Frame.js';
 import {getShape, } from './shapes.js';
 
+const palette = {
+    red: 0xff0000,
+    green: 0x00ff00,
+    blue: 0x0000ff,
+    black: 0x000000,
+    white: 0xffffff,
+    orange: 0xff7f00,
+    gray: 0x14ae6e,
+};
+
+export const colors = {
+    iHat: palette.red,
+    jHat: palette.green,
+    first: palette.black,
+    last: palette.white,
+    globals: palette.red,
+    locals: palette.blue,
+    rotation: palette.black,
+    scale: palette.orange,
+    translation: palette.blue,
+    wire: palette.gray,
+};
+
 // [a, b, c, d] => [[a, b], [b, c], [c, d]]
 function consecutivePairs(array) {
     return array
@@ -17,13 +40,13 @@ export default class Scene extends THREE.Scene {
         this.remove(...this.children.reverse());
     }
 
-    addGeometry(geometry, color = 0xff8c00) {
+    addGeometry(geometry, color) {
         const faceMaterial = new THREE.MeshBasicMaterial({
             color, transparent: true, opacity: 0.75,
         });
         faceMaterial.side = THREE.DoubleSide;
         const wireMaterial = new THREE.MeshBasicMaterial({
-            color: 0x14ae6e, wireframe: true, wireframeLinewidth: 3,
+            color: colors.wire, wireframe: true, wireframeLinewidth: 3,
         });
         const faceMesh = new THREE.Mesh(geometry, faceMaterial);
         const wireMesh = new THREE.Mesh(geometry, wireMaterial);
@@ -46,8 +69,8 @@ export default class Scene extends THREE.Scene {
     }
 
     addArrows(frame) {
-        this.addArrow(frame.iHat, frame.origin, 0xff0000);
-        this.addArrow(frame.jHat, frame.origin, 0x00ff00);
+        this.addArrow(frame.iHat, frame.origin, colors.iHat);
+        this.addArrow(frame.jHat, frame.origin, colors.jHat);
     }
 
     addFrame(frame, color, shapeName, drawVectors) {
@@ -69,7 +92,7 @@ export default class Scene extends THREE.Scene {
         const {x, y, z} = center;
         const frame = new Frame().makeTranslation(x, y, z);
         buffer.applyMatrix(frame);
-        this.addGeometry(buffer, 0x000000);
+        this.addGeometry(buffer, colors.rotation);
     }
 
     addRotation(start, end, center) {
@@ -102,7 +125,7 @@ export default class Scene extends THREE.Scene {
         const geometry = new THREE.Geometry();
         geometry.vertices.push(start);
         geometry.vertices.push(end);
-        const material = new THREE.LineBasicMaterial({color: 0xff7f00});
+        const material = new THREE.LineBasicMaterial({color: colors.scale});
         const line = new THREE.Line(geometry, material);
         this.add(line);
     }
@@ -135,22 +158,20 @@ export default class Scene extends THREE.Scene {
         const change = new THREE.Vector3().subVectors(
             final.origin, initial.origin
         );
-        this.addArrow(change, initial.origin, 0x0000ff);
+        this.addArrow(change, initial.origin, colors.translation);
     }
 
-    addGlobalHelper(operation, initial, final) {
+    addGlobalHelper(initial, final, operation) {
+        if (identityFrame.origin.equals(initial.origin)) {
+            return this.addLocalHelper(initial, final, operation);
+        }
+
         switch (operation) {
             case operationNames.ROTATION:
-                (identityFrame.origin.equals(initial.origin)
-                    ? this.addLocalRotation.bind(this)
-                    : this.addGlobalRotation.bind(this)
-                )(initial, final);
+                this.addGlobalRotation(initial, final);
                 break;
             case operationNames.SCALE:
-                (identityFrame.origin.equals(initial.origin)
-                    ? this.addLocalScale.bind(this)
-                    : this.addGlobalScale.bind(this)
-                )(initial, final);
+                this.addGlobalScale(initial, final);
                 break;
             case operationNames.TRANSLATION:
                 this.addTranslation(initial, final);
@@ -158,7 +179,7 @@ export default class Scene extends THREE.Scene {
         }
     }
 
-    addLocalHelper(operation, initial, final) {
+    addLocalHelper(initial, final, operation) {
         switch (operation) {
             case operationNames.ROTATION:
                 this.addLocalRotation(initial, final);
@@ -173,10 +194,11 @@ export default class Scene extends THREE.Scene {
     }
 
     helpersAdder(addHelper) {
-        return (stack, intermediates) => {
-            zip(stack, consecutivePairs(intermediates))
-                .forEach(([state, [initial, final]]) => {
-                    addHelper(selectors.operation(state), initial, final);
+        return (intermediates, stack) => {
+            const operations = stack.map(selectors.operation);
+            zip(consecutivePairs(intermediates), operations)
+                .forEach(([[initial, final], operation]) => {
+                    addHelper(initial, final, operation);
                 });
         };
     }
