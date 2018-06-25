@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import zip, {range, } from '../../common/zip.js';
 import {operationNames, } from '../../actions.js';
 import selectors from '../common/selectors.js';
-import Frame, {identityFrame, } from '../common/Frame.js';
+import {identityFrame, } from '../common/Frame.js';
 import GraphObjects from './GraphObjects.js';
 
 const palette = {
@@ -46,31 +46,12 @@ export default class Scene extends THREE.Scene {
     }
 
     addAll(objects) {
+        console.table(flatten([objects]))
         flatten([objects]).forEach((object) => this.add(object));
     }
 
-    addSector(radius, startAngle, endAngle, center) {
-        const buffer = new THREE.CircleBufferGeometry(
-            radius, 4, startAngle, endAngle - startAngle,
-        );
-        const {x, y, z} = center;
-        const frame = new Frame().makeTranslation(x, y, z);
-        buffer.applyMatrix(frame);
-        this.addAll(GraphObjects.geometry(buffer, colors.rotation));
-    }
-
-    addRotation(start, end, center) {
-        const {radius, phi} = start.spherical();
-        this.addSector(
-            radius,
-            phi,
-            end.spherical().phi,
-            center,
-        );
-    }
-
     addGlobalRotation(initial, final) {
-        this.addRotation(
+        return GraphObjects.rotation(
             initial.origin,
             final.origin,
             identityFrame.origin,
@@ -78,51 +59,46 @@ export default class Scene extends THREE.Scene {
     }
 
     addLocalRotation(initial, final) {
-        this.addRotation(
+        return GraphObjects.rotation(
             initial.iHat,
             final.iHat,
             initial.origin,
         );
     }
 
-    addLine(start, end) {
-        const geometry = new THREE.Geometry();
-        geometry.vertices.push(start);
-        geometry.vertices.push(end);
-        const material = new THREE.LineBasicMaterial({color: colors.scale});
-        const line = new THREE.Line(geometry, material);
-        this.add(line);
-    }
-
     addScaleLine(initial, final, through, originFrame = identityFrame) {
         const start = originFrame.origin;
-        const end = final.atVector(through)
+        const end = final.atVector(through);
         const axis = new THREE.Vector3()
             .subVectors(end, start)
             .normalize()
             .multiplyScalar(10);
         const axisEnd = start.clone().add(axis);
-        this.addLine(start, axisEnd);
+        return GraphObjects.line(start, axisEnd);
     }
 
     addGlobalScale(initial, final) {
-        this.addScaleLine(initial, final, identityFrame.iHat);
-        this.addScaleLine(initial, final, identityFrame.jHat);
-        this.addScaleLine(initial, final, identityFrame.origin);
-        this.addTranslation(initial, final);
+        return [
+            this.addScaleLine(initial, final, identityFrame.iHat),
+            this.addScaleLine(initial, final, identityFrame.jHat),
+            this.addScaleLine(initial, final, identityFrame.origin),
+            this.addTranslation(initial, final),
+        ];
     }
 
     addLocalScale(initial, final) {
-        this.addScaleLine(initial, final, new THREE.Vector3(1, 1, 0), initial);
-        this.addScaleLine(initial, final, identityFrame.iHat, initial);
-        this.addScaleLine(initial, final, identityFrame.jHat, initial);
+        return [
+            this.addScaleLine(initial, final, new THREE.Vector3(1, 1, 0), initial),
+            this.addScaleLine(initial, final, identityFrame.iHat, initial),
+            this.addScaleLine(initial, final, identityFrame.jHat, initial),
+        ];
     }
 
     addTranslation(initial, final) {
         const change = new THREE.Vector3().subVectors(
             final.origin, initial.origin
         );
-        this.addAll(GraphObjects.arrow(change, initial.origin, colors.translation));
+        return GraphObjects.arrow(change, initial.origin, colors.translation);
     }
 
     addGlobalHelper(initial, final, operation) {
@@ -132,38 +108,33 @@ export default class Scene extends THREE.Scene {
 
         switch (operation) {
             case operationNames.ROTATION:
-                this.addGlobalRotation(initial, final);
-                break;
+                return this.addGlobalRotation(initial, final);
             case operationNames.SCALE:
-                this.addGlobalScale(initial, final);
-                break;
+                return this.addGlobalScale(initial, final);
             case operationNames.TRANSLATION:
-                this.addTranslation(initial, final);
-                break;
+                return this.addTranslation(initial, final);
         }
     }
 
     addLocalHelper(initial, final, operation) {
         switch (operation) {
             case operationNames.ROTATION:
-                this.addLocalRotation(initial, final);
-                break;
+                return this.addLocalRotation(initial, final);
             case operationNames.SCALE:
-                this.addLocalScale(initial, final);
-                break;
+                return this.addLocalScale(initial, final);
             case operationNames.TRANSLATION:
-                this.addTranslation(initial, final);
-                break;
+                return this.addTranslation(initial, final);
         }
     }
 
     helpersAdder(addHelper) {
         return (intermediates, stack) => {
             const operations = stack.map(selectors.operation);
-            zip(consecutivePairs(intermediates), operations)
-                .forEach(([[initial, final], operation]) => {
-                    addHelper(initial, final, operation);
-                });
+            this.addAll(zip(consecutivePairs(intermediates), operations)
+                .map(([[initial, final], operation]) => (
+                    addHelper(initial, final, operation)
+                ))
+            );
         };
     }
 
