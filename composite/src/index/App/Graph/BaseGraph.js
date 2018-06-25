@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import TrackballControls from 'three-trackballcontrols';
 import React from 'react';
-import Scene from './Scene.js';
-import style from './BaseGraph.css';
+import Scene from './BaseGraph/Scene.js';
+import style from './BaseGraph/BaseGraph.css';
 
 export default class BaseGraph extends React.Component {
     constructor(props) {
