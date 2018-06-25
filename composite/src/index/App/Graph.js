@@ -2,13 +2,6 @@ import {connect, } from 'react-redux';
 import selectors from './common/selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
 
-// [a, b, c, d] => [[a, b], [b, c], [c, d]]
-function consecutivePairs(array) {
-    return array
-        .slice(0, -1)
-        .map((item, index) => [item, array[index + 1]]);
-}
-
 const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
     locals: selectors.locals(state),
@@ -37,30 +30,16 @@ export default class Graph extends BaseGraph {
         if (globals.length > 1) this.addFrames(last, 0xffffff);
     }
 
-    addHelpers(intermediates, stack, helpersAdder) {
-        const operations = stack.map(selectors.operation);
-        const changes = consecutivePairs(intermediates);
-        helpersAdder(operations, changes);
-    }
-
     intermediateHelpers() {
         const {geometry, globals, locals, fullStack} = this.props;
 
         if (geometry.intermediateHelpers) {
             if (geometry.globals && globals.length > 1) {
-                this.addHelpers(
-                    globals,
-                    [...fullStack],
-                    this.scene.addGlobalHelpers,
-                );
+                this.scene.addGlobalHelpers([...fullStack], globals);
             }
 
             if (geometry.locals && locals.length > 1) {
-                this.addHelpers(
-                    locals,
-                    [...fullStack].reverse(),
-                    this.scene.addLocalHelpers,
-                );
+                this.scene.addLocalHelpers([...fullStack].reverse(), locals);
             }
         }
     }

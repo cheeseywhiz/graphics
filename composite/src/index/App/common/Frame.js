@@ -65,6 +65,20 @@ export default class Frame extends THREE.Matrix4 {
     isIdentity() {
         return this.equals(identityFrame);
     }
+
+    atPoint(x, y, z) {
+        return this
+            .clone()
+            .multiply(identityFrame
+                .clone()
+                .makeTranslation(x, y, z)
+            ).origin;
+    }
+
+    atVector(vector) {
+        const {x, y, z} = vector;
+        return this.atPoint(x, y, z);
+    }
 }
 
 export const identityFrame = new Frame().identity();
