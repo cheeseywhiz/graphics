@@ -193,21 +193,20 @@ export class ChangeHelper {
     }
 }
 
-const [addGlobalHelpers, addLocalHelpers] = (() => {
-    const changeHelper = new ChangeHelper();
-    return [changeHelper.addGlobalHelper, changeHelper.addLocalHelper]
-        .map((method) => method.bind(changeHelper))
-        .map((func) => ([initial, final]) => (operation) => {
+const [addGlobalHelpers, addLocalHelpers] = ((changeHelper) => (
+    [changeHelper.addGlobalHelper, changeHelper.addLocalHelper]
+        .map((func) => func.bind(changeHelper))
+        .map((method) => ([initial, final]) => (operation) => {
             changeHelper.set(initial, final);
-            return func(operation);
+            return method(operation);
         })
-        .map((func) => (intermediates, state) => (
+        .map((getHelperAdder) => (intermediates, state) => (
             zip(
-                consecutivePairs(intermediates).map(func),
+                consecutivePairs(intermediates).map(getHelperAdder),
                 state.map(selectors.operation),
             ).map(([addHelper, operation]) => addHelper(operation))
-        ));
-})();
+        ))
+))(new ChangeHelper());
 
 const GraphObjects = {
     geometry: addGeometry,
