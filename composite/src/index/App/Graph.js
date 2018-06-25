@@ -1,8 +1,7 @@
 import {connect, } from 'react-redux';
 import selectors from './common/selectors.js';
 import BaseGraph from './Graph/BaseGraph.js';
-import {colors, } from './Graph/Scene.js';
-import GraphObjects from './Graph/GraphObjects.js';
+import GraphObjects, {ChangeHelper, colors, } from './Graph/GraphObjects.js';
 
 const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
@@ -34,23 +33,28 @@ export default class Graph extends BaseGraph {
     }
 
     intermediateHelpers() {
+        const ret = [];
         const {geometry, globals, locals, fullStack} = this.props;
 
         if (geometry.intermediateHelpers) {
             if (geometry.globals && globals.length > 1) {
-                this.scene.addGlobalHelpers(globals, [...fullStack]);
+                ret.push(GraphObjects.globalHelpers(globals, [...fullStack]));
             }
 
             if (geometry.locals && locals.length > 1) {
-                this.scene.addLocalHelpers(locals, [...fullStack].reverse());
+                ret.push(GraphObjects.localHelpers(locals, [...fullStack].reverse()));
             }
         }
+
+        return ret;
     }
 
     render() {
         this.scene.clear();
-        this.scene.addAll(this.frames());
-        this.intermediateHelpers();
+        this.scene.addAll([
+            this.frames(),
+            this.intermediateHelpers(),
+        ]);
         return super.render();
     }
 }

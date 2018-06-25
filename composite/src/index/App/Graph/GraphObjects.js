@@ -1,7 +1,32 @@
 import * as THREE from 'three';
-import Frame from '../common/Frame.js';
+import {operationNames, } from '../../actions.js';
+import zip, {range, } from '../../common/zip.js';
+import Frame, {identityFrame, } from '../common/Frame.js';
+import selectors from '../common/selectors.js';
 import {getShape, } from './shapes.js';
-import {colors, } from './Scene.js';
+
+const palette = {
+    red: 0xff0000,
+    green: 0x00ff00,
+    blue: 0x0000ff,
+    black: 0x000000,
+    white: 0xffffff,
+    orange: 0xff7f00,
+    gray: 0x14ae6e,
+};
+
+export const colors = {
+    iHat: palette.red,
+    jHat: palette.green,
+    first: palette.black,
+    last: palette.white,
+    globals: palette.red,
+    locals: palette.blue,
+    rotation: palette.black,
+    scale: palette.orange,
+    translation: palette.blue,
+    wire: palette.gray,
+};
 
 function addGeometry(geometry, color = 0xff8c00) {
     const faceMaterial = new THREE.MeshBasicMaterial({
@@ -79,6 +104,111 @@ function addLine(start, end) {
     return new THREE.Line(geometry, material);
 }
 
+// [a, b, c, d] => [[a, b], [b, c], [c, d]]
+const consecutivePairs = (array) => range(array.length - 1)
+    .map((index) => [array[index], array[index + 1]]);
+
+export class ChangeHelper {
+    set(initial, final) {
+        this.initial = initial;
+        this.final = final;
+        return this;
+    }
+
+    addGlobalRotation() {
+        return addRotation(
+            this.initial.origin,
+            this.final.origin,
+            identityFrame.origin,
+        );
+    }
+
+    addLocalRotation() {
+        return addRotation(
+            this.initial.iHat,
+            this.final.iHat,
+            this.initial.origin,
+        );
+    }
+
+    addScaleLine(through, originFrame = identityFrame) {
+        const start = originFrame.origin;
+        const end = this.initial.atVector(through);
+        const axis = new THREE.Vector3()
+            .subVectors(end, start)
+            .normalize()
+            .multiplyScalar(10);
+        const axisEnd = start.clone().add(axis);
+        return addLine(start, axisEnd);
+    }
+
+    addGlobalScale() {
+        return [
+            this.addScaleLine(identityFrame.iHat),
+            this.addScaleLine(identityFrame.jHat),
+            this.addScaleLine(identityFrame.origin),
+            this.addTranslation(),
+        ];
+    }
+
+    addLocalScale() {
+        return [
+            this.addScaleLine(new THREE.Vector3(1, 1, 0), this.initial),
+            this.addScaleLine(identityFrame.iHat, this.initial),
+            this.addScaleLine(identityFrame.jHat, this.initial),
+        ];
+    }
+
+    addTranslation() {
+        const change = new THREE.Vector3().subVectors(
+            this.final.origin, this.initial.origin
+        );
+        return addArrow(change, this.initial.origin, colors.translation);
+    }
+
+    addGlobalHelper(operation) {
+        if (identityFrame.origin.equals(this.initial.origin)) {
+            return this.addLocalHelper(operation);
+        }
+
+        switch (operation) {
+            case operationNames.ROTATION:
+                return this.addGlobalRotation();
+            case operationNames.SCALE:
+                return this.addGlobalScale();
+            case operationNames.TRANSLATION:
+                return this.addTranslation();
+        }
+    }
+
+    addLocalHelper(operation) {
+        switch (operation) {
+            case operationNames.ROTATION:
+                return this.addLocalRotation();
+            case operationNames.SCALE:
+                return this.addLocalScale();
+            case operationNames.TRANSLATION:
+                return this.addTranslation();
+        }
+    }
+}
+
+const [addGlobalHelpers, addLocalHelpers] = (() => {
+    const changeHelper = new ChangeHelper();
+    return [changeHelper.addGlobalHelper, changeHelper.addLocalHelper]
+        .map((method) => method.bind(changeHelper))
+        .map((func) => ([initial, final]) => (operation) => {
+            changeHelper.set(initial, final);
+            return func(operation);
+        })
+        .map((func) => (intermediates, state) => (
+            zip(
+                consecutivePairs(intermediates).map(func),
+                state.map(selectors.operation),
+            ).map(([addHelper, operation]) => addHelper(operation))
+        ));
+})();
+
 const GraphObjects = {
     geometry: addGeometry,
     arrow: addArrow,
@@ -87,5 +217,7 @@ const GraphObjects = {
     sector: addSector,
     rotation: addRotation,
     line: addLine,
+    globalHelpers: addGlobalHelpers,
+    localHelpers: addLocalHelpers,
 };
 export default GraphObjects;
