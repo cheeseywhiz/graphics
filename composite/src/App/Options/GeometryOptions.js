@@ -11,7 +11,7 @@ const mapDispatchToProps = (dispatch) => ({
     onGeometryChange: (value) => dispatch(actions.toggleGeometry(value)),
 });
 
-const GeometryOptions = connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
     ({geometry, onGeometryChange}) => {
         const onChange = (event) => onGeometryChange(event.target.value);
         const labels = {
@@ -33,4 +33,3 @@ const GeometryOptions = connect(mapStateToProps, mapDispatchToProps)(
         </div>
     }
 );
-export default GeometryOptions;

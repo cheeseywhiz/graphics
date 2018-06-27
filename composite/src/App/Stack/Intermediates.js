@@ -14,7 +14,7 @@ const mapStateToProps = (state) => ({
     locals: selectors.locals(state),
 });
 
-const Intermediates = connect(mapStateToProps)(
+export default connect(mapStateToProps)(
     ({geometry, globals, locals}) => (
         <div>
             {geometry.globals && list('Global frames', globals)}
@@ -22,4 +22,3 @@ const Intermediates = connect(mapStateToProps)(
         </div>
     )
 );
-export default Intermediates;

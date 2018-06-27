@@ -102,9 +102,8 @@ function setScaleMatrix(ratio) {
     return setMatrix(matrix);
 }
 
-const actions = {
+export default {
     setMatrix, resetMatrix, updateOperation, toggleGeometry, updateShape,
     stackPush, stackPop, stackClear, updateMatrix, setRotationMatrix,
     setScaleMatrix,
 };
-export default actions;

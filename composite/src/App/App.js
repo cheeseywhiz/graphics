@@ -4,11 +4,9 @@ import Stack from './Stack/Stack.js';
 import Intermediates from './Stack/Intermediates.js';
 import Graph from './Graph/Graph.js';
 
-export default function App() {
-    return <div>
-        <Options />
-        <Stack />
-        <Intermediates />
-        <Graph />
-    </div>
-}
+export default () => <div>
+    <Options />
+    <Stack />
+    <Intermediates />
+    <Graph />
+</div>

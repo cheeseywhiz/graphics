@@ -12,7 +12,7 @@ const mapDispatchToProps = (dispatch) => ({
     onValueChange: (operation) => dispatch(actions.updateOperation(operation)),
 });
 
-const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
     ({operation, onValueChange}) => {
         const names = Object.values(operationNames);
         const labels = [
@@ -30,4 +30,3 @@ const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(
             disableFirst />
     }
 );
-export default OperationSelector;

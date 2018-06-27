@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch) => ({
     onClear: () => dispatch(actions.stackClear()),
 });
 
-const Stack = connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
     ({shortStack, operation, onPush, onPop, onClear}) => {
         const InputMatrix = getInputMatrixType(operation);
         return <div>
@@ -34,4 +34,3 @@ const Stack = connect(mapStateToProps, mapDispatchToProps)(
         </div>
     }
 );
-export default Stack;

@@ -12,5 +12,4 @@ const mapDispatchToProps = (dispatch) => ({
     onNumberChange: (ratio) => dispatch(actions.setScaleMatrix(ratio)),
 });
 
-const ScaleInput = connect(mapStateToProps, mapDispatchToProps)(NumberInput);
-export default ScaleInput;
+export default connect(mapStateToProps, mapDispatchToProps)(NumberInput);

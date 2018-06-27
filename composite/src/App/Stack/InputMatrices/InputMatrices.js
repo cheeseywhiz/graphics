@@ -14,10 +14,10 @@ function DefaultMatrix({selector, reset}) {
 
 function RotationMatrix({selector, reset}) {
     const matrix = {
-        xi: <MatrixInput matrixKey='xi' disabled/>,
-        yi: <MatrixInput matrixKey='yi' disabled/>,
-        xj: <MatrixInput matrixKey='xj' disabled/>,
-        yj: <MatrixInput matrixKey='yj' disabled/>,
+        xi: <MatrixInput matrixKey='xi' disabled />,
+        yi: <MatrixInput matrixKey='yi' disabled />,
+        xj: <MatrixInput matrixKey='xj' disabled />,
+        yj: <MatrixInput matrixKey='yj' disabled />,
     };
     return <Matrix
         input={<RotationInput autofocus />}

@@ -213,7 +213,7 @@ const [addGlobalHelpers, addLocalHelpers] = ((changeHelper) => (
         ))
 ))(new ChangeHelper());
 
-const GraphObjects = {
+export default {
     geometry: addGeometry,
     arrow: addArrow,
     arrows: addArrows,
@@ -224,4 +224,3 @@ const GraphObjects = {
     globalHelpers: addGlobalHelpers,
     localHelpers: addLocalHelpers,
 };
-export default GraphObjects;

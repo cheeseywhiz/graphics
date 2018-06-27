@@ -12,7 +12,7 @@ const mapDispatchToProps = (dispatch) => ({
     onShapeChange: (shapeName) => dispatch(actions.updateShape(shapeName)),
 });
 
-const ShapeSelector = connect(mapStateToProps, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
     ({shape, onShapeChange}) => {
         const names = Object.values(shapeNames);
         const labels = [
@@ -31,4 +31,3 @@ const ShapeSelector = connect(mapStateToProps, mapDispatchToProps)(
         </div>
     }
 );
-export default ShapeSelector;

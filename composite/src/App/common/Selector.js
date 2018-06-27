@@ -1,7 +1,7 @@
 import React from 'react';
 import zip from '../../common/zip.js';
 
-const Selector = ({currentValue, values, labels, onChange, disableFirst}) => (
+export default ({currentValue, values, labels, onChange, disableFirst}) => (
     <select value={currentValue} onChange={onChange}>
         {zip(values, labels).map(([value, label], index) => (
             <option
@@ -13,4 +13,3 @@ const Selector = ({currentValue, values, labels, onChange, disableFirst}) => (
         ))}
     </select>
 );
-export default Selector;
