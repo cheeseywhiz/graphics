@@ -12,10 +12,10 @@ export default class BaseGraph extends React.Component {
     }
 
     componentDidMount() {
-        this.updateRatio();
         this.renderer = new THREE.WebGLRenderer({canvas: this.canvas.current, antialias: true});
-        this.camera = new THREE.PerspectiveCamera(55, this.ratio, 0.00001, 1000);
-        this.camera.position.z = 10;
+
+        this.camera = new THREE.OrthographicCamera();
+        this.camera.position.z = 1;
 
         this.tracker = new TrackballControls(this.camera, this.canvas.current);
         this.tracker.noRotate = true;
@@ -27,18 +27,13 @@ export default class BaseGraph extends React.Component {
         this.renderCanvas();
     }
 
-    updateRatio() {
-        this.ratio = window.innerWidth / window.innerHeight;
-    }
-
     renderCanvas() {
         this.renderer.render(this.scene, this.camera);
         this.tracker.update();
         requestAnimationFrame(() => this.renderCanvas());
     }
 
-    handleResize() {
-        this.updateRatio();
+    getSize() {
         let width = window.innerWidth;
         let height = width / this.ratio;
 
@@ -47,10 +42,25 @@ export default class BaseGraph extends React.Component {
             width = this.ratio * height;
         }
 
+        return {width, height};
+    }
+
+    updateCamera(width) {
+        const height = width / this.ratio;
+        this.camera.left = width / -2;
+        this.camera.right = width / 2;
+        this.camera.top = height / 2;
+        this.camera.bottom = height / -2;
+        this.camera.updateProjectionMatrix();
+    }
+
+    handleResize() {
+        this.ratio = window.innerWidth / window.innerHeight;
+        const {width, height} = this.getSize();
         this.canvas.current.width = width;
         this.canvas.current.height = height;
         this.canvas.current.aspect = this.ratio;
-        this.camera.updateProjectionMatrix();
+        this.updateCamera(20);
         this.renderer.setSize(width, height);
         this.tracker.handleResize();
     }
