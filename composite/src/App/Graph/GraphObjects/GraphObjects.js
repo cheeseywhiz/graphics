@@ -131,31 +131,36 @@ export class ChangeHelper {
         );
     }
 
-    addScaleLine(through, originFrame = identityFrame) {
-        const start = originFrame.origin;
-        const end = this.initial.atVector(through);
-        const axis = new THREE.Vector3()
-            .subVectors(end, start)
-            .normalize()
-            .multiplyScalar(10);
-        const axisEnd = start.clone().add(axis);
-        return addLine(start, axisEnd);
+    addGlobalScaleLine(through) {
+        const start = identityFrame.origin;
+        const end = this.final.atVector(through);
+        return addLine(start, end);
     }
 
     addGlobalScale() {
         return [
-            this.addScaleLine(identityFrame.iHat),
-            this.addScaleLine(identityFrame.jHat),
-            this.addScaleLine(identityFrame.origin),
+            this.addGlobalScaleLine(identityFrame.iHat),
+            this.addGlobalScaleLine(identityFrame.jHat),
             this.addTranslation(),
         ];
     }
 
+    addLocalScaleLine(through) {
+        const start = this.initial.origin;
+        const end = this.final.atVector(through);
+        const axis = new THREE.Vector3()
+            .subVectors(end, start)
+            .normalize()
+            .multiplyScalar(30);
+        const axisEnd = start.clone().add(axis);
+        return addLine(start, axisEnd);
+    }
+
     addLocalScale() {
         return [
-            this.addScaleLine(new THREE.Vector3(1, 1, 0), this.initial),
-            this.addScaleLine(identityFrame.iHat, this.initial),
-            this.addScaleLine(identityFrame.jHat, this.initial),
+            this.addLocalScaleLine(new THREE.Vector3(1, 1, 0)),
+            this.addLocalScaleLine(identityFrame.iHat),
+            this.addLocalScaleLine(identityFrame.jHat),
         ];
     }
 
