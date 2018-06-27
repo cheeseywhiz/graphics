@@ -2,7 +2,7 @@ import React from 'react';
 import {connect, } from 'react-redux';
 import actions, {operationNames, } from '../../common/actions.js';
 import selectors from '../common/selectors.js';
-import zip from '../../common/zip.js';
+import Selector from '../common/Selector.js';
 
 const mapStateToProps = (state) => ({
     operation: selectors.operation(state),
@@ -22,16 +22,12 @@ const OperationSelector = connect(mapStateToProps, mapDispatchToProps)(
             'Translation',
             'Manual',
         ];
-        return <select value={operation} onChange={(event) => onValueChange(event.target.value)}>
-            {zip(names, labels).map(([name, label], index) => (
-                <option
-                    key={name}
-                    value={name}
-                    disabled={index === 0} >
-                    {label}
-                </option>
-            ))}
-        </select>
+        return <Selector
+            currentValue={operation}
+            values={names}
+            labels={labels}
+            onChange={(event) => onValueChange(event.target.value)}
+            disableFirst />
     }
 );
 export default OperationSelector;

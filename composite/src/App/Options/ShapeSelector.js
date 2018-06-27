@@ -2,7 +2,7 @@ import React from 'react';
 import {connect, } from 'react-redux';
 import actions, {shapeNames, } from '../../common/actions.js';
 import selectors from '../common/selectors.js';
-import zip from '../../common/zip.js';
+import Selector from '../common/Selector.js';
 
 const mapStateToProps = (state) => ({
     shape: selectors.shape(state),
@@ -23,15 +23,11 @@ const ShapeSelector = connect(mapStateToProps, mapDispatchToProps)(
         ];
         return <div>
             <b>Shape</b><br />
-            <select value={shape} onChange={(event) => onShapeChange(event.target.value)}>
-                {zip(names, labels).map(([name, label], index) => (
-                    <option
-                        key={name}
-                        value={name}>
-                    {label}
-                    </option>
-                ))}
-            </select>
+            <Selector
+                currentValue={shape}
+                values={names}
+                labels={labels}
+                onChange={(event) => onShapeChange(event.target.value)} />
         </div>
     }
 );
