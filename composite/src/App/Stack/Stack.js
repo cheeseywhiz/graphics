@@ -3,11 +3,10 @@ import {connect, } from 'react-redux';
 import actions from '../../common/actions.js';
 import selectors from '../common/selectors.js';
 import FrameList from './FrameList/FrameList.js';
-import {getInputMatrixType, } from './InputMatrices/InputMatrices.js';
+import InputMatrix from './InputMatrix/InputMatrix.js';
 
 const mapStateToProps = (state) => ({
     shortStack: selectors.shortStack(state),
-    operation: selectors.operation(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -17,8 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    ({shortStack, operation, onPush, onPop, onClear}) => {
-        const InputMatrix = getInputMatrixType(operation);
+    ({shortStack, onPush, onPop, onClear}) => {
         return <div>
             <b>Operation stack</b><br />
             <input type='button' value='Push' onClick={onPush} />

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
-import actions from '../../../common/actions.js';
-import selectors from '../../common/selectors.js';
-import NumberInput from './common/NumberInput.js';
+import actions from '../../../../common/actions.js';
+import selectors from '../../../common/selectors.js';
+import NumberInput from './NumberInput.js';
 
 const mapStateToProps = (state, {matrixKey}) => ({
     value: selectors.matrix(state)[matrixKey],
