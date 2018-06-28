@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {Provider, } from 'react-redux';
 import {createStore, combineReducers, } from 'redux';
 import reducer from './reducer/reducer.js';
-import {selectAll, } from './App/common/selectors.js';
+import {logIntermediates, } from './App/common/selectors.js';
 import App from './App/App.js';
 
 function main() {
@@ -11,6 +11,7 @@ function main() {
         reducer,
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );
+    store.subscribe(logIntermediates(store));
     ReactDOM.render(
         <Provider store={store}>
             <App />

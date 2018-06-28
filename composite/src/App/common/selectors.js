@@ -89,10 +89,21 @@ const selectors = {
 
 export default selectors;
 
-export function selectAll(state) {
-    const derived = {};
-    Object.entries(selectors).forEach(([name, selector]) => {
-        derived[name] = selector(state);
-    });
-    return derived;
+export function logIntermediates(store) {
+    const getIntermediates = createSelector(
+        selectGeometry, selectGlobals, selectLocals,
+        (geometry, globals, locals) => {
+            const ret = {};
+            if (geometry.globals) ret.globals = globals;
+            if (geometry.locals) ret.locals = locals;
+            return ret;
+        }
+    );
+    return () => {
+        Object.entries(getIntermediates(store.getState()))
+            .forEach(([name, intermediates]) => {
+                console.log(name);
+                console.table(intermediates.map((frame) => frame.elements));
+            });
+    };
 }
