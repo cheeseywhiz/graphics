@@ -3,14 +3,6 @@
     grid-template-columns: repeat(3, 1fr);
 }
 
-.selector {
-    grid-column: span 2;
-}
-
-.input {
-    grid-column: span 3;
-}
-
 .cell, .cell input {
     text-align: center;
     width: 55px;

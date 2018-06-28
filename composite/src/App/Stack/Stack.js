@@ -3,8 +3,6 @@ import {connect, } from 'react-redux';
 import actions from '../../common/actions.js';
 import selectors from '../common/selectors.js';
 import FrameList from './FrameList/FrameList.js';
-import OperationSelector from './OperationSelector.js';
-import ResetButton from './ResetButton.js';
 import {getInputMatrixType, } from './InputMatrices/InputMatrices.js';
 
 const mapStateToProps = (state) => ({
@@ -27,9 +25,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             <input type='button' value='Pop' onClick={onPop} />
             <input type='button' value='Clear' onClick={onClear} />
             <FrameList frames={shortStack.map(selectors.frame)}>
-                <InputMatrix
-                    selector={<OperationSelector />}
-                    reset={<ResetButton />} />
+                <InputMatrix />
             </FrameList>
         </div>
     }

@@ -1,0 +1,12 @@
+.inputMatrix {
+    display: inline-grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.selector {
+    grid-column: span 2;
+}
+
+.input, .matrixContainer {
+    grid-column: span 3;
+}

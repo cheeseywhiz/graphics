@@ -5,51 +5,56 @@ import zip from '../../../common/zip.js';
 import RotationInput from './RotationInput.js';
 import ScaleInput from './ScaleInput.js';
 import MatrixInput from './MatrixInput.js';
+import OperationSelector from './OperationSelector.js';
+import ResetButton from './ResetButton.js';
+import style from './InputMatrix.css';
 
-function DefaultMatrix({selector, reset}) {
-    return <Matrix
-        selector={selector}
-        reset={reset} />
-}
+const InputMatrixBase = ({matrix, input}) => <div className={style.inputMatrix}>
+    <div className={style.selector}>
+        <OperationSelector />
+    </div>
+    <div className={style.reset}>
+        <ResetButton />
+    </div>
+    {input && <div className={style.input}>
+        {input}
+    </div>}
+    <div className={style.matrixContainer}>
+        <Matrix matrix={matrix} />
+    </div>
+</div>
 
-function RotationMatrix({selector, reset}) {
+const RotationMatrix = () => {
     const matrix = {
         xi: <MatrixInput matrixKey='xi' disabled />,
         yi: <MatrixInput matrixKey='yi' disabled />,
         xj: <MatrixInput matrixKey='xj' disabled />,
         yj: <MatrixInput matrixKey='yj' disabled />,
     };
-    return <Matrix
-        input={<RotationInput autofocus />}
-        selector={selector}
-        reset={reset}
-        matrix={matrix} />
-}
+    return <InputMatrixBase
+        matrix={matrix}
+        input={<RotationInput autofocus />} />
+};
 
-function ScaleMatrix({selector, reset}) {
+const ScaleMatrix = () => {
     const matrix = {
         xi: <MatrixInput matrixKey='xi' />,
         yj: <MatrixInput matrixKey='yj' />,
     };
-    return <Matrix
-        input={<ScaleInput autofocus />}
-        selector={selector}
-        reset={reset}
-        matrix={matrix} />
-}
+    return <InputMatrixBase
+        matrix={matrix}
+        input={<ScaleInput autofocus />} />
+};
 
-function TranslationMatrix({selector, reset}) {
+const TranslationMatrix = () => {
     const matrix = {
         ox: <MatrixInput matrixKey='ox' autofocus />,
         oy: <MatrixInput matrixKey='oy' />,
     };
-    return <Matrix
-        selector={selector}
-        reset={reset}
-        matrix={matrix} />
-}
+    return <InputMatrixBase matrix={matrix} />
+};
 
-function ManualMatrix({selector, reset}) {
+const ManualMatrix = () => {
     const matrix = {
             xi: <MatrixInput matrixKey='xi' autofocus />,
             yi: <MatrixInput matrixKey='yi' />,
@@ -58,14 +63,11 @@ function ManualMatrix({selector, reset}) {
             yj: <MatrixInput matrixKey='yj' />,
             oy: <MatrixInput matrixKey='oy' />,
     };
-    return <Matrix
-        selector={selector}
-        reset={reset}
-        matrix={matrix} />
-}
+    return <InputMatrixBase matrix={matrix} />
+};
 
 const InputMatrices = {
-    DefaultMatrix, RotationMatrix, ScaleMatrix, TranslationMatrix, ManualMatrix,
+    InputMatrixBase, RotationMatrix, ScaleMatrix, TranslationMatrix, ManualMatrix,
 };
 export default InputMatrices;
 
