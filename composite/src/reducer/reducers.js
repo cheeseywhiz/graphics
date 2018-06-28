@@ -1,5 +1,6 @@
 import {
     types, defaultMatrix, operationNames, defaultGeometry, shapeNames,
+    entryOrders,
 } from '../common/actions.js';
 
 export function matrix(state = defaultMatrix, {type, matrix}) {
@@ -37,6 +38,15 @@ export function shape(state = shapeNames.NONE, {type, shapeName}) {
     switch (type) {
         case types.UPDATE_SHAPE:
             return shapeName;
+        default:
+            return state;
+    }
+}
+
+export function entryOrder(state = entryOrders.GLOBAL, {type, entryOrder}) {
+    switch (type) {
+        case types.UPDATE_ENTRY_ORDER:
+            return entryOrder;
         default:
             return state;
     }

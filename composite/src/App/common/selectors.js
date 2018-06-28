@@ -1,4 +1,5 @@
 import {createSelector, } from 'reselect';
+import {entryOrders, } from '../../common/actions.js';
 import Frame, {identityFrame, } from './Frame.js';
 
 const selectMatrix = (state) => state.matrix;
@@ -6,6 +7,7 @@ const selectNumber = (state) => selectMatrix(state).number;
 const selectOperation = (state) => state.operation;
 const selectGeometry = (state) => state.geometry;
 const selectShape = (state) => state.shape;
+const selectEntryOrder = (state) => state.entryOrder;
 
 const selectFrame = createSelector(
     selectMatrix,
@@ -28,11 +30,13 @@ const selectShortStack = createSelector(
 // The stack and the input matrix
 const selectFullStack = createSelector(
     selectShortStack, selectMatrix, selectOperation, selectFrame,
-    (shortStack, matrix, operation, frame) => {
+    selectEntryOrder,
+    (shortStack, matrix, operation, frame, entryOrder) => {
         const fullStack = [...shortStack];
         if (!frame.isIdentity()) {
             fullStack.push({matrix, operation, stack: shortStack});
         }
+        if (entryOrder !== entryOrders.GLOBAL) fullStack.reverse();
         return fullStack;
     },
 );
@@ -72,6 +76,7 @@ const selectors = {
     operation: selectOperation,
     geometry: selectGeometry,
     shape: selectShape,
+    entryOrder: selectEntryOrder,
     frame: selectFrame,
     shortStack: selectShortStack,
     fullStack: selectFullStack,
