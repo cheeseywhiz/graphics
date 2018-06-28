@@ -3,11 +3,15 @@ import {entryOrders, } from '../../common/actions.js';
 import Frame, {identityFrame, } from './Frame.js';
 
 const selectMatrix = (state) => state.matrix;
-const selectNumber = (state) => selectMatrix(state).number;
 const selectOperation = (state) => state.operation;
 const selectGeometry = (state) => state.geometry;
 const selectShape = (state) => state.shape;
 const selectEntryOrder = (state) => state.entryOrder;
+
+const selectNumber = createSelector(
+    selectMatrix,
+    (matrix) => matrix.number
+);
 
 const selectFrame = createSelector(
     selectMatrix,
@@ -18,28 +22,28 @@ const selectFrame = createSelector(
         0, 0, 0, 1,
     )
 );
+
 // Only the stack field
 const selectShortStack = createSelector(
     (state) => state.stack,
-    (stack) => (
-        stack.filter((state) => (
-            !selectFrame(state).isIdentity()
-        ))
-    ),
+    (stack) => stack.filter((state) => (
+        !selectFrame(state).isIdentity()
+    ))
 );
+
 // The stack and the input matrix
 const selectFullStack = createSelector(
     selectShortStack, selectMatrix, selectOperation, selectFrame,
     selectEntryOrder,
     (shortStack, matrix, operation, frame, entryOrder) => {
         const fullStack = [...shortStack];
-        if (!frame.isIdentity()) {
-            fullStack.push({matrix, operation, stack: shortStack});
-        }
+        const newEntry = {matrix, operation, stack: shortStack};
+        if (!frame.isIdentity()) fullStack.push(newEntry);
         if (entryOrder !== entryOrders.GLOBAL) fullStack.reverse();
         return fullStack;
-    },
+    }
 );
+
 const selectGlobals = createSelector(
     selectFullStack,
     (fullStack) => {
@@ -48,12 +52,12 @@ const selectGlobals = createSelector(
             globals[newLength - 1].multiply(globals[newLength - 2]);
             return globals;
         };
-
         return fullStack
             .map(selectFrame)
             .reduce(reducer, [identityFrame]);
-    },
+    }
 );
+
 const selectLocals = createSelector(
     selectFullStack,
     (fullStack) => {
@@ -61,13 +65,12 @@ const selectLocals = createSelector(
             const newLength = locals.push(identityFrame.clone());
             locals[newLength - 1].multiplyMatrices(locals[newLength - 2], currentValue);
             return locals;
-        }
-
+        };
         return fullStack
             .map(selectFrame)
             .reverse()
             .reduce(reducer, [identityFrame]);
-    },
+    }
 );
 
 const selectors = {
@@ -83,6 +86,7 @@ const selectors = {
     globals: selectGlobals,
     locals: selectLocals,
 };
+
 export default selectors;
 
 export function selectAll(state) {
