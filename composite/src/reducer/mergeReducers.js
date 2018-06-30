@@ -8,16 +8,20 @@ const dictSlice = (dict) => (keys) => {
     return newDict;
 };
 
-export default function mergeReducers(...reducers) {
-    const defaults = reducers
+export default (...reducers) => {
+    const defaultStates = reducers
         .map((reducer) => reducer(undefined, {type: undefined}));
-    const defaultState = Object.assign({}, ...defaults);
+    const defaultState = Object.assign({}, ...defaultStates);
     // Track which fields are controlled by each reducer, so that
     // Each reducer operates only on its own slice
-    const fields = defaults.map(Object.keys);
-    return (state = defaultState, action) => Object.assign(
-        {},
-        ...zip(reducers, fields.map(dictSlice(state)))
-            .map(([reducer, stateSlice]) => reducer(stateSlice, action)),
-    );
+    const fields = defaultStates.map(Object.keys);
+    return (state = defaultState, action) => {
+        const stateSlices = fields.map(dictSlice(state));
+        const newStates = zip(stateSlices, reducers)
+            .map(([stateSlice, reducer]) => reducer(stateSlice, action));
+        if (zip(stateSlices, newStates)
+            .every(([stateSlice, newState]) => stateSlice === newState))
+            return state;
+        return Object.assign({}, ...newStates);
+    };
 }
