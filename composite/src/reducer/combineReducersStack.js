@@ -16,12 +16,14 @@ const stack = (state = defaultStack, {type}) => {
 // computes any fields that need updating given the entire state
 const updateStack = (state, {type}) => {
     switch (type) {
-        case types.STACK_PUSH:
-            return {stack: [...state.stack, state]};
+        case types.STACK_PUSH: {
+            const {stack, ...entry} = state;
+            return {stack: [...stack, entry]};
+        };
         case types.STACK_POP: {
-            const stack = state.stack;
-            const length = stack.length;
-            return length ? stack[length - 1] : state;
+            const stack = [...state.stack];
+            const entry = stack.pop();
+            return entry === undefined ? state : {stack, ...entry};
         };
         default:
             return state;
