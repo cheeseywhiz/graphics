@@ -5,11 +5,6 @@
 }
 
 .frameItem {
-    display: inline-block;
-    white-space: nowrap;
+    flex: none;
     margin-right: 25px;
-}
-
-.frameItem:before {
-    content: "\2022";  /* Bullet point */
 }
