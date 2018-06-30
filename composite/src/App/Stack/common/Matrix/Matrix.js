@@ -8,11 +8,13 @@ export default function Matrix({matrix}) {
         ...matrix,
         xh: 0, yh: 0, oh: 1,
     };
-    return <div className={style.matrix}>
-        {Object.entries(updatedMatrix).map(([key, value]) => (
-            <div key={key} className={style.cell}>
-                {value}
-            </div>
-        ))}
+    return <div className={style.matrixContainer}>
+        <div className={style.matrix}>
+            {Object.entries(updatedMatrix).map(([key, value]) => (
+                <div key={key} className={style.cell}>
+                    {value}
+                </div>
+            ))}
+        </div>
     </div>
 }
