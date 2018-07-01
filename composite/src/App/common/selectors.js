@@ -68,8 +68,7 @@ const selectLocals = createSelector(
         };
         return fullStack
             .map(selectFrame)
-            .reverse()
-            .reduce(reducer, [identityFrame]);
+            .reduceRight(reducer, [identityFrame]);
     }
 );
 
