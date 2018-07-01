@@ -96,12 +96,28 @@ function addRotation(start, end, center) {
     );
 }
 
-function addLine(start, end) {
+function addLine(start, end, color) {
     const geometry = new THREE.Geometry();
     geometry.vertices.push(start);
     geometry.vertices.push(end);
-    const material = new THREE.LineBasicMaterial({color: colors.scale});
+    const material = new THREE.LineBasicMaterial({color});
     return new THREE.Line(geometry, material);
+}
+
+function addAxes() {
+    const width = 100;
+    return [
+        addLine(
+            new THREE.Vector3(-width, 0, 0),
+            new THREE.Vector3(width, 0, 0),
+            palette.red,
+        ),
+        addLine(
+            new THREE.Vector3(0, -width, 0),
+            new THREE.Vector3(0, width, 0),
+            palette.green,
+        ),
+    ];
 }
 
 // [a, b, c, d] => [[a, b], [b, c], [c, d]]
@@ -134,7 +150,7 @@ export class ChangeHelper {
     addGlobalScaleLine(through) {
         const start = identityFrame.origin;
         const end = this.final.atVector(through);
-        return addLine(start, end);
+        return addLine(start, end, colors.scale);
     }
 
     addGlobalScale() {
@@ -153,7 +169,7 @@ export class ChangeHelper {
             .normalize()
             .multiplyScalar(30);
         const axisEnd = start.clone().add(axis);
-        return addLine(start, axisEnd);
+        return addLine(start, axisEnd, colors.scale);
     }
 
     addLocalScale() {
@@ -221,6 +237,7 @@ export default {
     sector: addSector,
     rotation: addRotation,
     line: addLine,
+    axes: addAxes,
     globalHelpers: addGlobalHelpers,
     localHelpers: addLocalHelpers,
 };

@@ -52,6 +52,7 @@ export default class Graph extends BaseGraph {
     render() {
         this.scene.clear();
         this.scene.addAll([
+            GraphObjects.axes(),
             this.frames(),
             this.intermediateHelpers(),
         ]);
