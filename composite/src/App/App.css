@@ -1,0 +1,20 @@
+.app {
+    display: grid;
+    grid-template-areas:
+        "top top"
+        "side body";
+    grid-template-columns: min-content auto;
+    grid-gap: 5px;
+}
+
+.top {
+    grid-area: top;
+}
+
+.side {
+    grid-area: side;
+}
+
+.body {
+    grid-area: body;
+}

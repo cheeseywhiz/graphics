@@ -2,10 +2,12 @@ import * as THREE from 'three';
 import TrackballControls from 'three-trackballcontrols';
 import React from 'react';
 import Scene from './Scene.js';
+import style from './BaseGraph.css';
 
 export default class BaseGraph extends React.Component {
     constructor(props) {
         super(props);
+        this.canvasContainer = React.createRef();
         this.canvas = React.createRef();
         this.scene = new Scene();
     }
@@ -32,20 +34,7 @@ export default class BaseGraph extends React.Component {
         requestAnimationFrame(() => this.renderCanvas());
     }
 
-    getSize() {
-        let width = window.innerWidth;
-        let height = width / this.ratio;
-
-        if (this.canvas.current.offsetTop + height > window.innerHeight) {
-            height = window.innerHeight - this.canvas.current.offsetTop;
-            width = this.ratio * height;
-        }
-
-        return {width, height};
-    }
-
-    updateCamera(width) {
-        const height = width / this.ratio;
+    updateCamera(width, height) {
         this.camera.left = width / -2;
         this.camera.right = width / 2;
         this.camera.top = height / 2;
@@ -53,18 +42,36 @@ export default class BaseGraph extends React.Component {
         this.camera.updateProjectionMatrix();
     }
 
+    getDimensions(width, maxHeight, ratio) {
+        let height = width / ratio;
+
+        if (height > maxHeight) {
+            height = maxHeight;
+            width = height * ratio;
+        }
+
+        return {width, height};
+    }
+
+    setSize({offsetWidth, offsetHeight}) {
+        const ratio = offsetWidth / offsetHeight;
+        const {width, height} = this.getDimensions(offsetWidth, offsetHeight, ratio);
+        this.renderer.setSize(
+            width,
+            height,
+            false,  /* updateStyle */
+        );
+        const graphWidth = 20;
+        this.updateCamera(graphWidth, graphWidth / ratio);
+    }
+
     handleResize() {
-        this.ratio = window.innerWidth / window.innerHeight;
-        const {width, height} = this.getSize();
-        this.canvas.current.width = width;
-        this.canvas.current.height = height;
-        this.canvas.current.aspect = this.ratio;
-        this.updateCamera(20);
-        this.renderer.setSize(width, height);
+        this.setSize(this.canvas.current);
         this.tracker.handleResize();
+        this.camera.updateProjectionMatrix();
     }
 
     render() {
-        return <canvas ref={this.canvas} />
+        return <canvas ref={this.canvas} className={style.canvas} />
     }
 }
