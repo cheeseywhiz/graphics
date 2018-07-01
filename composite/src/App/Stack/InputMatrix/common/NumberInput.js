@@ -33,7 +33,10 @@ export default class NumberInput extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.autofocus) this.input.current.select();
+        if (this.props.autofocus) {
+            this.input.current.focus();
+            this.input.current.select();
+        }
     }
 
     render() {
