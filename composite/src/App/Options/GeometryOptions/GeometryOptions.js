@@ -15,10 +15,10 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(mapStateToProps, mapDispatchToProps)(
     ({geometry, onGeometryChange}) => {
         const labels = {
-            globals: 'Globals',
-            locals: 'Locals',
+            globals: 'Global intermediate frames',
+            locals: 'Local intermediate frames',
             frames: 'Coordinate frames',
-            intermediateHelpers: 'Intermediate helpers',
+            intermediateHelpers: 'Intermediate transformation visualization',
         };
         return <div>
             <b>Geometry options</b>
