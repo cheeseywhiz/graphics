@@ -4,6 +4,7 @@ export const types = {
     UPDATE_OPERATION: 'UPDATE_OPERATION',
     TOGGLE_GEOMETRY: 'TOGGLE_GEOMETRY',
     UPDATE_SHAPE: 'UPDATE_SHAPE',
+    UPDATE_SHAPE_FNAME: 'UPDATE_SHAPE_FNAME',
     UPDATE_ENTRY_ORDER: 'UPDATE_ENTRY_ORDER',
     STACK_PUSH: 'STACK_PUSH',
     STACK_POP: 'STACK_POP',
@@ -36,6 +37,7 @@ export const shapeNames = {
     SQUARE: 'SQUARE',
     UNIT_CIRCLE: 'UNIT_CIRCLE',
     KNOT: 'KNOT',
+    FROM_JSON: 'FROM_JSON',
 };
 
 export const entryOrders = {
@@ -66,6 +68,11 @@ function toggleGeometry(value) {
 function updateShape(shapeName) {
     const type = types.UPDATE_SHAPE;
     return {type, shapeName};
+}
+
+function updateShapeFname(fname) {
+    const type = types.UPDATE_SHAPE_FNAME;
+    return {type, fname};
 }
 
 function updateEntryOrder(entryOrder) {
@@ -115,6 +122,6 @@ function setScaleMatrix(ratio) {
 
 export default {
     setMatrix, resetMatrix, updateOperation, toggleGeometry, updateShape,
-    updateEntryOrder, stackPush, stackPop, stackClear, updateMatrix,
-    setRotationMatrix, setScaleMatrix,
+    updateShapeFname, updateEntryOrder, stackPush, stackPop, stackClear,
+    updateMatrix, setRotationMatrix, setScaleMatrix,
 };

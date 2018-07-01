@@ -1,0 +1,8 @@
+.shapeSelector {
+    display: flex;
+    flex-direction: row;
+}
+
+.fileInput {
+    display: none;
+}

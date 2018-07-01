@@ -43,6 +43,15 @@ export function shape(state = shapeNames.NONE, {type, shapeName}) {
     }
 }
 
+export function shapeFname(state = null, {type, fname}) {
+    switch (type) {
+        case types.UPDATE_SHAPE_FNAME:
+            return fname;
+        default:
+            return state;
+    }
+}
+
 export function entryOrder(state = entryOrders.GLOBAL, {type, entryOrder}) {
     switch (type) {
         case types.UPDATE_ENTRY_ORDER:
