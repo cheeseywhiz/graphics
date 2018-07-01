@@ -3,6 +3,7 @@ import {connect, } from 'react-redux';
 import actions, {shapeNames, } from '../../../common/actions.js';
 import selectors from '../../common/selectors.js';
 import Selector from '../../common/Selector.js';
+import FileUpload from './FileUpload/FileUpload.js';
 import style from './ShapeSelector.css';
 
 const mapStateToProps = (state) => ({
@@ -19,13 +20,14 @@ const mapDispatchToProps = (dispatch) => ({
 export default class ShapeSelector extends React.Component {
     constructor(props) {
         super(props);
-        this.fileInput = React.createRef();
+        this.fileUpload = React.createRef();
         this.onShapeChange = this.onShapeChange.bind(this);
+        this.onFileChange = this.onFileChange.bind(this);
     }
 
     onShapeChange(shapeName) {
         if (shapeName === shapeNames.FROM_JSON) {
-            this.fileInput.current.click();
+            this.fileUpload.current.prompt();
         }
 
         this.props.onShapeChange(shapeName);
@@ -57,12 +59,10 @@ export default class ShapeSelector extends React.Component {
                     {shapeFname}
                 </div>
             </div>
-            <input
-                ref={this.fileInput}
-                type='file'
-                className={style.fileInput}
+            <FileUpload
+                ref={this.fileUpload}
                 accept='.json'
-                onChange={() => this.onFileChange(this.fileInput.current.files[0])} />
+                onFileChange={this.onFileChange} />
         </div>
     }
 }
