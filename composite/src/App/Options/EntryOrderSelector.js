@@ -25,7 +25,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 currentValue={entryOrder}
                 values={orders}
                 labels={labels}
-                onChange={(event) => onEntryOrderChange(event.target.value)} />
+                onChange={onEntryOrderChange} />
         </div>
     }
 );

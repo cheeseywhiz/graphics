@@ -26,7 +26,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
             currentValue={operation}
             values={names}
             labels={labels}
-            onChange={(event) => onValueChange(event.target.value)}
+            onChange={onValueChange}
             disableFirst />
     }
 );

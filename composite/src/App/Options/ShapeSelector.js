@@ -27,7 +27,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(
                 currentValue={shape}
                 values={names}
                 labels={labels}
-                onChange={(event) => onShapeChange(event.target.value)} />
+                onChange={onShapeChange} />
         </div>
     }
 );
