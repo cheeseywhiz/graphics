@@ -23,6 +23,11 @@ const selectShapeFname = createSelector(
     (shape) => shape.fname
 );
 
+const selectShapeData = createSelector(
+    selectShape,
+    (shape) => shape.data
+);
+
 const selectFrame = createSelector(
     selectMatrix,
     ({xi, yi, ox, xj, yj, oy}) => new Frame().set(
@@ -90,6 +95,7 @@ const selectors = {
     shape: selectShape,
     shapeSelection: selectShapeSelection,
     shapeFname: selectShapeFname,
+    shapeData: selectShapeData,
     entryOrder: selectEntryOrder,
     frame: selectFrame,
     shortStack: selectShortStack,

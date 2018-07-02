@@ -16,4 +16,13 @@ export const fname = (state = null, {type, fname}) => {
         default:
             return state;
     }
-}
+};
+
+export const data = (state = null, {type, data}) => {
+    switch (type) {
+        case types.shape.UPDATE_DATA:
+            return data;
+        default:
+            return state;
+    }
+};

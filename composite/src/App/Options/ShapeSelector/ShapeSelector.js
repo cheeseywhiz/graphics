@@ -6,6 +6,17 @@ import Selector from '../../common/Selector.js';
 import FileUpload from './FileUpload/FileUpload.js';
 import style from './ShapeSelector.css';
 
+// a context manager
+const withUrl = (file, func) => {
+    const url = URL.createObjectURL(file);
+
+    try {
+        return func(url);
+    } finally {
+        URL.revokeObjectURL(url);
+    }
+};
+
 const mapStateToProps = (state) => ({
     shapeSelection: selectors.shapeSelection(state),
     shapeFname: selectors.shapeFname(state),
@@ -14,6 +25,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     onShapeChange: (shapeName) => dispatch(actions.shape.updateSelection(shapeName)),
     onFnameChange: (fname) => dispatch(actions.shape.updateFname(fname)),
+    onDataChange: (data) => dispatch(actions.shape.updateData(data)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -35,6 +47,11 @@ export default class ShapeSelector extends React.Component {
 
     onFileChange(file) {
         this.props.onFnameChange(file.name);
+        withUrl(file, (url) => (
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => this.props.onDataChange(data))
+        ));
     }
 
     render() {
