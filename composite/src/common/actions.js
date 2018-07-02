@@ -8,6 +8,7 @@ export const types = {
         UPDATE_SELECTION: 'SHAPE_UPDATE_SELECTION',
         UPDATE_FNAME: 'SHAPE_UPDATE_FNAME',
         UPDATE_DATA: 'SHAPE_UPDATE_DATA',
+        UPDATE_FILE: 'SHAPE_UPDATE_FILE',
     },
     stack: {
         PUSH: 'STACK_PUSH',
@@ -85,6 +86,13 @@ function shapeUpdateData(data) {
     return {type, data};
 }
 
+function shapeUpdateFile(fname, data) {
+    const type = types.shape.UPDATE_FILE;
+    const fnameAction = shapeUpdateFname(fname);
+    const dataAction = shapeUpdateData(data);
+    return {...fnameAction, ...dataAction, type};
+}
+
 function updateEntryOrder(entryOrder) {
     const type = types.UPDATE_ENTRY_ORDER;
     return {type, entryOrder};
@@ -140,6 +148,7 @@ export default {
         updateSelection: shapeUpdateSelection,
         updateFname: shapeUpdateFname,
         updateData: shapeUpdateData,
+        updateFile: shapeUpdateFile,
     },
     stack: {
         push: stackPush,

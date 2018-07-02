@@ -24,8 +24,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     onShapeChange: (shapeName) => dispatch(actions.shape.updateSelection(shapeName)),
-    onFnameChange: (fname) => dispatch(actions.shape.updateFname(fname)),
-    onDataChange: (data) => dispatch(actions.shape.updateData(data)),
+    onFileChange: (fname, data) => dispatch(actions.shape.updateFile(fname, data)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -46,11 +45,10 @@ export default class ShapeSelector extends React.Component {
     }
 
     onFileChange(file) {
-        this.props.onFnameChange(file.name);
         withUrl(file, (url) => (
             fetch(url)
                 .then((response) => response.json())
-                .then((data) => this.props.onDataChange(data))
+                .then((data) => this.props.onFileChange(file.name, data))
         ));
     }
 
