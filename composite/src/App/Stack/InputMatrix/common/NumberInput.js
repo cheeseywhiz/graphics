@@ -8,7 +8,7 @@ import roundFloatStr from '../../common/roundFloatStr.js';
 const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
-    onEnter: () => dispatch(actions.stackPush()),
+    onEnter: () => dispatch(actions.stack.push()),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)

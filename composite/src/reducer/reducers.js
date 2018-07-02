@@ -8,7 +8,7 @@ export function matrix(state = defaultMatrix, {type, matrix}) {
         case types.SET_MATRIX:
             return {...state, ...matrix};
         case types.UPDATE_OPERATION:
-        case types.STACK_PUSH:
+        case types.stack.PUSH:
         case types.RESET_MATRIX:
             return defaultMatrix;
         default:

@@ -6,9 +6,11 @@ export const types = {
     UPDATE_SHAPE: 'UPDATE_SHAPE',
     UPDATE_SHAPE_FNAME: 'UPDATE_SHAPE_FNAME',
     UPDATE_ENTRY_ORDER: 'UPDATE_ENTRY_ORDER',
-    STACK_PUSH: 'STACK_PUSH',
-    STACK_POP: 'STACK_POP',
-    STACK_CLEAR: 'STACK_CLEAR',
+    stack: {
+        PUSH: 'STACK_PUSH',
+        POP: 'STACK_POP',
+        CLEAR: 'STACK_CLEAR',
+    },
 };
 
 export const defaultMatrix = {
@@ -81,17 +83,17 @@ function updateEntryOrder(entryOrder) {
 }
 
 function stackPush() {
-    const type = types.STACK_PUSH;
+    const type = types.stack.PUSH;
     return {type};
 }
 
 function stackPop() {
-    const type = types.STACK_POP;
+    const type = types.stack.POP;
     return {type};
 }
 
 function stackClear() {
-    const type = types.STACK_CLEAR;
+    const type = types.stack.CLEAR;
     return {type};
 }
 
@@ -121,7 +123,19 @@ function setScaleMatrix(ratio) {
 }
 
 export default {
-    setMatrix, resetMatrix, updateOperation, toggleGeometry, updateShape,
-    updateShapeFname, updateEntryOrder, stackPush, stackPop, stackClear,
-    updateMatrix, setRotationMatrix, setScaleMatrix,
+    setMatrix,
+    resetMatrix,
+    updateOperation,
+    toggleGeometry,
+    updateShape,
+    updateShapeFname,
+    updateEntryOrder,
+    stack: {
+        push: stackPush,
+        pop: stackPop,
+        clear: stackClear,
+    },
+    updateMatrix,
+    setRotationMatrix,
+    setScaleMatrix,
 };

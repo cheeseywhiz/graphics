@@ -10,9 +10,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onPush: () => dispatch(actions.stackPush()),
-    onPop: () => dispatch(actions.stackPop()),
-    onClear: () => dispatch(actions.stackClear()),
+    onPush: () => dispatch(actions.stack.push()),
+    onPop: () => dispatch(actions.stack.pop()),
+    onClear: () => dispatch(actions.stack.clear()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
