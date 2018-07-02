@@ -6,8 +6,6 @@ export const types = {
     UPDATE_ENTRY_ORDER: 'UPDATE_ENTRY_ORDER',
     shape: {
         UPDATE_SELECTION: 'SHAPE_UPDATE_SELECTION',
-        UPDATE_FNAME: 'SHAPE_UPDATE_FNAME',
-        UPDATE_DATA: 'SHAPE_UPDATE_DATA',
         UPDATE_FILE: 'SHAPE_UPDATE_FILE',
     },
     stack: {
@@ -46,6 +44,11 @@ export const shapeNames = {
     FROM_JSON: 'FROM_JSON',
 };
 
+export const defaultShapeFile = {
+    fname: null,
+    data: null,
+};
+
 export const entryOrders = {
     GLOBAL: 'GLOBAL',
     LOCAL: 'LOCAL',
@@ -76,21 +79,9 @@ function shapeUpdateSelection(selection) {
     return {type, selection};
 }
 
-function shapeUpdateFname(fname) {
-    const type = types.shape.UPDATE_FNAME;
-    return {type, fname};
-}
-
-function shapeUpdateData(data) {
-    const type = types.shape.UPDATE_DATA;
-    return {type, data};
-}
-
 function shapeUpdateFile(fname, data) {
     const type = types.shape.UPDATE_FILE;
-    const fnameAction = shapeUpdateFname(fname);
-    const dataAction = shapeUpdateData(data);
-    return {...fnameAction, ...dataAction, type};
+    return {type, fname, data};
 }
 
 function updateEntryOrder(entryOrder) {
@@ -146,8 +137,6 @@ export default {
     updateEntryOrder,
     shape: {
         updateSelection: shapeUpdateSelection,
-        updateFname: shapeUpdateFname,
-        updateData: shapeUpdateData,
         updateFile: shapeUpdateFile,
     },
     stack: {

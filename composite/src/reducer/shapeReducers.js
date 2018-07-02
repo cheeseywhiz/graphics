@@ -1,4 +1,4 @@
-import {types, shapeNames, } from '../common/actions.js';
+import {types, shapeNames, defaultShapeFile, } from '../common/actions.js';
 
 export const selection = (state = shapeNames.NONE, {type, selection}) => {
     switch (type) {
@@ -9,22 +9,11 @@ export const selection = (state = shapeNames.NONE, {type, selection}) => {
     }
 };
 
-export const fname = (state = null, {type, fname}) => {
+export const file = (state = defaultShapeFile, {type, fname, data}) => {
     switch (type) {
-        case types.shape.UPDATE_FNAME:
         case types.shape.UPDATE_FILE:
-            return fname;
+            return {fname, data};
         default:
             return state;
     }
-};
-
-export const data = (state = null, {type, data}) => {
-    switch (type) {
-        case types.shape.UPDATE_DATA:
-        case types.shape.UPDATE_FILE:
-            return data;
-        default:
-            return state;
-    }
-};
+}

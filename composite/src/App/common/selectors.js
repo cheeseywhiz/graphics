@@ -18,14 +18,19 @@ const selectShapeSelection = createSelector(
     (shape) => shape.selection
 );
 
-const selectShapeFname = createSelector(
+const selectShapeFile = createSelector(
     selectShape,
-    (shape) => shape.fname
+    (shape) => shape.file
+);
+
+const selectShapeFname = createSelector(
+    selectShapeFile,
+    (file) => file.fname
 );
 
 const selectShapeData = createSelector(
-    selectShape,
-    (shape) => shape.data
+    selectShapeFile,
+    (file) => file.data
 );
 
 const selectFrame = createSelector(
@@ -93,6 +98,7 @@ const selectors = {
     operation: selectOperation,
     geometry: selectGeometry,
     shape: selectShape,
+    shapeFile: selectShapeFile,
     shapeSelection: selectShapeSelection,
     shapeFname: selectShapeFname,
     shapeData: selectShapeData,

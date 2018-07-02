@@ -11,6 +11,7 @@ export default class FileUpload extends React.Component {
     onChange() {
         const {onFilesChange, onFileChange} = this.props;
         const files = this.fileInput.current.files;
+        if (!files.length) return;
         onFilesChange(files);
         onFileChange(files[0]);
     }
