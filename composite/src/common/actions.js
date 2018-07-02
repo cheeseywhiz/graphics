@@ -3,9 +3,11 @@ export const types = {
     RESET_MATRIX: 'RESET_MATRIX',
     UPDATE_OPERATION: 'UPDATE_OPERATION',
     TOGGLE_GEOMETRY: 'TOGGLE_GEOMETRY',
-    UPDATE_SHAPE: 'UPDATE_SHAPE',
-    UPDATE_SHAPE_FNAME: 'UPDATE_SHAPE_FNAME',
     UPDATE_ENTRY_ORDER: 'UPDATE_ENTRY_ORDER',
+    shape: {
+        UPDATE_SELECTION: 'SHAPE_UPDATE_SELECTION',
+        UPDATE_FNAME: 'SHAPE_UPDATE_FNAME',
+    },
     stack: {
         PUSH: 'STACK_PUSH',
         POP: 'STACK_POP',
@@ -67,13 +69,13 @@ function toggleGeometry(value) {
     return {type, value};
 }
 
-function updateShape(shapeName) {
-    const type = types.UPDATE_SHAPE;
-    return {type, shapeName};
+function shapeUpdateSelection(selection) {
+    const type = types.shape.UPDATE_SELECTION;
+    return {type, selection};
 }
 
-function updateShapeFname(fname) {
-    const type = types.UPDATE_SHAPE_FNAME;
+function shapeUpdateFname(fname) {
+    const type = types.shape.UPDATE_FNAME;
     return {type, fname};
 }
 
@@ -127,9 +129,11 @@ export default {
     resetMatrix,
     updateOperation,
     toggleGeometry,
-    updateShape,
-    updateShapeFname,
     updateEntryOrder,
+    shape: {
+        updateSelection: shapeUpdateSelection,
+        updateFname: shapeUpdateFname,
+    },
     stack: {
         push: stackPush,
         pop: stackPop,

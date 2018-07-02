@@ -7,16 +7,16 @@ const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
     locals: selectors.locals(state),
     geometry: selectors.geometry(state),
-    shape: selectors.shape(state),
+    shapeSelection: selectors.shapeSelection(state),
     fullStack: selectors.fullStack(state),
 });
 
 @connect(mapStateToProps)
 export default class Graph extends BaseGraph {
     addFrames(intermediates, color) {
-        const {shape, geometry} = this.props;
+        const {shapeSelection, geometry} = this.props;
         return intermediates.map((frame) => (
-            GraphObjects.frame(frame, color, shape, geometry.frames)
+            GraphObjects.frame(frame, color, shapeSelection, geometry.frames)
         ));
     }
 

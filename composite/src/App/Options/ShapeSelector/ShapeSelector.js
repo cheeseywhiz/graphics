@@ -7,13 +7,13 @@ import FileUpload from './FileUpload/FileUpload.js';
 import style from './ShapeSelector.css';
 
 const mapStateToProps = (state) => ({
-    shape: selectors.shape(state),
+    shapeSelection: selectors.shapeSelection(state),
     shapeFname: selectors.shapeFname(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onShapeChange: (shapeName) => dispatch(actions.updateShape(shapeName)),
-    onFnameChange: (fname) => dispatch(actions.updateShapeFname(fname)),
+    onShapeChange: (shapeName) => dispatch(actions.shape.updateSelection(shapeName)),
+    onFnameChange: (fname) => dispatch(actions.shape.updateFname(fname)),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -38,7 +38,7 @@ export default class ShapeSelector extends React.Component {
     }
 
     render() {
-        const {shape, shapeFname} = this.props;
+        const {shapeSelection, shapeFname} = this.props;
         const names = Object.values(shapeNames);
         const labels = [
             'None',
@@ -51,12 +51,12 @@ export default class ShapeSelector extends React.Component {
             <b>Shape</b><br />
             <div className={style.shapeSelector}>
                 <Selector
-                    currentValue={shape}
+                    currentValue={shapeSelection}
                     values={names}
                     labels={labels}
                     onChange={this.onShapeChange} />
                 <div>
-                    {shapeFname}
+                    {shapeSelection === shapeNames.FROM_JSON && shapeFname}
                 </div>
             </div>
             <FileUpload

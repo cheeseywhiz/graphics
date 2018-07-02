@@ -6,12 +6,21 @@ const selectMatrix = (state) => state.matrix;
 const selectOperation = (state) => state.operation;
 const selectGeometry = (state) => state.geometry;
 const selectShape = (state) => state.shape;
-const selectShapeFname = (state) => state.shapeFname;
 const selectEntryOrder = (state) => state.entryOrder;
 
 const selectNumber = createSelector(
     selectMatrix,
     (matrix) => matrix.number
+);
+
+const selectShapeSelection = createSelector(
+    selectShape,
+    (shape) => shape.selection
+);
+
+const selectShapeFname = createSelector(
+    selectShape,
+    (shape) => shape.fname
 );
 
 const selectFrame = createSelector(
@@ -79,6 +88,7 @@ const selectors = {
     operation: selectOperation,
     geometry: selectGeometry,
     shape: selectShape,
+    shapeSelection: selectShapeSelection,
     shapeFname: selectShapeFname,
     entryOrder: selectEntryOrder,
     frame: selectFrame,

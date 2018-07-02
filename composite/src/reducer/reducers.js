@@ -1,6 +1,5 @@
 import {
-    types, defaultMatrix, operationNames, defaultGeometry, shapeNames,
-    entryOrders,
+    types, defaultMatrix, operationNames, defaultGeometry, entryOrders,
 } from '../common/actions.js';
 
 export function matrix(state = defaultMatrix, {type, matrix}) {
@@ -29,24 +28,6 @@ export function geometry(state = defaultGeometry, {type, value}) {
     switch (type) {
         case types.TOGGLE_GEOMETRY:
             return {...state, [value]: !state[value]};
-        default:
-            return state;
-    }
-}
-
-export function shape(state = shapeNames.NONE, {type, shapeName}) {
-    switch (type) {
-        case types.UPDATE_SHAPE:
-            return shapeName;
-        default:
-            return state;
-    }
-}
-
-export function shapeFname(state = null, {type, fname}) {
-    switch (type) {
-        case types.UPDATE_SHAPE_FNAME:
-            return fname;
         default:
             return state;
     }
