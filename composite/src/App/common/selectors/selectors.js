@@ -1,58 +1,16 @@
 import {createSelector, } from 'reselect';
-import {defaultMatrix, entryOrders, shapeNames, } from '../../../common/actions.js';
-import zip from '../../../common/zip.js';
+import {defaultMatrix, entryOrders, } from '../../../common/actions.js';
 import Frame, {identityFrame, } from '../Frame.js';
-import shapes from './shapes.js';
+import shapeSelectors from './shapeSelectors/shapeSelectors.js';
 
 const selectMatrix = (state) => state.matrix;
 const selectOperation = (state) => state.operation;
 const selectGeometry = (state) => state.geometry;
-const selectShape = (state) => state.shape;
 const selectEntryOrder = (state) => state.entryOrder;
 
 const selectNumber = createSelector(
     selectMatrix,
     (matrix) => matrix.number
-);
-
-const selectShapeSelection = createSelector(
-    selectShape,
-    (shape) => shape.selection
-);
-
-const selectShapeFile = createSelector(
-    selectShape,
-    (shape) => shape.file
-);
-
-const selectShapeFname = createSelector(
-    selectShapeFile,
-    (file) => file.fname
-);
-
-const selectShapeData = createSelector(
-    selectShapeFile,
-    (file) => file.data
-);
-
-const selectShapeFunc = createSelector(
-    selectShapeSelection,
-    (shapeSelection) => {
-        const names = Object.values(shapeNames);
-        const shapeFuncs = Object.values(shapes);
-        const map = {};
-        zip(names, shapeFuncs).forEach(([name, value]) => {
-            map[name] = value;
-        });
-        return map[shapeSelection];
-    }
-);
-
-const selectShapeGeometry = createSelector(
-    selectShapeFunc, selectShapeData,
-    (shapeFunc, shapeData) => (
-        shapeFunc ? shapeFunc(shapeData) : null
-    )
 );
 
 const selectFrame = createSelector(
@@ -118,13 +76,7 @@ const selectors = {
     number: selectNumber,
     operation: selectOperation,
     geometry: selectGeometry,
-    shape: selectShape,
-    shapeFile: selectShapeFile,
-    shapeSelection: selectShapeSelection,
-    shapeFname: selectShapeFname,
-    shapeData: selectShapeData,
-    shapeFunc: selectShapeFunc,
-    shapeGeometry: selectShapeGeometry,
+    shape: shapeSelectors,
     entryOrder: selectEntryOrder,
     frame: selectFrame,
     shortStack: selectShortStack,

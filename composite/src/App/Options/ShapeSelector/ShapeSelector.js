@@ -18,8 +18,8 @@ const withUrl = (file, func) => {
 };
 
 const mapStateToProps = (state) => ({
-    shapeSelection: selectors.shapeSelection(state),
-    shapeFname: selectors.shapeFname(state),
+    selection: selectors.shape.selection(state),
+    fname: selectors.shape.fname(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -53,7 +53,7 @@ export default class ShapeSelector extends React.Component {
     }
 
     render() {
-        const {shapeSelection, shapeFname} = this.props;
+        const {selection, fname} = this.props;
         const names = Object.values(shapeNames);
         const labels = [
             'None',
@@ -66,12 +66,12 @@ export default class ShapeSelector extends React.Component {
             <b>Shape</b><br />
             <div className={style.shapeSelector}>
                 <Selector
-                    currentValue={shapeSelection}
+                    currentValue={selection}
                     values={names}
                     labels={labels}
                     onChange={this.onShapeChange} />
                 <div>
-                    {shapeSelection === shapeNames.FROM_JSON && shapeFname}
+                    {selection === shapeNames.FROM_JSON && fname}
                 </div>
             </div>
             <FileUpload

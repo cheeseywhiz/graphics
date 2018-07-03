@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
     locals: selectors.locals(state),
     geometry: selectors.geometry(state),
     fullStack: selectors.fullStack(state),
-    shapeGeometry: selectors.shapeGeometry(state),
+    shapeGeometry: selectors.shape.geometry(state),
 });
 
 @connect(mapStateToProps)
