@@ -1,8 +1,9 @@
 import * as THREE from 'three';
-import {operationNames, } from '../../common/actions.js';
-import zip, {range, } from '../../common/zip.js';
-import Frame, {identityFrame, } from '../common/Frame.js';
-import selectors from '../common/selectors/selectors.js';
+import {createSelector, } from 'reselect';
+import {operationNames, } from '../../../common/actions.js';
+import zip, {range, } from '../../../common/zip.js';
+import Frame, {identityFrame, } from './Frame.js';
+import selectors from './selectors.js';
 
 const palette = {
     red: 0xff0000,
@@ -14,7 +15,7 @@ const palette = {
     gray: 0x14ae6e,
 };
 
-export const colors = {
+const colors = {
     iHat: palette.red,
     jHat: palette.green,
     first: palette.black,
@@ -61,18 +62,35 @@ function addArrows(frame) {
     ];
 }
 
-function addFrame(frame, color, geometry, drawVectors) {
-    const ret = [];
+const selectAddFrame = createSelector(
+    selectors.shape.geometry, selectors.geometry,
+    (shapeGeometry, geometry) => (color) => (frame) => {
+        const objects = [];
 
-    if (geometry) {
-        const geometryClone = geometry.clone();
-        geometryClone.applyMatrix(frame);
-        ret.push(addGeometry(geometryClone, color));
+        if (shapeGeometry) {
+            const geometryClone = shapeGeometry.clone();
+            geometryClone.applyMatrix(frame);
+            objects.push(addGeometry(geometryClone, color));
+        }
+
+        if (geometry.frames) objects.push(addArrows(frame));
+        return objects;
     }
+);
 
-    if (drawVectors) ret.push(addArrows(frame));
-    return ret;
-}
+const selectFrames = createSelector(
+    selectAddFrame, selectors.globals, selectors.locals, selectors.geometry,
+    (addFrame, globals, locals, geometry) => {
+        const objects = [];
+        const first = globals.slice(0, 1);
+        const last = globals.slice(-1);
+        objects.push(first.map(addFrame(colors.first)));
+        if (geometry.locals) objects.push(locals.slice(1, -1).map(addFrame(colors.locals)));
+        if (geometry.globals) objects.push(globals.slice(1, -1).map(addFrame(colors.globals)));
+        if (globals.length > 1) objects.push(last.map(addFrame(colors.last)));
+        return objects;
+    }
+);
 
 function addSector(radius, startAngle, endAngle, center) {
     const buffer = new THREE.CircleBufferGeometry(
@@ -122,7 +140,7 @@ function addAxes() {
 const consecutivePairs = (array) => range(array.length - 1)
     .map((index) => [array[index], array[index + 1]]);
 
-export class ChangeHelper {
+class ChangeHelper {
     set(initial, final) {
         this.initial = initial;
         this.final = final;
@@ -219,23 +237,38 @@ const [addGlobalHelpers, addLocalHelpers] = ((changeHelper) => (
             changeHelper.set(initial, final);
             return method(operation);
         })
-        .map((getHelperAdder) => (intermediates, state) => (
+        .map((getHelperAdder) => (intermediates, stack) => (
             zip(
                 consecutivePairs(intermediates).map(getHelperAdder),
-                state.map(selectors.operation),
+                stack.map(selectors.operation),
             ).map(([addHelper, operation]) => addHelper(operation))
         ))
 ))(new ChangeHelper());
 
-export default {
-    geometry: addGeometry,
-    arrow: addArrow,
-    arrows: addArrows,
-    frame: addFrame,
-    sector: addSector,
-    rotation: addRotation,
-    line: addLine,
-    axes: addAxes,
-    globalHelpers: addGlobalHelpers,
-    localHelpers: addLocalHelpers,
-};
+const selectIntermediateHelpers = createSelector(
+    selectors.geometry, selectors.globals, selectors.locals, selectors.fullStack,
+    (geometry, globals, locals, fullStack) => {
+        const objects = [];
+
+        if (geometry.intermediateHelpers && globals.length > 1) {
+            if (geometry.globals) {
+                objects.push(addGlobalHelpers(globals, [...fullStack]));
+            }
+
+            if (geometry.locals) {
+                objects.push(addLocalHelpers(locals, [...fullStack].reverse()));
+            }
+        }
+
+        return objects;
+    }
+);
+
+export default createSelector(
+    selectFrames, selectIntermediateHelpers,
+    (frames, intermediateHelpers) => [
+        addAxes(),
+        frames,
+        intermediateHelpers,
+    ]
+);

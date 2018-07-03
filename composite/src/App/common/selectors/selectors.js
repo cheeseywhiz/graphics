@@ -1,6 +1,6 @@
 import {createSelector, } from 'reselect';
 import {defaultMatrix, entryOrders, } from '../../../common/actions.js';
-import Frame, {identityFrame, } from '../Frame.js';
+import Frame, {identityFrame, } from './Frame.js';
 import shapeSelectors from './shapeSelectors/shapeSelectors.js';
 
 const selectMatrix = (state) => state.matrix;
