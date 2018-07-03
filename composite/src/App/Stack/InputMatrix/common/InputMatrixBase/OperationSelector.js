@@ -5,7 +5,7 @@ import selectors from '../../../../common/selectors/selectors.js';
 import Selector from '../../../../common/Selector.js';
 
 const mapStateToProps = (state) => ({
-    operation: selectors.operation(state),
+    operation: selectors.base.operation(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

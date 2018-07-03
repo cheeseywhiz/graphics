@@ -5,7 +5,7 @@ import selectors from '../common/selectors/selectors.js';
 import Selector from '../common/Selector.js';
 
 const mapStateToProps = (state) => ({
-    entryOrder: selectors.entryOrder(state),
+    entryOrder: selectors.base.entryOrder(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

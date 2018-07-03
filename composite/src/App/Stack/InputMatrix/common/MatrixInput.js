@@ -5,7 +5,7 @@ import selectors from '../../../common/selectors/selectors.js';
 import NumberInput from './NumberInput.js';
 
 const mapStateToProps = (state, {matrixKey}) => ({
-    value: selectors.matrix(state)[matrixKey],
+    value: selectors.base.matrix(state)[matrixKey],
     placeholder: matrixKey,
 });
 

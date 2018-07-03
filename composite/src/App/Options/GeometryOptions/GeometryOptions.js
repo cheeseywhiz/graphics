@@ -5,7 +5,7 @@ import selectors from '../../common/selectors/selectors.js';
 import style from './GeometryOptions.css';
 
 const mapStateToProps = (state) => ({
-    geometry: selectors.geometry(state),
+    geometry: selectors.base.geometry(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

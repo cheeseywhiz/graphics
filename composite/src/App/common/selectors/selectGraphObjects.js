@@ -2,8 +2,10 @@ import * as THREE from 'three';
 import {createSelector, } from 'reselect';
 import {operationNames, } from '../../../common/actions.js';
 import zip, {range, } from '../../../common/zip.js';
-import Frame, {identityFrame, } from './Frame.js';
-import selectors from './selectors.js';
+import Frame, {identityFrame, } from './common/Frame.js';
+import baseSelectors from './common/baseSelectors.js';
+import shapeSelectors from './common/shapeSelectors/shapeSelectors.js';
+import stackSelectors from './common/stackSelectors.js';
 
 const palette = {
     red: 0xff0000,
@@ -63,7 +65,7 @@ function addArrows(frame) {
 }
 
 const selectAddFrame = createSelector(
-    selectors.shape.geometry, selectors.geometry,
+    shapeSelectors.geometry, baseSelectors.geometry,
     (shapeGeometry, geometry) => (color) => (frame) => {
         const objects = [];
 
@@ -79,7 +81,8 @@ const selectAddFrame = createSelector(
 );
 
 const selectFrames = createSelector(
-    selectAddFrame, selectors.globals, selectors.locals, selectors.geometry,
+    selectAddFrame, stackSelectors.globals, stackSelectors.locals,
+    baseSelectors.geometry,
     (addFrame, globals, locals, geometry) => {
         const objects = [];
         const first = globals.slice(0, 1);
@@ -240,23 +243,24 @@ const [addGlobalHelpers, addLocalHelpers] = ((changeHelper) => (
         .map((getHelperAdder) => (intermediates, stack) => (
             zip(
                 consecutivePairs(intermediates).map(getHelperAdder),
-                stack.map(selectors.operation),
+                stack.map(baseSelectors.operation),
             ).map(([addHelper, operation]) => addHelper(operation))
         ))
 ))(new ChangeHelper());
 
 const selectIntermediateHelpers = createSelector(
-    selectors.geometry, selectors.globals, selectors.locals, selectors.fullStack,
-    (geometry, globals, locals, fullStack) => {
+    baseSelectors.geometry, stackSelectors.globals,
+    stackSelectors.locals, stackSelectors.full,
+    (geometry, globals, locals, full) => {
         const objects = [];
 
         if (geometry.intermediateHelpers && globals.length > 1) {
             if (geometry.globals) {
-                objects.push(addGlobalHelpers(globals, [...fullStack]));
+                objects.push(addGlobalHelpers(globals, [...full]));
             }
 
             if (geometry.locals) {
-                objects.push(addLocalHelpers(locals, [...fullStack].reverse()));
+                objects.push(addLocalHelpers(locals, [...full].reverse()));
             }
         }
 

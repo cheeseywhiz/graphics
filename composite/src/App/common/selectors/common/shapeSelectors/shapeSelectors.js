@@ -1,17 +1,16 @@
 import {createSelector, } from 'reselect';
-import {shapeNames, } from '../../../../common/actions.js';
-import zip from '../../../../common/zip.js';
+import {shapeNames, } from '../../../../../common/actions.js';
+import zip from '../../../../../common/zip.js';
 import shapes from './shapes.js';
-
-const selectShape = (state) => state.shape;
+import baseSelectors from '../baseSelectors.js';
 
 const selectSelection = createSelector(
-    selectShape,
+    baseSelectors.shape,
     (shape) => shape.selection
 );
 
 const selectFile = createSelector(
-    selectShape,
+    baseSelectors.shape,
     (shape) => shape.file
 );
 

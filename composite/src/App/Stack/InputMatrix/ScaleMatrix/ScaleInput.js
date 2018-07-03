@@ -4,7 +4,7 @@ import selectors from '../../../common/selectors/selectors.js';
 import NumberInput from '../common/NumberInput.js';
 
 const mapStateToProps = (state) => ({
-    value: selectors.number(state),
+    value: selectors.matrix.number(state),
     placeholder: 'ratio',
 });
 

@@ -10,7 +10,7 @@ import TranslationMatrix from './TranslationMatrix.js';
 import ManualMatrix from './ManualMatrix.js';
 
 const mapStateToProps = (state) => ({
-    operation: selectors.operation(state),
+    operation: selectors.base.operation(state),
 });
 
 export default connect(mapStateToProps)(

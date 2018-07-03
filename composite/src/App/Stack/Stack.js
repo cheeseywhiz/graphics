@@ -6,7 +6,7 @@ import FrameList from './FrameList/FrameList.js';
 import InputMatrix from './InputMatrix/InputMatrix.js';
 
 const mapStateToProps = (state) => ({
-    shortStack: selectors.shortStack(state),
+    stack: selectors.stack.stack(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -16,13 +16,13 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    ({shortStack, onPush, onPop, onClear}) => {
+    ({stack, onPush, onPop, onClear}) => {
         return <div>
             <b>Operation stack</b><br />
             <input type='button' value='Push' onClick={onPush} />
             <input type='button' value='Pop' onClick={onPop} />
             <input type='button' value='Clear' onClick={onClear} />
-            <FrameList frames={shortStack.map(selectors.frame)}>
+            <FrameList frames={stack.map(selectors.matrix.frame)}>
                 <InputMatrix />
             </FrameList>
         </div>
