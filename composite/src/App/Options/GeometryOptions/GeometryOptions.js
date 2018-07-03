@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import actions from '../../../common/actions.js';
-import selectors from '../../common/selectors.js';
+import selectors from '../../common/selectors/selectors.js';
 import style from './GeometryOptions.css';
 
 const mapStateToProps = (state) => ({

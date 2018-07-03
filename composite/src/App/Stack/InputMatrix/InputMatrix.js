@@ -2,7 +2,7 @@ import React from 'react';
 import {connect, } from 'react-redux';
 import {operationNames, } from '../../../common/actions.js';
 import zip from '../../../common/zip.js';
-import selectors from '../../common/selectors.js';
+import selectors from '../../common/selectors/selectors.js';
 import InputMatrixBase from './common/InputMatrixBase/InputMatrixBase.js';
 import RotationMatrix from './RotationMatrix/RotationMatrix.js';
 import ScaleMatrix from './ScaleMatrix/ScaleMatrix.js';

@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import {operationNames, } from '../../../common/actions.js';
-import zip, {range, } from '../../../common/zip.js';
-import Frame, {identityFrame, } from '../../common/Frame.js';
-import selectors from '../../common/selectors.js';
-import {getShape, } from './shapes.js';
+import {operationNames, } from '../../common/actions.js';
+import zip, {range, } from '../../common/zip.js';
+import Frame, {identityFrame, } from '../common/Frame.js';
+import selectors from '../common/selectors/selectors.js';
 
 const palette = {
     red: 0xff0000,
@@ -62,14 +61,13 @@ function addArrows(frame) {
     ];
 }
 
-function addFrame(frame, color, shapeName, drawVectors) {
+function addFrame(frame, color, geometry, drawVectors) {
     const ret = [];
-    const shapeFunc = getShape(shapeName);
 
-    if (shapeFunc) {
-        const buffer = shapeFunc();
-        buffer.applyMatrix(frame);
-        ret.push(addGeometry(buffer, color));
+    if (geometry) {
+        const geometryClone = geometry.clone();
+        geometryClone.applyMatrix(frame);
+        ret.push(addGeometry(geometryClone, color));
     }
 
     if (drawVectors) ret.push(addArrows(frame));

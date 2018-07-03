@@ -1,6 +1,8 @@
 import {createSelector, } from 'reselect';
-import {defaultMatrix, entryOrders, } from '../../common/actions.js';
-import Frame, {identityFrame, } from './Frame.js';
+import {defaultMatrix, entryOrders, shapeNames, } from '../../../common/actions.js';
+import zip from '../../../common/zip.js';
+import Frame, {identityFrame, } from '../Frame.js';
+import shapes from './shapes.js';
 
 const selectMatrix = (state) => state.matrix;
 const selectOperation = (state) => state.operation;
@@ -31,6 +33,26 @@ const selectShapeFname = createSelector(
 const selectShapeData = createSelector(
     selectShapeFile,
     (file) => file.data
+);
+
+const selectShapeFunc = createSelector(
+    selectShapeSelection,
+    (shapeSelection) => {
+        const names = Object.values(shapeNames);
+        const shapeFuncs = Object.values(shapes);
+        const map = {};
+        zip(names, shapeFuncs).forEach(([name, value]) => {
+            map[name] = value;
+        });
+        return map[shapeSelection];
+    }
+);
+
+const selectShapeGeometry = createSelector(
+    selectShapeFunc, selectShapeData,
+    (shapeFunc, shapeData) => (
+        shapeFunc ? shapeFunc(shapeData) : null
+    )
 );
 
 const selectFrame = createSelector(
@@ -101,6 +123,8 @@ const selectors = {
     shapeSelection: selectShapeSelection,
     shapeFname: selectShapeFname,
     shapeData: selectShapeData,
+    shapeFunc: selectShapeFunc,
+    shapeGeometry: selectShapeGeometry,
     entryOrder: selectEntryOrder,
     frame: selectFrame,
     shortStack: selectShortStack,

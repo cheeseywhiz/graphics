@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect, } from 'react-redux';
 import actions, {shapeNames, } from '../../../common/actions.js';
-import selectors from '../../common/selectors.js';
+import selectors from '../../common/selectors/selectors.js';
 import Selector from '../../common/Selector.js';
 import FileUpload from './FileUpload/FileUpload.js';
 import style from './ShapeSelector.css';
@@ -76,7 +76,7 @@ export default class ShapeSelector extends React.Component {
             </div>
             <FileUpload
                 ref={this.fileUpload}
-                accept='.json'
+                accept='.json, .js'
                 onFileChange={this.onFileChange} />
         </div>
     }

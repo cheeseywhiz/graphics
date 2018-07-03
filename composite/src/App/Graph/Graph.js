@@ -1,22 +1,22 @@
 import {connect, } from 'react-redux';
-import selectors from '../common/selectors.js';
+import selectors from '../common/selectors/selectors.js';
 import BaseGraph from './BaseGraph/BaseGraph.js';
-import GraphObjects, {ChangeHelper, colors, } from './GraphObjects/GraphObjects.js';
+import GraphObjects, {colors, } from './GraphObjects.js';
 
 const mapStateToProps = (state) => ({
     globals: selectors.globals(state),
     locals: selectors.locals(state),
     geometry: selectors.geometry(state),
-    shapeSelection: selectors.shapeSelection(state),
     fullStack: selectors.fullStack(state),
+    shapeGeometry: selectors.shapeGeometry(state),
 });
 
 @connect(mapStateToProps)
 export default class Graph extends BaseGraph {
     addFrames(intermediates, color) {
-        const {shapeSelection, geometry} = this.props;
+        const {shapeGeometry, geometry} = this.props;
         return intermediates.map((frame) => (
-            GraphObjects.frame(frame, color, shapeSelection, geometry.frames)
+            GraphObjects.frame(frame, color, shapeGeometry, geometry.frames)
         ));
     }
 

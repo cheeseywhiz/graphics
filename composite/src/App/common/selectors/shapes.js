@@ -1,6 +1,4 @@
 import * as THREE from 'three';
-import {shapeNames, } from '../../../common/actions.js';
-import zip from '../../../common/zip.js';
 
 function verticesToBuffer(vertices) {
     const buffer = new THREE.BufferGeometry();
@@ -23,17 +21,9 @@ const UnitCircle = () => new THREE.CircleBufferGeometry(1, 16);
 
 const Knot = () => new THREE.TorusKnotBufferGeometry();
 
-const shapes = {
-    None: undefined, Square, UnitCircle, Knot,
-};
-export default shapes;
+const loader = new THREE.JSONLoader();
+const FromData = (data) => data && loader.parse(data, 'models/').geometry;
 
-export function getShape(shapeName) {
-    const names = Object.values(shapeNames);
-    const shapeFuncs = Object.values(shapes);
-    const map = {};
-    zip(names, shapeFuncs).forEach(([name, value]) => {
-        map[name] = value;
-    });
-    return map[shapeName];
-}
+export default {
+    None: null, Square, UnitCircle, Knot, FromData,
+};

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {Provider, } from 'react-redux';
 import {createStore, combineReducers, } from 'redux';
 import reducer from './reducer/reducer.js';
-import {logIntermediates, } from './App/common/selectors.js';
+import {logIntermediates, } from './App/common/selectors/selectors.js';
 import App from './App/App.js';
 
 function main() {
