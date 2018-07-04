@@ -12,7 +12,16 @@
     border-right: 1px solid;
 }
 
-.cell, .cell input {
+.cell, .cell > input {
     text-align: center;
+}
+
+.cell {
     width: 55px;
+}
+
+.cell > input {
+    width: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
 }
