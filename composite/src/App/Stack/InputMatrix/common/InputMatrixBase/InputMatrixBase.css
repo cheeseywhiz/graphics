@@ -12,12 +12,10 @@
     flex: 1;
 }
 
-.input {
-    flex: 1;
+.selector > select {
+    width: 100%;
 }
 
-.input > input {
-    width: 100%;
-    width: -moz-available;
-    width: -webkit-fill-available;
+.input {
+    flex: 1;
 }

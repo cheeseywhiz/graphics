@@ -19,9 +19,3 @@
 .cell {
     width: 55px;
 }
-
-.cell > input {
-    width: 100%;
-    width: -moz-available;
-    width: -webkit-fill-available;
-}

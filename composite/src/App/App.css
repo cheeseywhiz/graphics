@@ -2,7 +2,7 @@
     --app-grid-gap: 5px;
 }
 
-html, body, body > div /* #app-container */, .app {
+html, body, :global(#app-container), .app {
     height: 100%;
 }
 

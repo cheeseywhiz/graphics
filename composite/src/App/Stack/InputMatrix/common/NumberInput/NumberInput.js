@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect, } from 'react-redux';
-import actions from '../../../../common/actions.js';
-import selectors from '../../../common/selectors/selectors.js';
-import roundFloatStr from '../../common/roundFloatStr.js';
+import actions from '../../../../../common/actions.js';
+import selectors from '../../../../common/selectors/selectors.js';
+import roundFloatStr from '../../../common/roundFloatStr.js';
+import style from './NumberInput.css';
 
 const mapStateToProps = (state) => ({});
 
@@ -44,6 +45,7 @@ export default class NumberInput extends React.Component {
         return <input
             {...props}
             ref={this.input}
+            className={style.numberInput}
             type='number'
             value={Number.isFinite(value) ? roundFloatStr(value) : ''}
             onKeyPress={this.onKeyPress}
