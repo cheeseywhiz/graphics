@@ -1,12 +1,21 @@
 .inputMatrix {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-direction: column;
+}
+
+.topRow {
+    display: flex;
+    flex-direction: row;
 }
 
 .selector {
-    grid-column: span 2;
+    flex: 1;
 }
 
-.input, .matrixContainer {
-    grid-column: span 3;
+.input {
+    flex: 1;
+}
+
+.input > input {
+    width: 100%;
 }
