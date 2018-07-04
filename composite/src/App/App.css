@@ -1,20 +1,34 @@
+:root {
+    --app-grid-gap: 5px;
+}
+
+html, body, body > div /* #app-container */, .app {
+    height: 100%;
+}
+
 .app {
-    display: grid;
-    grid-template-areas:
-        "top top"
-        "side body";
-    grid-template-columns: min-content auto;
-    grid-gap: 5px;
+    display: flex;
+    flex-direction: column;
 }
 
 .top {
-    grid-area: top;
+    flex: none;
+    margin-bottom: var(--app-grid-gap);
 }
 
-.side {
-    grid-area: side;
+.middle {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
 }
 
-.body {
-    grid-area: body;
+.left {
+    flex: none;
+    margin-right: var(--app-grid-gap);
+}
+
+.right {
+    flex: 1;
+    min-width: 300px;
+    min-height: 150px;
 }

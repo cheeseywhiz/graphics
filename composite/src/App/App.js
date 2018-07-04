@@ -8,10 +8,12 @@ export default () => <div className={style.app}>
     <div className={style.top}>
         <Stack />
     </div>
-    <div className={style.side}>
-        <Options />
-    </div>
-    <div className={style.body}>
-        <Graph />
+    <div className={style.middle}>
+        <div className={style.left}>
+            <Options />
+        </div>
+        <div className={style.right}>
+            <Graph />
+        </div>
     </div>
 </div>
