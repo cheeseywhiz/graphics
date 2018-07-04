@@ -22,13 +22,25 @@ html, body, :global(#app-container), .app {
     flex-direction: row;
 }
 
-.left {
+.options {
     flex: none;
     margin-right: var(--app-grid-gap);
 }
 
-.right {
+.graph {
     flex: 1;
     min-width: 300px;
     min-height: 150px;
+}
+
+/* Skinny screens */
+@media screen and (orientation: portrait) {
+    .middle {
+        flex-direction: column;
+    }
+
+    .options {
+        margin-right: initial;
+        margin-bottom: var(--app-grid-gap);
+    }
 }

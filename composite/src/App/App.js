@@ -9,10 +9,10 @@ export default () => <div className={style.app}>
         <Stack />
     </div>
     <div className={style.middle}>
-        <div className={style.left}>
+        <div className={style.options}>
             <Options />
         </div>
-        <div className={style.right}>
+        <div className={style.graph}>
             <Graph />
         </div>
     </div>
