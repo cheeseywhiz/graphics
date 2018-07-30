@@ -1,8 +1,0 @@
-.option {
-    display: flex;
-    flex-direction: row;
-}
-
-.label {
-    white-space: nowrap;
-}
